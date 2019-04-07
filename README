@@ -1,18 +1,16 @@
-CMake Qt5 GUI Template
-----------------------
+**QuickAccess** is a program providing a menu to quickly access user defined folders and their subfolders.
+The menu can be opened through dbus.
 
-You need Qt5 and CMake 2.8.11 or higher
+# Example
 
--- Build instructions --
+toggle menu with qdbus
+```
+qdbus org.QuickAccess /QuickAccess showMenu
+```
 
-cd /your/project/build
-cmake ../
-make
-
-./quickaccess
-
-
--- Tutorials and resources --
-
-Qt online docs
-https://doc.qt.io/
+# Dependencies
+- Qt5 Widgets
+- Qt5 Dbus
+- KF5 CoreAddons
+- KF5 I18n
+- KF5 Config
