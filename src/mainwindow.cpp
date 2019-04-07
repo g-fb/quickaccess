@@ -79,8 +79,6 @@ MainWindow::MainWindow(QWidget *parent)
     createTrayIcon();
     setupMenu();
     setupDBus();
-    
-    show(); // for testing purposes
 }
 
 MainWindow::~MainWindow() = default;
