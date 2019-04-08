@@ -114,8 +114,8 @@ void MainWindow::createTrayIcon()
     QSystemTrayIcon *trayIcon = new QSystemTrayIcon(this);
     trayIcon->setToolTip("QuickAccess");
     trayIcon->setIcon(QIcon::fromTheme("folder"));
-    trayIcon->show();
     trayIcon->setContextMenu(trayIconMenu);
+    trayIcon->show();
 }
 
 void MainWindow::deleteFolder()
@@ -209,34 +209,12 @@ void MainWindow::selectFolder()
     setupMenu();
 }
 
-void MainWindow::setDolphinDBusService(QDBusConnectionInterface *bus)
-{
-    const QStringList services = bus->registeredServiceNames();
-    QMap<QString, QStringList> servicesWithAliases;
-    
-    int index = services.indexOf(QRegExp("^org.kde.dolphin.+"));
-    if (index != -1) {
-        m_dolphinServiceName = services[index];
-        m_serviceWatcher = new QDBusServiceWatcher(services[index],
-                                                   bus->connection(),
-                                                   QDBusServiceWatcher::WatchForOwnerChange);
-        connect(m_serviceWatcher, &QDBusServiceWatcher::serviceOwnerChanged,
-                this, [=]() {
-                    m_dolphinServiceName = "";
-                });
-    }
-}
-
 void MainWindow::setupDBus()
 {
     new QuickAccessAdaptor(this);
     QDBusConnection dbus = QDBusConnection::sessionBus();
     dbus.registerObject("/QuickAccess", this);
     dbus.registerService("com.georgefb.QuickAccess");
-    
-    connection = QDBusConnection::sessionBus();
-    bus = connection.interface();
-    setDolphinDBusService(bus);
 }
 
 void MainWindow::setupMenu()
@@ -270,6 +248,13 @@ void MainWindow::setupMenu()
 
 void MainWindow::showMenu()
 {
-    QThread::msleep(150);
+    mMenu->exec(QCursor::pos());
+}
+
+// should be used when triggered by a double clicked
+// without a delay the menu doesn't close when clicking outside it
+void MainWindow::showDelayedMenu(int delay)
+{
+    QThread::msleep(delay);
     mMenu->exec(QCursor::pos());
 }

@@ -3,5 +3,10 @@
   <interface name="com.georgefb.QuickAccess">
     <method name="showMenu">
     </method>
+    <method name="showDelayedMenu">
+      <arg name="delay" type="i" direction="in"/>
+    </method>
+    <method name="showDelayedMenu">
+    </method>
   </interface>
 </node>

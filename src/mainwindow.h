@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <KSharedConfig>
+#include <QSystemTrayIcon>
 
 namespace Ui {
     class MainWindow;
@@ -14,7 +15,6 @@ class QListView;
 class QMenu;
 class QDBusConnectionInterface;
 class QStringListModel;
-class QDBusServiceWatcher;
 class QListWidget;
 
 class MainWindow : public QMainWindow
@@ -26,6 +26,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
     Q_SCRIPTABLE void showMenu();
+    Q_SCRIPTABLE void showDelayedMenu(int delay = 150);
     
 private:
     Ui::MainWindow *ui;
@@ -39,15 +40,13 @@ private:
     void setupMenu();
     void setupDBus();
     void createTrayIcon();
-    QMenu *createMenu(QString path);
     QStringList paths();
+    QMenu *createMenu(QString path);
+    QMenu *mMenu = nullptr;
     QListWidget *m_listWidget;
-    QString m_dolphinServiceName;
-    QDBusServiceWatcher *m_serviceWatcher;
     QDBusConnectionInterface *bus;
     QMenu *trayIconMenu;
     KSharedConfig::Ptr m_config;
-    QMenu       *mMenu = nullptr;
 };
 
 #endif // MAINWINDOW
