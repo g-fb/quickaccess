@@ -1,10 +1,10 @@
 {
-    "id": "com.georgefb.quickaccess",
+    "id": "com.georgefb.QuickAccess",
     "runtime": "org.kde.Platform",
     "runtime-version": "5.12",
     "sdk": "org.kde.Sdk",
     "command": "quickaccess",
-    "finish-args": ["--share=ipc", "--socket=x11", "--socket=wayland", "--filesystem=host", "--state-dir=."],
+    "finish-args": ["--share=ipc", "--socket=x11", "--socket=wayland", "--filesystem=host", "--talk-name=org.kde.StatusNotifierWatcher"],
     "modules": [
         {
             "name": "QuickAccess",
