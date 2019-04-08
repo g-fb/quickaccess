@@ -6,9 +6,15 @@ The menu can be opened through dbus.
 # Example
 
 toggle menu with qdbus
+
 ```
-qdbus org.QuickAccess /QuickAccess showMenu
+qdbus com.georgefb.QuickAccess /QuickAccess showMenu
 ```
+
+[KDE Plasma shortcut:](https://docs.kde.org/trunk5/en/kde-workspace/kcontrol/khotkeys/shortcuts.html)
+
+![Set shortcut](images/quickaccess-plasma-shortcut.png)
+
 
 # Dependencies
 - Qt5 Widgets
