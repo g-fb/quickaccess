@@ -20,7 +20,7 @@ class QListWidget;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "quickaccess.QuickAccess")
+    Q_CLASSINFO("D-Bus Interface", "com.georgefb.QuickAccess")
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);

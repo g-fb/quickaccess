@@ -29,16 +29,16 @@ set(quickaccess_SRC
     src/main.cpp
     src/mainwindow.cpp
     src/pathsmenu.cpp
-    src/QuickAccess.xml
+    src/com.georgefb.quickaccess.xml
 )
 
 qt5_generate_dbus_interface(
     mainwindow.h
-    QuickAccess.xml
+    com.georgefb.quickaccess.xml
     OPTIONS -a
 )
 
-qt5_add_dbus_adaptor(quickaccess_SRC src/QuickAccess.xml
+qt5_add_dbus_adaptor(quickaccess_SRC src/com.georgefb.quickaccess.xml
                      src/mainwindow.h MainWindow)
                      
 # Tell CMake to create the helloworld executable
@@ -55,4 +55,5 @@ target_link_libraries(quickaccess
 
 # Install the executable
 install(TARGETS quickaccess DESTINATION bin)
-install(FILES src/QuickAccess.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
+install(FILES src/com.georgefb.quickaccess.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
+install(FILES src/com.georgefb.quickaccess.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})

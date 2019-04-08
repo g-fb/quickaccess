@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=QuickAccess
+Exec=quickaccess
+Icon=folder
+Type=Application
+Categories=Qt;KDE;FileTools;
+Terminal=false
+X-DBUS-ServiceName=org.QuickAccess

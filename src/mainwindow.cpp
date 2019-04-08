@@ -141,6 +141,11 @@ void MainWindow::onQMenuHover(QMenu *menu, QString path)
         collator.setNumericMode(true);
         std::sort(m_allFiles.begin(), m_allFiles.end(), collator);
         for (int index = 0; index < m_allFiles.size(); index++) {
+            if (index == 25) {
+                menu->addSeparator();
+                menu->addAction(new QAction(i18n("Folder has to many items.")));
+                break;
+            }
             const QFileInfo file(m_allFiles[index]);
             
             QDirIterator it(m_allFiles[index],
@@ -227,7 +232,7 @@ void MainWindow::setupDBus()
     new QuickAccessAdaptor(this);
     QDBusConnection dbus = QDBusConnection::sessionBus();
     dbus.registerObject("/QuickAccess", this);
-    dbus.registerService("org.QuickAccess");
+    dbus.registerService("com.georgefb.QuickAccess");
     
     connection = QDBusConnection::sessionBus();
     bus = connection.interface();
