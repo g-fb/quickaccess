@@ -2,10 +2,20 @@
 <component type="desktop">
     <id>com.georgefb.quickaccess.desktop</id>
     <metadata_license>CC0-1.0</metadata_license>
-    <project_license>GPL-2.0+</project_license>
+    <project_license>LGPL-3.0-or-later</project_license>
     <name>QuickAccess</name>
     <summary>QuickAccess is a program providing a menu to quickly access user defined folders and their subfolders.</summary>
     <description>
         <p>QuickAccess is a program providing a menu to quickly access user defined folders and their subfolders. The menu can be opened through dbus.</p>
     </description>
+    <screenshots>
+        <screenshot type="default">
+            <caption>Menu</caption>
+            <image>https://s.put.re/T79hUoVE.png</image>
+        </screenshot>
+        <screenshot>
+            <caption>Paths Manager</caption>
+            <image>https://s.put.re/LwvYnFgj.png</image>
+        </screenshot>
+    </screenshots>
 </component>
