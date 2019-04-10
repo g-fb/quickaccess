@@ -57,3 +57,4 @@ target_link_libraries(quickaccess
 install(TARGETS quickaccess DESTINATION bin)
 install(FILES src/com.georgefb.quickaccess.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 install(FILES src/com.georgefb.quickaccess.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
+install(PROGRAMS src/com.georgefb.quickaccess.desktop DESTINATION ${KDE_INSTALL_APPDIR})

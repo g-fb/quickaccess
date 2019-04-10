@@ -43,8 +43,6 @@ MainWindow::MainWindow(QWidget *parent)
     mainWidget->setLayout(vLayout);
     
     QLabel *label = new QLabel(i18n("Drag and drop items to reorder them."));
-    
-
     QPushButton *addFolderBtn = new QPushButton(i18n("Add Folder"));
     connect(addFolderBtn, &QPushButton::clicked,
             this, &MainWindow::selectFolder);
@@ -238,6 +236,12 @@ void MainWindow::setupMenu()
     action->setText(i18n("Manage Paths"));
     connect(action, &QAction::triggered,
             this, &MainWindow::show);
+    mMenu->addAction(action);
+    
+    action = new QAction(QStringLiteral("manage_paths"));
+    action->setText(i18n("Close Menu"));
+    connect(action, &QAction::triggered,
+            this, &QMenu::close);
     mMenu->addAction(action);
     
     QAction *quitAction = new QAction(i18n("Quit"));
