@@ -14,6 +14,7 @@ qdbus com.georgefb.QuickAccess /QuickAccess showMenu
 ![Set shortcut](images/quickaccess-plasma-shortcut.png)
 
 # Dependencies
+- Extra CMake Modules
 - Qt5 Widgets
 - Qt5 DBus
 - KF5 CoreAddons
