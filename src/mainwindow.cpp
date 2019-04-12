@@ -1,11 +1,13 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include "pathsmenu.h"
+#include "quickaccessadaptor.h"
+#include "ui_mainwindow.h"
 
 #include <QFileDialog>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QDesktopServices>
+#include <QLabel>
 #include <QListWidget>
 #include <QMenu>
 #include <QPushButton>
@@ -18,8 +20,6 @@
 #include <KLocalizedString>
 
 #include <QDebug>
-#include <quickaccessadaptor.h>
-#include <QLabel>
 
 static QDBusConnection connection(QLatin1String(""));
 
@@ -105,7 +105,8 @@ void MainWindow::createTrayIcon()
     trayIconMenu = new QMenu(this);
     QAction *quitAction = new QAction(i18n("Quit"));
     quitAction->setIcon(QIcon::fromTheme("application-exit"));
-    connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
+    connect(quitAction, &QAction::triggered,
+            QCoreApplication::instance(), &QCoreApplication::quit);
     trayIconMenu->addAction(quitAction);
     trayIconMenu->addSeparator();
     
@@ -217,8 +218,8 @@ void MainWindow::setupDBus()
 
 void MainWindow::setupMenu()
 {
-    if (mMenu) {
-        delete mMenu;
+    if (mMenu != nullptr) {
+        mMenu->clear();
     }
     mMenu = new QMenu();
     mMenu->setFixedWidth(300);
@@ -246,7 +247,8 @@ void MainWindow::setupMenu()
     
     QAction *quitAction = new QAction(i18n("Quit"));
     quitAction->setIcon(QIcon::fromTheme("application-exit"));
-    connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
+    connect(quitAction, &QAction::triggered, 
+            QCoreApplication::instance(), &QCoreApplication::quit);
     mMenu->addAction(quitAction);    
 }
 

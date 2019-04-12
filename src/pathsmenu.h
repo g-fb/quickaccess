@@ -11,7 +11,7 @@ class PathsMenu : public QMenu
     Q_OBJECT
 
 public:
-    PathsMenu();
+    PathsMenu(QWidget *parent = nullptr);
     ~PathsMenu();
     
 signals:
@@ -20,7 +20,6 @@ signals:
 
 protected:
     void mouseReleaseEvent(QMouseEvent* ) override;
-    void mouseMoveEvent(QMouseEvent* ) override;
 
 };
 
