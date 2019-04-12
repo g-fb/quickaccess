@@ -3,9 +3,8 @@
 
 #include <QMenu>
 
-/**
- * @todo write docs
- */
+class MainWindow;
+
 class PathsMenu : public QMenu
 {
     Q_OBJECT
@@ -13,14 +12,14 @@ class PathsMenu : public QMenu
 public:
     PathsMenu(QWidget *parent = nullptr);
     ~PathsMenu();
+    void setMainWindow(MainWindow *menu);
     
 signals:
-    void actionHovered();
     void actionTriggered();
 
 protected:
     void mouseReleaseEvent(QMouseEvent* ) override;
-
+    MainWindow *m_mainWindow;
 };
 
 #endif // PATHSMENU_H

@@ -28,8 +28,15 @@ public:
     Q_SCRIPTABLE void showMenu();
     Q_SCRIPTABLE void showDelayedMenu(int delay = 150);
     
+    // actionClicked - prevent triggering of wrong action
+    // clicking a normal QAction can trigger the action of PathsMenu
+    // when the interval of moving the mouse from PathsMenu to a normal QAction is very small
+    // this is a workaround
+    bool actionClicked = false;
+    
 private:
     Ui::MainWindow *ui;
+    void addMenuItem(QMenu *menu, QString path);
     void selectFolder();
     void deleteFolder();
     void setDolphinDBusService(QDBusConnectionInterface* bus);
