@@ -20,7 +20,6 @@ find_package(Qt5 CONFIG REQUIRED COMPONENTS
 )
 
 find_package(KF5 REQUIRED COMPONENTS
-    CoreAddons      # KAboutData
     I18n            # KLocalizedString
     Config
 )
@@ -48,7 +47,6 @@ add_executable(quickaccess ${quickaccess_SRC})
 target_link_libraries(quickaccess
     Qt5::Widgets
     Qt5::DBus
-    KF5::CoreAddons
     KF5::I18n
     KF5::ConfigCore
 )

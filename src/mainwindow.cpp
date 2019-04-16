@@ -274,7 +274,7 @@ void MainWindow::setupMenu()
     action->setText(i18n("Quit"));
     action->setIcon(QIcon::fromTheme("application-exit"));
     connect(action, &QAction::triggered, 
-            QCoreApplication::instance(), [=]() {
+            this, [=]() {
                 actionClicked = true;
                 QCoreApplication::quit();
             });

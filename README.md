@@ -23,8 +23,8 @@ qdbus com.georgefb.QuickAccess /QuickAccess showMenu
 
 Install dependencies:
 
-- **Ubuntu** `sudo apt install build-essential cmake extra-cmake-modules qtbase5-dev libkf5coreaddons-dev libkf5config-dev libkf5i18n-dev`
-- **Solus** `sudo eopkg it -c system.devel extra-cmake-modules qt5-base-devel kcoreaddons-devel kconfig-devel ki18n-devel`
+- **Ubuntu** `sudo apt install build-essential cmake extra-cmake-modules qtbase5-dev libkf5config-dev libkf5i18n-dev`
+- **Solus** `sudo eopkg it -c system.devel extra-cmake-modules qt5-base-devel kconfig-devel ki18n-devel`
 
 # Build
 
