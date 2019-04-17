@@ -17,7 +17,6 @@ qdbus com.georgefb.QuickAccess /QuickAccess showMenu
 - Extra CMake Modules
 - Qt5 Widgets
 - Qt5 DBus
-- KF5 CoreAddons
 - KF5 I18n
 - KF5 Config
 
