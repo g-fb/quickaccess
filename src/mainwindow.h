@@ -5,6 +5,8 @@
 #include <KSharedConfig>
 #include <QSystemTrayIcon>
 
+#include "ui_AboutDialog.h"
+
 namespace Ui {
     class MainWindow;
 }
@@ -17,6 +19,16 @@ class QDBusConnectionInterface;
 class QStringListModel;
 class QListWidget;
 
+class AboutDialog: public QWidget, public Ui::AboutDialog
+{
+    Q_OBJECT
+public:
+    explicit AboutDialog(QWidget *parent)
+    : QWidget(parent)
+    {
+        setupUi(this);
+    }
+};
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

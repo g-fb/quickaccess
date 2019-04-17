@@ -31,6 +31,10 @@ set(quickaccess_SRC
     src/com.georgefb.quickaccess.xml
 )
 
+ki18n_wrap_ui(quickaccess_SRC
+   src/AboutDialog.ui
+)
+
 qt5_generate_dbus_interface(
     mainwindow.h
     com.georgefb.quickaccess.xml

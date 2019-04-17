@@ -133,13 +133,22 @@ QMenu *MainWindow::createMenu(QString path)
 
 void MainWindow::createTrayIcon()
 {
+    AboutDialog *aboutDialog = new AboutDialog(nullptr);
     trayIconMenu = new QMenu(this);
+    
     QAction *quitAction = new QAction(i18n("Quit"));
     quitAction->setIcon(QIcon::fromTheme("application-exit"));
     connect(quitAction, &QAction::triggered,
             QCoreApplication::instance(), &QCoreApplication::quit);
-    trayIconMenu->addAction(quitAction);
+    
+    QAction *aboutAction = new QAction(i18n("About QuickAccess"));
+    aboutAction->setIcon(QIcon::fromTheme("help-about"));
+    connect(aboutAction, &QAction::triggered,
+            aboutDialog, &AboutDialog::show);
+    
+    trayIconMenu->addAction(aboutAction);
     trayIconMenu->addSeparator();
+    trayIconMenu->addAction(quitAction);
     
     QSystemTrayIcon *trayIcon = new QSystemTrayIcon(this);
     trayIcon->setToolTip("QuickAccess");
@@ -236,7 +245,7 @@ void MainWindow::setupMenu()
     mMenu->setFixedWidth(300);
 
     for (int x = 0; x < paths().size(); x++) {
-        addMenuItem(mMenu, paths()[x]);
+        addMenuItem(mMenu, paths().at(x));
     }
     // ----------------------------- //
     mMenu->addSeparator();
