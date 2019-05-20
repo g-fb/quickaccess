@@ -6,21 +6,16 @@ set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_CURRENT_S
 
 include(KDEInstallDirs)
 
-# Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-# Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
-# Instruct CMake to create code from Qt designer ui files
 set(CMAKE_AUTOUIC ON)
 
-# Find the QtWidgets library
 find_package(Qt5 CONFIG REQUIRED COMPONENTS
     Widgets
     DBus
 )
-
 find_package(KF5 REQUIRED COMPONENTS
-    I18n            # KLocalizedString
+    I18n
     Config
 )
 
@@ -43,11 +38,9 @@ qt5_generate_dbus_interface(
 
 qt5_add_dbus_adaptor(quickaccess_SRC src/com.georgefb.quickaccess.xml
                      src/mainwindow.h MainWindow)
-                     
-# Tell CMake to create the helloworld executable
+
 add_executable(quickaccess ${quickaccess_SRC})
 
-# Use the Widgets module from Qt 5.
 target_link_libraries(quickaccess
     Qt5::Widgets
     Qt5::DBus
@@ -55,7 +48,6 @@ target_link_libraries(quickaccess
     KF5::ConfigCore
 )
 
-# Install the executable
 install(TARGETS quickaccess DESTINATION bin)
 install(FILES src/com.georgefb.quickaccess.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 install(FILES src/com.georgefb.quickaccess.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})

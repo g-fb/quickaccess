@@ -13,10 +13,8 @@ namespace Ui {
 
 class QVBoxLayout;
 class QPushButton;
-class QListView;
 class QMenu;
 class QDBusConnectionInterface;
-class QStringListModel;
 class QListWidget;
 
 class AboutDialog: public QWidget, public Ui::AboutDialog
