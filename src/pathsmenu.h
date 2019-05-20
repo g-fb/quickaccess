@@ -18,7 +18,8 @@ signals:
     void actionTriggered();
 
 protected:
-    void mouseReleaseEvent(QMouseEvent* ) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
     MainWindow *m_mainWindow;
 };
 

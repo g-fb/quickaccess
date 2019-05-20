@@ -21,8 +21,6 @@
 
 #include <QDebug>
 
-static QDBusConnection connection(QLatin1String(""));
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -241,7 +239,7 @@ void MainWindow::setupMenu()
         mMenu->clear();
     }
     mMenu = new QMenu();
-    mMenu->setObjectName("poopMenu");
+    mMenu->setObjectName("mainMenu");
     mMenu->setFixedWidth(300);
 
     for (int x = 0; x < paths().size(); x++) {

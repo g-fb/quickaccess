@@ -51,9 +51,7 @@ private:
     void addMenuItem(QMenu *menu, QString path);
     void selectFolder();
     void deleteFolder();
-    void setDolphinDBusService(QDBusConnectionInterface* bus);
     void onQMenuHover(QMenu *menu, QString path);
-    void showMainWindow();
     void savePaths();
     void openFolder(QString path);
     void setupMenu();
