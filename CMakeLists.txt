@@ -5,6 +5,7 @@ find_package(ECM 1.0.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 include(KDEInstallDirs)
+include(ECMInstallIcons)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -47,6 +48,9 @@ target_link_libraries(quickaccess
     KF5::I18n
     KF5::ConfigCore
 )
+
+ecm_install_icons(ICONS icons/512-apps-quickaccess.svg
+        DESTINATION ${KDE_INSTALL_ICONDIR})
 
 install(TARGETS quickaccess DESTINATION bin)
 install(FILES src/com.georgefb.quickaccess.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})

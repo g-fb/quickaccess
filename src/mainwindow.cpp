@@ -132,6 +132,7 @@ QMenu *MainWindow::createMenu(QString path)
 void MainWindow::createTrayIcon()
 {
     AboutDialog *aboutDialog = new AboutDialog(nullptr);
+    aboutDialog->setWindowIcon(QIcon::fromTheme("quickaccess", QIcon::fromTheme("folder")));
     trayIconMenu = new QMenu(this);
     
     QAction *quitAction = new QAction(i18n("Quit"));
@@ -150,7 +151,7 @@ void MainWindow::createTrayIcon()
     
     QSystemTrayIcon *trayIcon = new QSystemTrayIcon(this);
     trayIcon->setToolTip("QuickAccess");
-    trayIcon->setIcon(QIcon::fromTheme("folder"));
+    trayIcon->setIcon(QIcon::fromTheme("quickaccess", QIcon::fromTheme("folder")));
     trayIcon->setContextMenu(trayIconMenu);
     trayIcon->show();
 }
@@ -230,7 +231,7 @@ void MainWindow::setupDBus()
     new QuickAccessAdaptor(this);
     QDBusConnection dbus = QDBusConnection::sessionBus();
     dbus.registerObject("/QuickAccess", this);
-    dbus.registerService("com.georgefb.QuickAccess");
+    dbus.registerService("com.georgefb.quickaccess");
 }
 
 void MainWindow::setupMenu()

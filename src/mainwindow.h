@@ -30,7 +30,7 @@ public:
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.georgefb.QuickAccess")
+    Q_CLASSINFO("D-Bus Interface", "com.georgefb.quickaccess")
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
