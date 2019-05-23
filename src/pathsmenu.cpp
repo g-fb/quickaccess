@@ -16,11 +16,15 @@ PathsMenu::~PathsMenu()
 void PathsMenu::mouseReleaseEvent(QMouseEvent* event)
 {
     QMenu::mouseReleaseEvent(event);
-    if (m_mainWindow->actionClicked) {
-        // see actionClicked in mainwindow.h
-        m_mainWindow->actionClicked = false;
-    } else {
-        emit actionTriggered();
+    // this prevents triggering multiple actions with one click
+    // probably due to event propagation
+    if (!actionAt(event->pos())) {
+        if (m_mainWindow->actionClicked) {
+            // see actionClicked in mainwindow.h
+            m_mainWindow->actionClicked = false;
+        } else {
+            emit actionTriggered();
+        }
     }
 }
 
