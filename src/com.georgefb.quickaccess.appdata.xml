@@ -4,18 +4,27 @@
     <metadata_license>CC0-1.0</metadata_license>
     <project_license>LGPL-3.0+</project_license>
     <name>QuickAccess</name>
+    <url type="homepage">https://gitlab.com/g-fb/quickaccess</url>
+    <releases>
+    ​    <release version="1.0.0" date="2019-05-23">
+            <description>
+                <p>First release.</p>
+            </description>
+    ​    </release>
+    </releases>
     <summary>Quickly access user defined folders and their subfolders</summary>
     <description>
         <p>QuickAccess is a program providing a menu to quickly access user defined folders and their subfolders. The menu can be opened through dbus.</p>
     </description>
     <screenshots>
         <screenshot type="default">
-            <caption>Menu</caption>
+            <caption>QuickAccess Menu</caption>
             <image>https://s.put.re/T79hUoVE.png</image>
         </screenshot>
         <screenshot>
-            <caption>Paths Manager</caption>
+            <caption>QuickAccess Paths Manager</caption>
             <image>https://s.put.re/LwvYnFgj.png</image>
         </screenshot>
     </screenshots>
+    <content_rating type="oars-1.0" />
 </component>
