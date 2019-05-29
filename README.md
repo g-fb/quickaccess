@@ -1,5 +1,8 @@
 **QuickAccess** is a program providing a menu to quickly access user defined folders and their subfolders.
-The menu can be opened through dbus.
+
+The menu can be opened through two dbus methods: showMenu and showDelayedMenu.
+
+**showMenu** shows the menu instantly, but in certain circumstances there are problems with the menu not showing or not closing. In these cases use the **showDelayedMenu**, there is a default delay of 150 miliseconds, but can be changed (see example below).
 
 # Example
 
@@ -7,8 +10,15 @@ toggle menu with qdbus
 
 ```
 qdbus com.georgefb.QuickAccess /QuickAccess showMenu
+qdbus com.georgefb.QuickAccess /QuickAccess showDelayedMenu 200
 ```
 
+toggle menu with dbus-send
+
+```
+dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showMenu
+dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showDelayedMenu int32:200
+```
 [KDE Plasma shortcut:](https://docs.kde.org/trunk5/en/kde-workspace/kcontrol/khotkeys/shortcuts.html)
 
 ![Set shortcut](images/quickaccess-plasma-shortcut.png)
