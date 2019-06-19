@@ -30,16 +30,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->menuBar->hide();
     ui->statusBar->hide();
     setWindowTitle("Manage Paths");
-    
+
     m_config = KSharedConfig::openConfig("quickaccessrc");
     KConfigGroup pathsGroup = m_config->group("Paths");
     QStringList mPathsList = pathsGroup.readPathEntry("paths", QStringList());
-    
+
     QWidget *mainWidget = new QWidget();
     setCentralWidget(mainWidget);
     QVBoxLayout *vLayout = new QVBoxLayout();
     mainWidget->setLayout(vLayout);
-    
+
     QLabel *label = new QLabel(i18n("Drag and drop items to reorder them."));
     QPushButton *addFolderBtn = new QPushButton(i18n("Add Folder"));
     connect(addFolderBtn, &QPushButton::clicked,
@@ -48,13 +48,13 @@ MainWindow::MainWindow(QWidget *parent)
     deleteFolderBtn->setDisabled(true);
     connect(deleteFolderBtn, &QPushButton::clicked,
             this, &MainWindow::deleteFolder);
-    
+
     QWidget *buttonsWidget = new QWidget();
     QHBoxLayout *buttonsHLayout = new QHBoxLayout();
     buttonsWidget->setLayout(buttonsHLayout);
     buttonsHLayout->addWidget(addFolderBtn);
     buttonsHLayout->addWidget(deleteFolderBtn);
-    
+
     m_listWidget = new QListWidget();
     m_listWidget->setDragEnabled(true);
     m_listWidget->setDragDropMode(QAbstractItemView::InternalMove);
@@ -67,11 +67,11 @@ MainWindow::MainWindow(QWidget *parent)
     for (int i = 0; i < mPathsList.size(); i++) {
         m_listWidget->insertItem(i, mPathsList[i]);
     }
-    
+
     vLayout->addWidget(label);
     vLayout->addWidget(m_listWidget);
     vLayout->addWidget(buttonsWidget);
-    
+
     createTrayIcon();
     setupMenu();
     setupDBus();
@@ -90,7 +90,7 @@ void MainWindow::addMenuItem(QMenu *menu, QString path)
     while (it.hasNext()) {
         itFolders << it.next();
     }
-    
+
     const QFileInfo file(path);
     if (file.isDir() && !itFolders.isEmpty()) {
         // folder has sub folders
@@ -116,13 +116,13 @@ QMenu *MainWindow::createMenu(QString path)
     menu->setTitle(path.split("/").takeLast());
     menu->setIcon(QIcon::fromTheme("folder"));
     menu->setMainWindow(this);
-        
+
     connect(menu, &PathsMenu::actionTriggered,
             this, [=]() {
                 openFolder(path);
                 mMenu->close();
             });
-    connect(menu->menuAction(), &QAction::hovered,
+    connect(menu, &QMenu::aboutToShow,
             this, [=]() {
                 onQMenuHover(menu, path);
             });
@@ -134,21 +134,21 @@ void MainWindow::createTrayIcon()
     AboutDialog *aboutDialog = new AboutDialog(nullptr);
     aboutDialog->setWindowIcon(QIcon::fromTheme("quickaccess", QIcon::fromTheme("folder")));
     trayIconMenu = new QMenu(this);
-    
+
     QAction *quitAction = new QAction(i18n("Quit"));
     quitAction->setIcon(QIcon::fromTheme("application-exit"));
     connect(quitAction, &QAction::triggered,
             QCoreApplication::instance(), &QCoreApplication::quit);
-    
+
     QAction *aboutAction = new QAction(i18n("About QuickAccess"));
     aboutAction->setIcon(QIcon::fromTheme("help-about"));
     connect(aboutAction, &QAction::triggered,
             aboutDialog, &AboutDialog::show);
-    
+
     trayIconMenu->addAction(aboutAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
-    
+
     QSystemTrayIcon *trayIcon = new QSystemTrayIcon(this);
     trayIcon->setToolTip("QuickAccess");
     trayIcon->setIcon(QIcon::fromTheme("quickaccess", QIcon::fromTheme("folder")));
@@ -167,25 +167,24 @@ void MainWindow::deleteFolder()
 
 void MainWindow::onQMenuHover(QMenu *menu, QString path)
 {
-    if (menu->isEmpty()) {
-        QDirIterator it(path,
-                        QDir::Dirs|QDir::NoDotAndDotDot,
-                        QDirIterator::NoIteratorFlags);
-        QStringList m_allFiles;
-        while (it.hasNext()) {
-            m_allFiles << it.next();
+    menu->clear();
+    QDirIterator it(path,
+                    QDir::Dirs|QDir::NoDotAndDotDot,
+                    QDirIterator::NoIteratorFlags);
+    QStringList m_allFiles;
+    while (it.hasNext()) {
+        m_allFiles << it.next();
+    }
+    QCollator collator;
+    collator.setNumericMode(true);
+    std::sort(m_allFiles.begin(), m_allFiles.end(), collator);
+    for (int index = 0; index < m_allFiles.size(); index++) {
+        if (index == 25) {
+            menu->addSeparator();
+            menu->addAction(new QAction(i18n("Folder has to many items.")));
+            break;
         }
-        QCollator collator;
-        collator.setNumericMode(true);
-        std::sort(m_allFiles.begin(), m_allFiles.end(), collator);
-        for (int index = 0; index < m_allFiles.size(); index++) {
-            if (index == 25) {
-                menu->addSeparator();
-                menu->addAction(new QAction(i18n("Folder has to many items.")));
-                break;
-            }
-            addMenuItem(menu, m_allFiles[index]);
-        }
+        addMenuItem(menu, m_allFiles[index]);
     }
 }
 
@@ -206,7 +205,7 @@ QStringList MainWindow::paths()
 void MainWindow::savePaths()
 {
     KConfigGroup pathsGroup = m_config->group("Paths");
-    
+
     pathsGroup.writePathEntry("paths", paths());
     pathsGroup.config()->sync();
     setupMenu();
@@ -248,7 +247,7 @@ void MainWindow::setupMenu()
     }
     // ----------------------------- //
     mMenu->addSeparator();
-    
+
     QAction *action = new QAction();
     action->setObjectName("add_folder");
     action->setText(i18n("Add Folder"));
@@ -259,7 +258,7 @@ void MainWindow::setupMenu()
                 selectFolder();
             });
     mMenu->addAction(action);
-    
+
     action = new QAction();
     action->setText(i18n("Manage Paths"));
     connect(action, &QAction::triggered,
@@ -268,7 +267,7 @@ void MainWindow::setupMenu()
                 show();
             });
     mMenu->addAction(action);
-    
+
     action = new QAction();
     action->setText(i18n("Close Menu"));
     connect(action, &QAction::triggered,
@@ -277,14 +276,14 @@ void MainWindow::setupMenu()
                 mMenu->close();
             });
     mMenu->addAction(action);
-    
+
     action = new QAction();
     action->setText(i18n("Quit"));
     action->setIcon(QIcon::fromTheme("application-exit"));
-    connect(action, &QAction::triggered, 
+    connect(action, &QAction::triggered,
             this, [=]() {
                 actionClicked = true;
-                QCoreApplication::quit();
+                QCoreApplication::quit(), Qt::QueuedConnection;
             });
     mMenu->addAction(action);
 }
