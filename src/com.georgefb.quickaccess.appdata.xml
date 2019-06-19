@@ -6,36 +6,36 @@
     <metadata_license>CC0-1.0</metadata_license>
     <project_license>LGPL-3.0+</project_license>
     <url type="homepage">https://gitlab.com/g-fb/quickaccess</url>
-    <releases>
-    ​    <release version="1.0.0" date="2019-05-23">
-            <description>
-                <p>First release.</p>
-            </description>
-    ​    </release>
-    </releases>
     <summary>Quickly access user defined folders and their subfolders</summary>
     <description>
         <p>The menu can be opened through two dbus methods: showMenu and showDelayedMenu. 
             showMenu shows the menu instantly, but in certain circumstances there are problems with the menu not showing or not closing. In these cases use the showDelayedMenu, there is a default delay of 150 miliseconds, but can be changed (see example below).</p>
         <p>Examples</p>
-        <p>toggle menu with qdbus 
-            "qdbus com.georgefb.QuickAccess /QuickAccess showMenu"
-            "qdbus com.georgefb.QuickAccess /QuickAccess showDelayedMenu 200"
-        </p>
-            
-        <p>toggle menu with dbus-send 
-            "dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showMenu"
-            "dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showDelayedMenu int32:200"
-        </p>
+            <p>toggle menu with qdbus</p>
+            <p>"qdbus com.georgefb.QuickAccess /QuickAccess showMenu"</p>
+            <p>"qdbus com.georgefb.QuickAccess /QuickAccess showDelayedMenu 200"</p>
+        <p></p>
+            <p>toggle menu with dbus-send</p>
+            <p>"dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showMenu"</p>
+            <p>"dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showDelayedMenu int32:200"</p>
+        <p></p>
     </description>
+    <releases>
+        ​    <release version="1.0.1" date="2019-06-19">
+            <description>
+                <p>Fix folders created or deleted while the app is running not showing up in the menu.</p>
+            </description>
+            ​    </release>
+        <release version="1.0.0" date="2019-05-23">
+            <description>
+                <p>First release.</p>
+            </description>
+        </release>
+    </releases>
     <screenshots>
         <screenshot type="default">
-            <caption>QuickAccess Menu</caption>
-            <image>https://s.put.re/T79hUoVE.png</image>
-        </screenshot>
-        <screenshot>
-            <caption>QuickAccess Paths Manager</caption>
-            <image>https://s.put.re/LwvYnFgj.png</image>
+            <caption>QuickAccess menu and the paths manager</caption>
+            <image>https://s.put.re/AejKzxXh.png</image>
         </screenshot>
     </screenshots>
     <content_rating type="oars-1.0" />
