@@ -4,7 +4,20 @@ The menu can be opened through two dbus methods: showMenu and showDelayedMenu.
 
 **showMenu** shows the menu instantly, but in certain circumstances there are problems with the menu not showing or not closing. In these cases use the **showDelayedMenu**, there is a default delay of 150 miliseconds, but can be changed (see example below).
 
-# Example
+# Usage
+
+start with tray icon
+
+```
+quickaccess
+quickaccess --tray-icon=show
+```
+
+start without tray icon
+
+```
+quickaccess --tray-icon=hide
+```
 
 toggle menu with qdbus
 

@@ -3,6 +3,7 @@
 #include "quickaccessadaptor.h"
 #include "ui_mainwindow.h"
 
+#include <QCommandLineParser>
 #include <QFileDialog>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
@@ -19,12 +20,23 @@
 #include <KConfigGroup>
 #include <KLocalizedString>
 
-#include <QDebug>
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    QCommandLineParser parser;
+    parser.setApplicationDescription("QuickAccess");
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    QCommandLineOption showTrayIconOption(
+                QStringLiteral("tray-icon"),
+                QCoreApplication::translate("main", "Set tray icon visibility.\nValues: show, hide. Default is show."
+                                            "\n Example: quickaccess --tray-icon=hide"),
+                QCoreApplication::translate("main", "visibility"), QStringLiteral("show"));
+    parser.addOption(showTrayIconOption);
+    parser.process(QCoreApplication::instance()->arguments());
+
     ui->setupUi(this);
     ui->mainToolBar->hide();
     ui->menuBar->hide();
@@ -72,11 +84,18 @@ MainWindow::MainWindow(QWidget *parent)
     vLayout->addWidget(m_listWidget);
     vLayout->addWidget(buttonsWidget);
 
+    QString showTrayIcon = parser.value(showTrayIconOption);
+    if (showTrayIcon == "show") {
+        qDebug() << showTrayIcon;
+        createTrayIcon(true);
+    } else if (showTrayIcon == "hide") {
+        qDebug() << showTrayIcon;
+        createTrayIcon(false);
+    }
+
     setupMenu();
     setupDBus();
 }
-
-MainWindow::~MainWindow() = default;
 
 // Ads a menu or an action to menu
 // if path is a folder with sub folders add a menu else add an action

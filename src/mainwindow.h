@@ -34,7 +34,6 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow() override;
     Q_SCRIPTABLE void showMenu();
     Q_SCRIPTABLE void showDelayedMenu(int delay = 150);
 
