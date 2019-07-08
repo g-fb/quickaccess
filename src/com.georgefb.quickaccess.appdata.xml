@@ -8,17 +8,15 @@
     <url type="homepage">https://gitlab.com/g-fb/quickaccess</url>
     <summary>Quickly access user defined folders and their subfolders</summary>
     <description>
-        <p>The menu can be opened through two dbus methods: showMenu and showDelayedMenu. 
+        <p>The menu can be opened through two dbus methods: showMenu and showDelayedMenu.
             showMenu shows the menu instantly, but in certain circumstances there are problems with the menu not showing or not closing. In these cases use the showDelayedMenu, there is a default delay of 150 miliseconds, but can be changed (see example below).</p>
         <p>Examples</p>
             <p>toggle menu with qdbus</p>
-            <p>"qdbus com.georgefb.QuickAccess /QuickAccess showMenu"</p>
-            <p>"qdbus com.georgefb.QuickAccess /QuickAccess showDelayedMenu 200"</p>
-        <p></p>
+            <p>"qdbus com.georgefb.quickaccess /QuickAccess showMenu"</p>
+            <p>"qdbus com.georgefb.quickaccess /QuickAccess showDelayedMenu 200"</p>
             <p>toggle menu with dbus-send</p>
             <p>"dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showMenu"</p>
             <p>"dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showDelayedMenu int32:200"</p>
-        <p></p>
     </description>
     <releases>
         ​    <release version="1.0.1" date="2019-06-19">

@@ -37,13 +37,14 @@ public:
     ~MainWindow() override;
     Q_SCRIPTABLE void showMenu();
     Q_SCRIPTABLE void showDelayedMenu(int delay = 150);
-    
+
     // actionClicked - prevent triggering of wrong action
     // clicking a normal QAction can trigger the action of PathsMenu
     // when the interval of moving the mouse from PathsMenu to a normal QAction is very small
     // this is a workaround
     bool actionClicked = false;
-    
+    void createTrayIcon(bool show);
+
 private:
     Ui::MainWindow *ui;
     void addMenuItem(QMenu *menu, QString path);
@@ -54,7 +55,6 @@ private:
     void openFolder(QString path);
     void setupMenu();
     void setupDBus();
-    void createTrayIcon();
     QStringList paths();
     QMenu *createMenu(QString path);
     QMenu *mMenu = nullptr;

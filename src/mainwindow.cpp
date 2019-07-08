@@ -72,7 +72,6 @@ MainWindow::MainWindow(QWidget *parent)
     vLayout->addWidget(m_listWidget);
     vLayout->addWidget(buttonsWidget);
 
-    createTrayIcon();
     setupMenu();
     setupDBus();
 }
@@ -129,8 +128,11 @@ QMenu *MainWindow::createMenu(QString path)
     return menu;
 }
 
-void MainWindow::createTrayIcon()
+void MainWindow::createTrayIcon(bool show)
 {
+    if (!show) {
+        return;
+    }
     AboutDialog *aboutDialog = new AboutDialog(nullptr);
     aboutDialog->setWindowIcon(QIcon::fromTheme("quickaccess", QIcon::fromTheme("folder")));
     trayIconMenu = new QMenu(this);

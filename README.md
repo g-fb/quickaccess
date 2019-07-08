@@ -9,8 +9,8 @@ The menu can be opened through two dbus methods: showMenu and showDelayedMenu.
 toggle menu with qdbus
 
 ```
-qdbus com.georgefb.QuickAccess /QuickAccess showMenu
-qdbus com.georgefb.QuickAccess /QuickAccess showDelayedMenu 200
+qdbus com.georgefb.quickaccess /QuickAccess showMenu
+qdbus com.georgefb.quickaccess /QuickAccess showDelayedMenu 200
 ```
 
 toggle menu with dbus-send
