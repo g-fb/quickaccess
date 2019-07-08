@@ -10,6 +10,7 @@ include(ECMInstallIcons)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
+set(CMAKE_CXX_STANDARD 11)
 
 find_package(Qt5 CONFIG REQUIRED COMPONENTS
     Widgets
@@ -52,7 +53,7 @@ target_link_libraries(quickaccess
 ecm_install_icons(ICONS icons/512-apps-quickaccess.svg
         DESTINATION ${KDE_INSTALL_ICONDIR})
 
-install(TARGETS quickaccess DESTINATION bin)
+install(TARGETS quickaccess DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES src/com.georgefb.quickaccess.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 install(FILES src/com.georgefb.quickaccess.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 install(PROGRAMS src/com.georgefb.quickaccess.desktop DESTINATION ${KDE_INSTALL_APPDIR})
