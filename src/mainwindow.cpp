@@ -86,10 +86,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     QString showTrayIcon = parser.value(showTrayIconOption);
     if (showTrayIcon == "show") {
-        qDebug() << showTrayIcon;
         createTrayIcon(true);
     } else if (showTrayIcon == "hide") {
-        qDebug() << showTrayIcon;
         createTrayIcon(false);
     }
 
