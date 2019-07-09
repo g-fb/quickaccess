@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<component type="desktop">
+<!-- Copyright 2019 George Florea Bănuș -->
+<component type="desktop-application">
     <name>QuickAccess</name>
     <id>com.georgefb.quickaccess</id>
     <launchable type="desktop-id">com.georgefb.quickaccess.desktop</launchable>
@@ -11,11 +12,8 @@
         <p>The menu can be opened through two dbus methods: showMenu and showDelayedMenu.
             showMenu shows the menu instantly, but in certain circumstances there are problems with the menu not showing or not closing. In these cases use the showDelayedMenu, there is a default delay of 150 miliseconds, but can be changed (see example below).</p>
         <p>Usage</p>
-        <p>Start with tray icon</p>
-        <p>quickaccess</p>
-        <p>quickaccess --tray-icon=show</p>
-        <p>Start without tray icon</p>
-        <p>quickaccess --tray-icon=hide</p>
+        <p>Start with tray icon: quickaccess or quickaccess --tray-icon=show</p>
+        <p>Start without tray icon: quickaccess --tray-icon=hide</p>
         <p>Open menu with qdbus</p>
         <p>"qdbus com.georgefb.quickaccess /QuickAccess showMenu"</p>
         <p>"qdbus com.georgefb.quickaccess /QuickAccess showDelayedMenu 200"</p>
@@ -24,12 +22,12 @@
         <p>"dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showDelayedMenu int32:200"</p>
     </description>
     <releases>
-        ​<release version="1.0.2" date="2019-07-09">
+        <release version="1.0.2" date="2019-07-09">
             <description>
                 <p>Add command line option to start without tray icon.</p>
             </description>
         </release>
-        ​<release version="1.0.1" date="2019-06-19">
+        <release version="1.0.1" date="2019-06-19">
             <description>
                 <p>Fix folders created or deleted while the app is running not showing up in the menu.</p>
             </description>
