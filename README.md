@@ -4,29 +4,41 @@ The menu can be opened through two dbus methods: showMenu and showDelayedMenu.
 
 **showMenu** shows the menu instantly, but in certain circumstances there are problems with the menu not showing or not closing. In these cases use the **showDelayedMenu**, there is a default delay of 150 miliseconds, but can be changed (see example below).
 
+# Installation
+
+Easiest way to install is through [flatpak](https://flathub.org/apps/details/com.georgefb.quickaccess), flatpaks should work on all distros.
+
+[Flatpak setup guide](https://flatpak.org/setup/)
+```
+flatpak install flathub com.georgefb.quickaccess
+flatpak run com.georgefb.quickaccess
+```
+
+If you don't like flatpak you can build from source or ask the your distro to provide a package.
+
 # Usage
 
-start with tray icon
+Start with tray icon
 
 ```
 quickaccess
 quickaccess --tray-icon=show
 ```
 
-start without tray icon
+Start without tray icon
 
 ```
 quickaccess --tray-icon=hide
 ```
 
-toggle menu with qdbus
+Open menu with qdbus
 
 ```
 qdbus com.georgefb.quickaccess /QuickAccess showMenu
 qdbus com.georgefb.quickaccess /QuickAccess showDelayedMenu 200
 ```
 
-toggle menu with dbus-send
+Open menu with dbus-send
 
 ```
 dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showMenu
