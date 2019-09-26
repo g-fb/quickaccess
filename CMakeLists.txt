@@ -9,7 +9,6 @@ include(ECMInstallIcons)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
 set(CMAKE_CXX_STANDARD 11)
 
 find_package(Qt5 CONFIG REQUIRED COMPONENTS
@@ -19,6 +18,7 @@ find_package(Qt5 CONFIG REQUIRED COMPONENTS
 find_package(KF5 REQUIRED COMPONENTS
     I18n
     Config
+    XmlGui
 )
 
 set(quickaccess_SRC
@@ -29,7 +29,8 @@ set(quickaccess_SRC
 )
 
 ki18n_wrap_ui(quickaccess_SRC
-   src/AboutDialog.ui
+    settings.ui
+    src/AboutDialog.ui
 )
 
 qt5_generate_dbus_interface(
@@ -39,15 +40,20 @@ qt5_generate_dbus_interface(
 )
 
 qt5_add_dbus_adaptor(quickaccess_SRC data/com.georgefb.quickaccess.xml
-                     src/mainwindow.h MainWindow)
+    src/mainwindow.h MainWindow)
+
+kconfig_add_kcfg_files(quickaccess_SRC GENERATE_MOC settings.kcfgc)
 
 add_executable(quickaccess ${quickaccess_SRC})
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(quickaccess
     Qt5::Widgets
     Qt5::DBus
     KF5::I18n
     KF5::ConfigCore
+    KF5::XmlGui
 )
 
 ecm_install_icons(ICONS data/icons/512-apps-quickaccess.svg

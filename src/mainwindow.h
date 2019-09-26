@@ -6,6 +6,7 @@
 #include <QSystemTrayIcon>
 
 #include "ui_AboutDialog.h"
+#include "ui_settings.h"
 
 namespace Ui {
     class MainWindow;
@@ -16,6 +17,17 @@ class QPushButton;
 class QMenu;
 class QDBusConnectionInterface;
 class QListWidget;
+class KEditListWidget;
+class KConfigDialog;
+
+class Settings: public QWidget, public Ui::Settings
+{
+    Q_OBJECT
+public:
+    explicit Settings(QWidget *parent) : QWidget(parent) {
+        setupUi(this);
+    }
+};
 
 class AboutDialog: public QWidget, public Ui::AboutDialog
 {
@@ -48,18 +60,17 @@ private:
     Ui::MainWindow *ui;
     void addMenuItem(QMenu *menu, QString path);
     void selectFolder();
-    void deleteFolder();
     void onQMenuHover(QMenu *menu, QString path);
-    void savePaths();
     void openFolder(QString path);
+    void openSettings();
     void setupMenu();
     void setupDBus();
-    QStringList paths();
     QMenu *createMenu(QString path);
     QMenu *mMenu = nullptr;
-    QListWidget *m_listWidget;
+    KEditListWidget *m_listWidget;
     QDBusConnectionInterface *bus;
     QMenu *trayIconMenu;
+    Settings *m_settings;
     KSharedConfig::Ptr m_config;
 };
 

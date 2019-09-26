@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "pathsmenu.h"
 #include "quickaccessadaptor.h"
-#include "ui_mainwindow.h"
+#include "settings.h"
 
 #include <QCommandLineParser>
 #include <QFileDialog>
@@ -9,6 +9,7 @@
 #include <QDBusConnectionInterface>
 #include <QDesktopServices>
 #include <QLabel>
+#include <QLineEdit>
 #include <QListWidget>
 #include <QMenu>
 #include <QPushButton>
@@ -17,12 +18,15 @@
 #include <QVBoxLayout>
 
 #include <KConfig>
+#include <KConfigDialog>
 #include <KConfigGroup>
 #include <KLocalizedString>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    : QMainWindow(parent)
+    , m_settings(new Settings(nullptr))
+    , m_config(KSharedConfig::openConfig("quickaccessrc"))
+    , mMenu(new QMenu())
 {
     QCommandLineParser parser;
     parser.setApplicationDescription("QuickAccess");
@@ -36,53 +40,6 @@ MainWindow::MainWindow(QWidget *parent)
                 QCoreApplication::translate("main", "visibility"), QStringLiteral("show"));
     parser.addOption(showTrayIconOption);
     parser.process(QCoreApplication::instance()->arguments());
-
-    ui->setupUi(this);
-    ui->mainToolBar->hide();
-    ui->menuBar->hide();
-    ui->statusBar->hide();
-    setWindowTitle("Manage Paths");
-
-    m_config = KSharedConfig::openConfig("quickaccessrc");
-    KConfigGroup pathsGroup = m_config->group("Paths");
-    QStringList mPathsList = pathsGroup.readPathEntry("paths", QStringList());
-
-    QWidget *mainWidget = new QWidget();
-    setCentralWidget(mainWidget);
-    QVBoxLayout *vLayout = new QVBoxLayout();
-    mainWidget->setLayout(vLayout);
-
-    QLabel *label = new QLabel(i18n("Drag and drop items to reorder them."));
-    QPushButton *addFolderBtn = new QPushButton(i18n("Add Folder"));
-    connect(addFolderBtn, &QPushButton::clicked,
-            this, &MainWindow::selectFolder);
-    QPushButton *deleteFolderBtn = new QPushButton(i18n("Delete Folder"));
-    deleteFolderBtn->setDisabled(true);
-    connect(deleteFolderBtn, &QPushButton::clicked,
-            this, &MainWindow::deleteFolder);
-
-    QWidget *buttonsWidget = new QWidget();
-    QHBoxLayout *buttonsHLayout = new QHBoxLayout();
-    buttonsWidget->setLayout(buttonsHLayout);
-    buttonsHLayout->addWidget(addFolderBtn);
-    buttonsHLayout->addWidget(deleteFolderBtn);
-
-    m_listWidget = new QListWidget();
-    m_listWidget->setDragEnabled(true);
-    m_listWidget->setDragDropMode(QAbstractItemView::InternalMove);
-    connect(m_listWidget->model(), &QAbstractItemModel::rowsMoved,
-            this, &MainWindow::savePaths);
-    connect(m_listWidget, &QListWidget::itemSelectionChanged,
-            this, [=]() {
-                deleteFolderBtn->setEnabled(true);
-            });
-    for (int i = 0; i < mPathsList.size(); i++) {
-        m_listWidget->insertItem(i, mPathsList[i]);
-    }
-
-    vLayout->addWidget(label);
-    vLayout->addWidget(m_listWidget);
-    vLayout->addWidget(buttonsWidget);
 
     QString showTrayIcon = parser.value(showTrayIconOption);
     if (showTrayIcon == "show") {
@@ -175,15 +132,6 @@ void MainWindow::createTrayIcon(bool show)
     trayIcon->show();
 }
 
-void MainWindow::deleteFolder()
-{
-    if (m_listWidget->selectedItems().count() > 0) {
-        int row = m_listWidget->row(m_listWidget->selectedItems().at(0));
-        m_listWidget->model()->removeRow(row);
-        savePaths();
-    }
-}
-
 void MainWindow::onQMenuHover(QMenu *menu, QString path)
 {
     menu->clear();
@@ -212,22 +160,35 @@ void MainWindow::openFolder(QString path)
     QDesktopServices::openUrl(QUrl::fromLocalFile(QDir::toNativeSeparators(path)));
 }
 
-QStringList MainWindow::paths()
+void MainWindow::openSettings()
 {
-    QStringList paths;
-    for (int i = 0; i < m_listWidget->count(); i++) {
-        paths << m_listWidget->item(i)->text();
+    if (KConfigDialog::showDialog("settings")) {
+        return;
     }
-    return paths;
-}
+    auto dialog = new KConfigDialog(
+             this, "settings", QuickAccessSettings::self());
+    dialog->setMinimumSize(700, 600);
+    dialog->setFaceType(KPageDialog::Plain);
+    dialog->addPage(m_settings, i18n("Settings"));
+    connect(dialog, &KConfigDialog::settingsChanged, this, &MainWindow::setupMenu);
+    dialog->show();
 
-void MainWindow::savePaths()
-{
-    KConfigGroup pathsGroup = m_config->group("Paths");
+    // add button to open file dialog to select a folder
+    // and add it to the folders list
+    auto addFolderButton = new QPushButton(i18n("Select and Add Folder"));
+    addFolderButton->setIcon(QIcon::fromTheme("folder-add"));
+    connect(addFolderButton, &QPushButton::clicked, this, [=]() {
+        selectFolder();
+        emit m_settings->kcfg_paths->changed();
+    });
+    auto widget = new QWidget();
+    auto hLayout = new QHBoxLayout(widget);
+    hLayout->setMargin(0);
+    hLayout->addWidget(addFolderButton);
+    hLayout->addStretch(1);
+    // add widget to the keditlistwidget's layout
+    m_settings->kcfg_paths->layout()->addWidget(widget);
 
-    pathsGroup.writePathEntry("paths", paths());
-    pathsGroup.config()->sync();
-    setupMenu();
 }
 
 void MainWindow::selectFolder()
@@ -237,10 +198,7 @@ void MainWindow::selectFolder()
     if (path.isEmpty()) {
         return;
     }
-    m_listWidget->insertItem(m_listWidget->count(), path);
-    KConfigGroup pathsGroup = m_config->group("Paths");
-    pathsGroup.writePathEntry("paths", paths());
-    pathsGroup.config()->sync();
+    m_settings->kcfg_paths->insertItem(path, m_settings->kcfg_paths->count());
     setupMenu();
 }
 
@@ -254,56 +212,51 @@ void MainWindow::setupDBus()
 
 void MainWindow::setupMenu()
 {
-    if (mMenu != nullptr) {
-        mMenu->clear();
-    }
-    mMenu = new QMenu();
+    mMenu->clear();
     mMenu->setObjectName("mainMenu");
     mMenu->setFixedWidth(300);
 
-    for (int x = 0; x < paths().size(); x++) {
-        addMenuItem(mMenu, paths().at(x));
+    auto paths = m_config->group("Paths").readPathEntry("paths", QStringList());
+    for (auto path : paths) {
+        addMenuItem(mMenu, path);
     }
     // ----------------------------- //
     mMenu->addSeparator();
 
-    QAction *action = new QAction();
+    auto *action = new QAction();
     action->setObjectName("add_folder");
     action->setText(i18n("Add Folder"));
-    connect(action, &QAction::triggered,
-            this, [=]() {
-                // see actionClicked in mainwindow.h
-                actionClicked = true;
-                selectFolder();
-            });
+    connect(action, &QAction::triggered, this, [=]() {
+        // see actionClicked in mainwindow.h
+        actionClicked = true;
+        selectFolder();
+    });
     mMenu->addAction(action);
 
     action = new QAction();
     action->setText(i18n("Manage Paths"));
-    connect(action, &QAction::triggered,
-            this, [=]() {
-                actionClicked = true;
-                show();
-            });
+    action->setIcon(QIcon::fromTheme("configure"));
+    connect(action, &QAction::triggered, this, [=]() {
+        actionClicked = true;
+        openSettings();
+    });
     mMenu->addAction(action);
 
     action = new QAction();
     action->setText(i18n("Close Menu"));
-    connect(action, &QAction::triggered,
-            this, [=]() {
-                actionClicked = true;
-                mMenu->close();
-            });
+    connect(action, &QAction::triggered, this, [=]() {
+        actionClicked = true;
+        mMenu->close();
+    });
     mMenu->addAction(action);
 
     action = new QAction();
     action->setText(i18n("Quit"));
     action->setIcon(QIcon::fromTheme("application-exit"));
-    connect(action, &QAction::triggered,
-            this, [=]() {
-                actionClicked = true;
-                QCoreApplication::quit(), Qt::QueuedConnection;
-            });
+    connect(action, &QAction::triggered, this, [=]() {
+        actionClicked = true;
+        QCoreApplication::quit(), Qt::QueuedConnection;
+    });
     mMenu->addAction(action);
 }
 
