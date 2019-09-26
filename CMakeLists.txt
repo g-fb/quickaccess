@@ -25,7 +25,7 @@ set(quickaccess_SRC
     src/main.cpp
     src/mainwindow.cpp
     src/pathsmenu.cpp
-    src/com.georgefb.quickaccess.xml
+    data/com.georgefb.quickaccess.xml
 )
 
 ki18n_wrap_ui(quickaccess_SRC
@@ -34,11 +34,11 @@ ki18n_wrap_ui(quickaccess_SRC
 
 qt5_generate_dbus_interface(
     mainwindow.h
-    com.georgefb.quickaccess.xml
+    data/com.georgefb.quickaccess.xml
     OPTIONS -a
 )
 
-qt5_add_dbus_adaptor(quickaccess_SRC src/com.georgefb.quickaccess.xml
+qt5_add_dbus_adaptor(quickaccess_SRC data/com.georgefb.quickaccess.xml
                      src/mainwindow.h MainWindow)
 
 add_executable(quickaccess ${quickaccess_SRC})
@@ -50,10 +50,10 @@ target_link_libraries(quickaccess
     KF5::ConfigCore
 )
 
-ecm_install_icons(ICONS icons/512-apps-quickaccess.svg
+ecm_install_icons(ICONS data/icons/512-apps-quickaccess.svg
         DESTINATION ${KDE_INSTALL_ICONDIR})
 
 install(TARGETS quickaccess DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
-install(FILES src/com.georgefb.quickaccess.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
-install(FILES src/com.georgefb.quickaccess.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
-install(PROGRAMS src/com.georgefb.quickaccess.desktop DESTINATION ${KDE_INSTALL_APPDIR})
+install(FILES data/com.georgefb.quickaccess.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
+install(FILES data/com.georgefb.quickaccess.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
+install(PROGRAMS data/com.georgefb.quickaccess.desktop DESTINATION ${KDE_INSTALL_APPDIR})

@@ -46,7 +46,7 @@ dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.ge
 ```
 [KDE Plasma shortcut:](https://docs.kde.org/trunk5/en/kde-workspace/kcontrol/khotkeys/shortcuts.html)
 
-![Set shortcut](images/quickaccess-plasma-shortcut.png)
+![Set shortcut](data/images/quickaccess-plasma-shortcut.png)
 
 # Dependencies
 - Extra CMake Modules
@@ -70,4 +70,4 @@ make
 ./quickaccess
 ```
 
-![Showcase](images/quickaccess-showcase.gif)
+![Showcase](data/images/quickaccess-showcase.gif)
