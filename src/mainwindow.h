@@ -17,7 +17,6 @@ class QPushButton;
 class QMenu;
 class QDBusConnectionInterface;
 class QListWidget;
-class KEditListWidget;
 class KConfigDialog;
 
 class Settings: public QWidget, public Ui::Settings
@@ -60,14 +59,12 @@ private:
     Ui::MainWindow *ui;
     void addMenuItem(QMenu *menu, QString path);
     void selectFolder();
-    void onQMenuHover(QMenu *menu, QString path);
+    void onMenuHover(QMenu *menu, QString path);
     void openFolder(QString path);
     void openSettings();
     void setupMenu();
     void setupDBus();
-    QMenu *createMenu(QString path);
     QMenu *mMenu = nullptr;
-    KEditListWidget *m_listWidget;
     QDBusConnectionInterface *bus;
     QMenu *trayIconMenu;
     Settings *m_settings;

@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     QCommandLineOption showTrayIconOption(
                 QStringLiteral("tray-icon"),
                 QCoreApplication::translate("main", "Set tray icon visibility.\nValues: show, hide. Default is show."
-                                            "\n Example: quickaccess --tray-icon=hide"),
+                                                    "\n Example: quickaccess --tray-icon=hide"),
                 QCoreApplication::translate("main", "visibility"), QStringLiteral("show"));
     parser.addOption(showTrayIconOption);
     parser.process(QCoreApplication::instance()->arguments());
@@ -56,50 +56,35 @@ MainWindow::MainWindow(QWidget *parent)
 // if path is a folder with sub folders add a menu else add an action
 void MainWindow::addMenuItem(QMenu *menu, QString path)
 {
-    QDirIterator it(path,
-                    QDir::Dirs|QDir::NoDotAndDotDot,
-                    QDirIterator::NoIteratorFlags);
-    QStringList itFolders;
-    while (it.hasNext()) {
-        itFolders << it.next();
-    }
-
+    const QDir dir(path);
     const QFileInfo file(path);
-    if (file.isDir() && !itFolders.isEmpty()) {
-        // folder has sub folders
-        menu->addMenu(createMenu(path));
+    if (file.isDir() && !dir.isEmpty()) {
+        // folder has sub folders, create menu
+        auto *submenu = new PathsMenu();
+        submenu->setMinimumWidth(300);
+        submenu->setTitle(path.split("/").takeLast());
+        submenu->setIcon(QIcon::fromTheme("folder"));
+        submenu->setMainWindow(this);
+
+        connect(submenu, &PathsMenu::actionTriggered, this, [=]() {
+            openFolder(path);
+            mMenu->close();
+        });
+        connect(submenu, &QMenu::aboutToShow, this, [=]() {
+            onMenuHover(submenu, path);
+        });
+        menu->addMenu(submenu);
     } else {
-        // folder has no sub folders
-        QAction *action = new QAction();
+        // folder has no sub folders, create action
+        auto *action = new QAction();
         action->setText(path.split("/").takeLast());
         action->setIcon(QIcon::fromTheme("folder"));
         menu->addAction(action);
-        connect(action, &QAction::triggered,
-                this, [=]() {
-                    actionClicked = true;
-                    openFolder(path);
-                });
+        connect(action, &QAction::triggered, this, [=]() {
+            actionClicked = true;
+            openFolder(path);
+        });
     }
-}
-
-QMenu *MainWindow::createMenu(QString path)
-{
-    PathsMenu *menu = new PathsMenu();
-    menu->setMinimumWidth(300);
-    menu->setTitle(path.split("/").takeLast());
-    menu->setIcon(QIcon::fromTheme("folder"));
-    menu->setMainWindow(this);
-
-    connect(menu, &PathsMenu::actionTriggered,
-            this, [=]() {
-                openFolder(path);
-                mMenu->close();
-            });
-    connect(menu, &QMenu::aboutToShow,
-            this, [=]() {
-                onQMenuHover(menu, path);
-            });
-    return menu;
 }
 
 void MainWindow::createTrayIcon(bool show)
@@ -107,16 +92,16 @@ void MainWindow::createTrayIcon(bool show)
     if (!show) {
         return;
     }
-    AboutDialog *aboutDialog = new AboutDialog(nullptr);
+    auto *aboutDialog = new AboutDialog(nullptr);
     aboutDialog->setWindowIcon(QIcon::fromTheme("quickaccess", QIcon::fromTheme("folder")));
     trayIconMenu = new QMenu(this);
 
-    QAction *quitAction = new QAction(i18n("Quit"));
+    auto *quitAction = new QAction(i18n("Quit"));
     quitAction->setIcon(QIcon::fromTheme("application-exit"));
     connect(quitAction, &QAction::triggered,
             QCoreApplication::instance(), &QCoreApplication::quit);
 
-    QAction *aboutAction = new QAction(i18n("About QuickAccess"));
+    auto *aboutAction = new QAction(i18n("About QuickAccess"));
     aboutAction->setIcon(QIcon::fromTheme("help-about"));
     connect(aboutAction, &QAction::triggered,
             aboutDialog, &AboutDialog::show);
@@ -125,14 +110,14 @@ void MainWindow::createTrayIcon(bool show)
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
 
-    QSystemTrayIcon *trayIcon = new QSystemTrayIcon(this);
+    auto *trayIcon = new QSystemTrayIcon(this);
     trayIcon->setToolTip("QuickAccess");
     trayIcon->setIcon(QIcon::fromTheme("quickaccess", QIcon::fromTheme("folder")));
     trayIcon->setContextMenu(trayIconMenu);
     trayIcon->show();
 }
 
-void MainWindow::onQMenuHover(QMenu *menu, QString path)
+void MainWindow::onMenuHover(QMenu *menu, QString path)
 {
     menu->clear();
     QDirIterator it(path,
@@ -166,7 +151,7 @@ void MainWindow::openSettings()
         return;
     }
     auto dialog = new KConfigDialog(
-             this, "settings", QuickAccessSettings::self());
+                this, "settings", QuickAccessSettings::self());
     dialog->setMinimumSize(700, 600);
     dialog->setFaceType(KPageDialog::Plain);
     dialog->addPage(m_settings, i18n("Settings"));
@@ -194,7 +179,7 @@ void MainWindow::openSettings()
 void MainWindow::selectFolder()
 {
     QString path = QFileDialog::getExistingDirectory(
-        this, i18n("Choose a directory"), QDir::homePath());
+                this, i18n("Choose a directory"), QDir::homePath());
     if (path.isEmpty()) {
         return;
     }
@@ -205,7 +190,7 @@ void MainWindow::selectFolder()
 void MainWindow::setupDBus()
 {
     new QuickAccessAdaptor(this);
-    QDBusConnection dbus = QDBusConnection::sessionBus();
+    auto dbus = QDBusConnection::sessionBus();
     dbus.registerObject("/QuickAccess", this);
     dbus.registerService("com.georgefb.quickaccess");
 }
