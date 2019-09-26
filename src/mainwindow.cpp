@@ -56,9 +56,16 @@ MainWindow::MainWindow(QWidget *parent)
 // if path is a folder with sub folders add a menu else add an action
 void MainWindow::addMenuItem(QMenu *menu, QString path)
 {
-    const QDir dir(path);
+    QDirIterator it(path,
+                    QDir::Dirs|QDir::NoDotAndDotDot,
+                    QDirIterator::NoIteratorFlags);
+    QStringList itFolders;
+    while (it.hasNext()) {
+        itFolders << it.next();
+    }
+
     const QFileInfo file(path);
-    if (file.isDir() && !dir.isEmpty()) {
+    if (file.isDir() && !itFolders.isEmpty() && QuickAccessSettings::submenuEntriesCount() != 0) {
         // folder has sub folders, create menu
         auto *submenu = new PathsMenu();
         submenu->setMinimumWidth(300);
@@ -131,7 +138,7 @@ void MainWindow::onMenuHover(QMenu *menu, QString path)
     collator.setNumericMode(true);
     std::sort(m_allFiles.begin(), m_allFiles.end(), collator);
     for (int index = 0; index < m_allFiles.size(); index++) {
-        if (index == 25) {
+        if (index == QuickAccessSettings::submenuEntriesCount()) {
             menu->addSeparator();
             menu->addAction(new QAction(i18n("Folder has to many items.")));
             break;
@@ -150,13 +157,14 @@ void MainWindow::openSettings()
     if (KConfigDialog::showDialog("settings")) {
         return;
     }
-    auto dialog = new KConfigDialog(
-                this, "settings", QuickAccessSettings::self());
+    auto dialog = new KConfigDialog(nullptr, "settings", QuickAccessSettings::self());
     dialog->setMinimumSize(700, 600);
     dialog->setFaceType(KPageDialog::Plain);
     dialog->addPage(m_settings, i18n("Settings"));
     connect(dialog, &KConfigDialog::settingsChanged, this, &MainWindow::setupMenu);
     dialog->show();
+    m_settings->submenuEntriesCountInfo->setText(
+                i18n("Use %1 to show all or %2 to show none").arg("-1").arg(0));
 
     // add button to open file dialog to select a folder
     // and add it to the folders list
@@ -214,7 +222,9 @@ void MainWindow::setupMenu()
     connect(action, &QAction::triggered, this, [=]() {
         // see actionClicked in mainwindow.h
         actionClicked = true;
+        openSettings();
         selectFolder();
+        emit m_settings->kcfg_paths->changed();
     });
     mMenu->addAction(action);
 

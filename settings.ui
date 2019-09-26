@@ -15,9 +15,43 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="1" column="0">
+      <widget class="QLabel" name="label">
+       <property name="toolTip">
+        <string>Number of submenu entries to show.</string>
+       </property>
+       <property name="text">
+        <string>Submenu entries</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="kcfg_submenuEntriesCount">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="minimum">
+        <number>-1</number>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Manage Folders</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
       <widget class="KEditListWidget" name="kcfg_paths"/>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="submenuEntriesCountInfo">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
