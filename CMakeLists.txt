@@ -25,6 +25,7 @@ set(quickaccess_SRC
     src/main.cpp
     src/mainwindow.cpp
     src/pathsmenu.cpp
+    src/settingsdialog.cpp
     data/com.georgefb.quickaccess.xml
 )
 

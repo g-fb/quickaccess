@@ -2,6 +2,7 @@
 #include "pathsmenu.h"
 #include "quickaccessadaptor.h"
 #include "settings.h"
+#include "settingsdialog.h"
 
 #include <QCommandLineParser>
 #include <QFileDialog>
@@ -21,10 +22,10 @@
 #include <KConfigDialog>
 #include <KConfigGroup>
 #include <KLocalizedString>
+#include <KShell>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , m_settings(new Settings(nullptr))
     , m_config(KSharedConfig::openConfig("quickaccessrc"))
     , mMenu(new QMenu())
 {
@@ -157,31 +158,11 @@ void MainWindow::openSettings()
     if (KConfigDialog::showDialog("settings")) {
         return;
     }
-    auto dialog = new KConfigDialog(nullptr, "settings", QuickAccessSettings::self());
-    dialog->setMinimumSize(700, 600);
-    dialog->setFaceType(KPageDialog::Plain);
-    dialog->addPage(m_settings, i18n("Settings"));
-    connect(dialog, &KConfigDialog::settingsChanged, this, &MainWindow::setupMenu);
-    dialog->show();
-    m_settings->submenuEntriesCountInfo->setText(
-                i18n("Use %1 to show all or %2 to show none").arg("-1").arg(0));
-
-    // add button to open file dialog to select a folder
-    // and add it to the folders list
-    auto addFolderButton = new QPushButton(i18n("Select and Add Folder"));
-    addFolderButton->setIcon(QIcon::fromTheme("folder-add"));
-    connect(addFolderButton, &QPushButton::clicked, this, [=]() {
-        selectFolder();
-        emit m_settings->kcfg_paths->changed();
-    });
-    auto widget = new QWidget();
-    auto hLayout = new QHBoxLayout(widget);
-    hLayout->setMargin(0);
-    hLayout->addWidget(addFolderButton);
-    hLayout->addStretch(1);
-    // add widget to the keditlistwidget's layout
-    m_settings->kcfg_paths->layout()->addWidget(widget);
-
+    m_settingsDialog = new SettingsDialog(this, "settings", QuickAccessSettings::self());
+    m_settingsDialog->setMinimumSize(700, 900);
+    m_settingsDialog->setFaceType(KPageDialog::Plain);
+    connect(m_settingsDialog, &SettingsDialog::settingsChanged, this, &MainWindow::setupMenu);
+    m_settingsDialog->show();
 }
 
 void MainWindow::selectFolder()
@@ -191,7 +172,7 @@ void MainWindow::selectFolder()
     if (path.isEmpty()) {
         return;
     }
-    m_settings->kcfg_paths->insertItem(path, m_settings->kcfg_paths->count());
+    emit addFolder(path);
     setupMenu();
 }
 
@@ -213,8 +194,27 @@ void MainWindow::setupMenu()
     for (auto path : paths) {
         addMenuItem(mMenu, path);
     }
-    // ----------------------------- //
     mMenu->addSeparator();
+    // ----------------------------- //
+
+    auto commandsCount = m_config->group("Commands").readEntry("Count");
+    for (int i = 0; i < commandsCount.toInt(); i++) {
+        auto command = m_config->group(QString("Command_%1").arg(i));
+        auto action = new QAction();
+        action->setIcon(QIcon::fromTheme(command.readEntry("Icon")));
+        action->setText(command.readEntry("Name"));
+        connect(action, &QAction::triggered, [=]() {
+            QStringList args = KShell::splitArgs(command.readEntry("Command"));
+            QString processName = args.takeAt(0);
+            QProcess *process = new QProcess();
+            process->start(processName, args);
+        });
+        mMenu->addAction(action);
+        if (i == commandsCount.toInt() - 1) {
+            mMenu->addSeparator();
+        }
+    }
+
 
     auto *action = new QAction();
     action->setObjectName("add_folder");
@@ -224,7 +224,6 @@ void MainWindow::setupMenu()
         actionClicked = true;
         openSettings();
         selectFolder();
-        emit m_settings->kcfg_paths->changed();
     });
     mMenu->addAction(action);
 

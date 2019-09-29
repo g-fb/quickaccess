@@ -54,11 +54,14 @@ public:
     // this is a workaround
     bool actionClicked = false;
     void createTrayIcon(bool show);
+    void selectFolder();
+
+signals:
+    void addFolder(QString path);
 
 private:
     Ui::MainWindow *ui;
     void addMenuItem(QMenu *menu, QString path);
-    void selectFolder();
     void onMenuHover(QMenu *menu, QString path);
     void openFolder(QString path);
     void openSettings();
@@ -67,8 +70,8 @@ private:
     QMenu *mMenu = nullptr;
     QDBusConnectionInterface *bus;
     QMenu *trayIconMenu;
-    Settings *m_settings;
     KSharedConfig::Ptr m_config;
+    KConfigDialog *m_settingsDialog;
 };
 
 #endif // MAINWINDOW
