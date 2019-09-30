@@ -197,38 +197,49 @@ void MainWindow::setupMenu()
     mMenu->addSeparator();
     // ----------------------------- //
 
-    auto commandsCount = m_config->group("Commands").readEntry("Count");
-    for (int i = 0; i < commandsCount.toInt(); i++) {
-        auto command = m_config->group(QString("Command_%1").arg(i));
-        auto action = new QAction();
-        action->setIcon(QIcon::fromTheme(command.readEntry("Icon")));
-        action->setText(command.readEntry("Name"));
-        connect(action, &QAction::triggered, [=]() {
-            QStringList args = KShell::splitArgs(command.readEntry("Command"));
-            QString processName = args.takeAt(0);
-            QProcess *process = new QProcess();
-            process->start(processName, args);
-        });
-        mMenu->addAction(action);
-        if (i == commandsCount.toInt() - 1) {
-            mMenu->addSeparator();
+    int commandsCount = m_config->group("Commands").readEntry("Count").toInt();
+    for (int i = 0; i < commandsCount; i++) {
+        auto group = m_config->group(QString("Command_%1").arg(i));
+        if (group.readEntry("Type") == "menu") {
+            int menuCount = group.readEntry("Count").toInt();
+            if (menuCount < 1) {
+                continue;
+            }
+            auto menu = new QMenu();
+            menu->setTitle(group.readEntry("Name"));
+            menu->setMinimumWidth(200);
+            menu->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
+            for (int j = 0; j < menuCount; ++j) {
+                auto menuGroup = m_config->group(QString("Command_%1__Action_%2").arg(i).arg(j));
+                auto action = new QAction();
+                action->setText(menuGroup.readEntry("Name"));
+                action->setIcon(QIcon::fromTheme(menuGroup.readEntry("Icon")));
+                connect(action, &QAction::triggered, [=]() {
+                    QStringList args = KShell::splitArgs(menuGroup.readEntry("Args"));
+                    QString processName = menuGroup.readEntry("Process");
+                    QProcess *process = new QProcess();
+                    process->start(processName, args);
+                });
+                menu->addAction(action);
+            }
+            mMenu->addMenu(menu);
+        } else {
+            auto action = new QAction();
+            action->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
+            action->setText(group.readEntry("Name"));
+            connect(action, &QAction::triggered, [=]() {
+                QStringList args = KShell::splitArgs(group.readEntry("Args"));
+                QString processName = group.readEntry("Process");
+                QProcess *process = new QProcess();
+                process->start(processName, args);
+            });
+            mMenu->addAction(action);
         }
     }
+    mMenu->addSeparator();
 
-
-    auto *action = new QAction();
-    action->setObjectName("add_folder");
-    action->setText(i18n("Add Folder"));
-    connect(action, &QAction::triggered, this, [=]() {
-        // see actionClicked in mainwindow.h
-        actionClicked = true;
-        openSettings();
-        selectFolder();
-    });
-    mMenu->addAction(action);
-
-    action = new QAction();
-    action->setText(i18n("Manage Paths"));
+    auto action = new QAction();
+    action->setText(i18n("Settings"));
     action->setIcon(QIcon::fromTheme("configure"));
     connect(action, &QAction::triggered, this, [=]() {
         actionClicked = true;
@@ -244,6 +255,7 @@ void MainWindow::setupMenu()
     });
     mMenu->addAction(action);
 
+    mMenu->addSeparator();
     action = new QAction();
     action->setText(i18n("Quit"));
     action->setIcon(QIcon::fromTheme("application-exit"));

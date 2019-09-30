@@ -15,66 +15,24 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QGroupBox" name="commandsGroupBox">
      <property name="title">
       <string>Commands</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QTreeWidget" name="commandsTree">
-        <column>
-         <property name="text">
-          <string>Name</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Command</string>
-         </property>
-        </column>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Create new tree item</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="treeItemName">
-        <property name="placeholderText">
-         <string>tree item/command name</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="treeItemIcon">
-        <property name="placeholderText">
-         <string>tree item/icon name</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="command">
-        <property name="placeholderText">
-         <string>command to execute or path to script</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="treeItemIsFolder">
-        <property name="text">
-         <string>is folder</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QPushButton" name="addTreeItem">
+         <widget class="QPushButton" name="addMenu">
           <property name="text">
-           <string>Add Tree Item</string>
+           <string>Add Menu</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="addActionButton">
+          <property name="text">
+           <string>Add Action</string>
           </property>
          </widget>
         </item>

@@ -4,7 +4,32 @@
 #include <KConfigDialog>
 #include <KConfigSkeleton>
 
+#include "ui_addmenu.h"
+#include "ui_addaction.h"
+
 class Settings;
+class TreeWidget;
+
+
+class AddMenu: public QDialog, public Ui::AddMenu
+{
+    Q_OBJECT
+public:
+    explicit AddMenu(QWidget *parent) : QDialog(parent) {
+        setupUi(this);
+    }
+};
+
+
+class AddAction: public QDialog, public Ui::AddAction
+{
+    Q_OBJECT
+public:
+    explicit AddAction(QWidget *parent) : QDialog(parent) {
+        setupUi(this);
+    }
+};
+
 
 class SettingsDialog : public KConfigDialog
 {
@@ -12,6 +37,8 @@ class SettingsDialog : public KConfigDialog
 
 public:
     SettingsDialog(QWidget *parent, const QString &name, KConfigSkeleton *config);
+signals:
+    void addMenu(QString name);
 private slots:
     /**
      * Called when the user clicks Apply or OK.
@@ -45,6 +72,14 @@ private:
     bool m_changed;
     void saveCommands();
     void deleteCommands();
+    TreeWidget *m_commandsTree;
+    void populateTree();
+    void addNewAction();
+    void clearAddActionFields();
+    void addMenu();
+    AddAction *m_addActionDialog;
+    AddMenu *m_addMenuDialog;
+    void addNewMenu();
 };
 
 #endif // SETTINGSDIALOG_H

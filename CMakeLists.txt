@@ -25,11 +25,14 @@ set(quickaccess_SRC
     src/main.cpp
     src/mainwindow.cpp
     src/pathsmenu.cpp
+    src/treewidget.cpp
     src/settingsdialog.cpp
     data/com.georgefb.quickaccess.xml
 )
 
 ki18n_wrap_ui(quickaccess_SRC
+    addaction.ui
+    addmenu.ui
     settings.ui
     src/AboutDialog.ui
 )
