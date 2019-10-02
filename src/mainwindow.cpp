@@ -4,11 +4,12 @@
 #include "settings.h"
 #include "settingsdialog.h"
 
+#include <QClipboard>
 #include <QCommandLineParser>
-#include <QFileDialog>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QDesktopServices>
+#include <QFileDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
@@ -48,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent)
     } else if (showTrayIcon == "hide") {
         createTrayIcon(false);
     }
-
+    openSettings();
     setupMenu();
     setupDBus();
 }
@@ -159,21 +160,10 @@ void MainWindow::openSettings()
         return;
     }
     m_settingsDialog = new SettingsDialog(this, "settings", QuickAccessSettings::self());
-    m_settingsDialog->setMinimumSize(700, 900);
+    m_settingsDialog->setMinimumSize(700, 750);
     m_settingsDialog->setFaceType(KPageDialog::Plain);
     connect(m_settingsDialog, &SettingsDialog::settingsChanged, this, &MainWindow::setupMenu);
     m_settingsDialog->show();
-}
-
-void MainWindow::selectFolder()
-{
-    QString path = QFileDialog::getExistingDirectory(
-                this, i18n("Choose a directory"), QDir::homePath());
-    if (path.isEmpty()) {
-        return;
-    }
-    emit addFolder(path);
-    setupMenu();
 }
 
 void MainWindow::setupDBus()
@@ -186,6 +176,7 @@ void MainWindow::setupDBus()
 
 void MainWindow::setupMenu()
 {
+    QClipboard *clipboard = QGuiApplication::clipboard();
     mMenu->clear();
     mMenu->setObjectName("mainMenu");
     mMenu->setFixedWidth(300);
@@ -210,15 +201,17 @@ void MainWindow::setupMenu()
             menu->setMinimumWidth(200);
             menu->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
             for (int j = 0; j < menuCount; ++j) {
-                auto menuGroup = m_config->group(QString("Command_%1__Action_%2").arg(i).arg(j));
+                auto group = m_config->group(QString("Command_%1__Action_%2").arg(i).arg(j));
                 auto action = new QAction();
-                action->setText(menuGroup.readEntry("Name"));
-                action->setIcon(QIcon::fromTheme(menuGroup.readEntry("Icon")));
+                action->setText(group.readEntry("Name"));
+                action->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
                 connect(action, &QAction::triggered, [=]() {
-                    QStringList args = KShell::splitArgs(menuGroup.readEntry("Args"));
-                    QString processName = menuGroup.readEntry("Process");
-                    QProcess *process = new QProcess();
-                    process->start(processName, args);
+                    auto args = group.readEntry("Args");
+                    args.replace("{clipboard}", clipboard->text());
+                    auto *process = new QProcess();
+                    process->setProgram(group.readEntry("Process"));
+                    process->setArguments(KShell::splitArgs(args));
+                    process->start();
                 });
                 menu->addAction(action);
             }
@@ -228,10 +221,12 @@ void MainWindow::setupMenu()
             action->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
             action->setText(group.readEntry("Name"));
             connect(action, &QAction::triggered, [=]() {
-                QStringList args = KShell::splitArgs(group.readEntry("Args"));
-                QString processName = group.readEntry("Process");
-                QProcess *process = new QProcess();
-                process->start(processName, args);
+                auto args = group.readEntry("Args");
+                args.replace("{clipboard}", clipboard->text());
+                auto *process = new QProcess();
+                process->setProgram(group.readEntry("Process"));
+                process->setArguments(KShell::splitArgs(args));
+                process->start();
             });
             mMenu->addAction(action);
         }

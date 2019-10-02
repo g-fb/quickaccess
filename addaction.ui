@@ -6,50 +6,71 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>320</width>
-    <height>157</height>
+    <width>374</width>
+    <height>195</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
-   <item>
+  <layout class="QFormLayout" name="formLayout">
+   <item row="0" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Create new action</string>
+      <string>Name</string>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="0" column="1">
     <widget class="QLineEdit" name="actionName">
      <property name="placeholderText">
       <string>action display name</string>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Icon</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Process</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Arguments</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
     <widget class="QLineEdit" name="actionIcon">
      <property name="placeholderText">
       <string>action icon name</string>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="2" column="1">
     <widget class="QLineEdit" name="actionProcess">
      <property name="placeholderText">
       <string>process or path to script to execute</string>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="3" column="1">
     <widget class="QLineEdit" name="actionArgs">
      <property name="placeholderText">
       <string>arguments</string>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="10" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

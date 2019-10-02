@@ -54,7 +54,6 @@ public:
     // this is a workaround
     bool actionClicked = false;
     void createTrayIcon(bool show);
-    void selectFolder();
 
 signals:
     void addFolder(QString path);

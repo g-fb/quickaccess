@@ -9,7 +9,7 @@
 
 class Settings;
 class TreeWidget;
-
+class QTreeWidgetItem;
 
 class AddMenu: public QDialog, public Ui::AddMenu
 {
@@ -34,6 +34,12 @@ public:
 class SettingsDialog : public KConfigDialog
 {
     Q_OBJECT
+
+    enum QA {
+        DialogNewMode = Qt::UserRole,
+        DialogEditMode,
+        TypeRole
+    };
 
 public:
     SettingsDialog(QWidget *parent, const QString &name, KConfigSkeleton *config);
@@ -69,17 +75,21 @@ private:
 
     KSharedConfig::Ptr m_config;
     Settings *m_settings;
-    bool m_changed;
-    void saveCommands();
-    void deleteCommands();
     TreeWidget *m_commandsTree;
-    void populateTree();
-    void addNewAction();
-    void clearAddActionFields();
-    void addMenu();
     AddAction *m_addActionDialog;
     AddMenu *m_addMenuDialog;
-    void addNewMenu();
+    bool m_changed;
+    int m_dialogMode;
+    QTreeWidgetItem *createItemFromConfig(const QString groupName, const QString type);
+    void contextMenu();
+    void saveCommands();
+    void deleteCommands();
+    void editCommand();
+    void cloneCommand();
+    void populateTree();
+    void manageAction();
+    void addMenu();
+    void manageMenu();
 };
 
 #endif // SETTINGSDIALOG_H
