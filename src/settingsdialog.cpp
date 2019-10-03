@@ -39,7 +39,6 @@ SettingsDialog::SettingsDialog(QWidget *parent, const QString &name, KConfigSkel
     auto treeWidgetLayout = qobject_cast<QVBoxLayout *>(m_settings->commandsGroupBox->layout());
     treeWidgetLayout->insertWidget(0, m_commandsTree);
     populateTree();
-    qDebug() << m_commandsTree->topLevelItem(0)->text(0);
 
     m_settings->submenuEntriesCountInfo->setText(
                 i18n("Use %1 to show all or %2 to show none").arg("-1").arg(0));
@@ -63,14 +62,6 @@ SettingsDialog::SettingsDialog(QWidget *parent, const QString &name, KConfigSkel
     hLayout->addStretch(1);
     // add widget to the keditlistwidget's layout
     m_settings->kcfg_paths->layout()->addWidget(widget);
-
-    connect(m_settings->removeTreeItem, &QPushButton::clicked, this, [=]() {
-        for (auto item : m_commandsTree->selectedItems()) {
-            delete item;
-        }
-        m_changed = true;
-        updateButtons();
-    });
 
     // add action to the tree widget
     m_addActionDialog = new AddAction(nullptr);
@@ -140,18 +131,18 @@ void SettingsDialog::manageMenu()
     updateButtons();
 }
 
-QTreeWidgetItem *SettingsDialog::createItemFromConfig(const QString groupName, const QString type)
+QTreeWidgetItem *SettingsDialog::createItemFromConfig(KConfigGroup group)
 {
-    auto command = m_config->group(groupName);
+    auto type = group.readEntry("Type") ;
     auto item = new QTreeWidgetItem();
-    item->setIcon(0, QIcon::fromTheme(command.readEntry("Icon")));
-    item->setText(0, command.readEntry("Name"));
-    item->setToolTip(0, command.readEntry("Name"));
+    item->setIcon(0, QIcon::fromTheme(group.readEntry("Icon")));
+    item->setText(0, group.readEntry("Name"));
+    item->setToolTip(0, group.readEntry("Name"));
     if (type == "action") {
-        item->setText(1, command.readEntry("Process"));
-        item->setToolTip(1, command.readEntry("Process"));
-        item->setText(2, command.readEntry("Args"));
-        item->setToolTip(2, command.readEntry("Args"));
+        item->setText(1, group.readEntry("Process"));
+        item->setToolTip(1, group.readEntry("Process"));
+        item->setText(2, group.readEntry("Args"));
+        item->setToolTip(2, group.readEntry("Args"));
     }
     item->setData(0, QA::TypeRole, type);
 
@@ -160,7 +151,6 @@ QTreeWidgetItem *SettingsDialog::createItemFromConfig(const QString groupName, c
 
 void SettingsDialog::contextMenu()
 {
-    auto item = m_commandsTree->itemAt(QCursor::pos());
     auto menu = new QMenu();
 
     auto action = new QAction();
@@ -241,48 +231,46 @@ void SettingsDialog::cloneCommand()
 
 void SettingsDialog::populateTree()
 {
-    auto commandsCount = m_config->group("Commands").readEntry("Count");
-    for (int i = 0; i < commandsCount.toInt(); i++) {
+    int commandsCount = m_config->group("Commands").readEntry("Count").toInt();
+    for (int i = 0; i < commandsCount; i++) {
         auto groupName = QString("Command_%1").arg(i);
-        auto command = m_config->group(groupName);
-        auto item = createItemFromConfig(groupName, command.readEntry("Type"));
+        auto group = m_config->group(groupName);
+        auto item = createItemFromConfig(group);
         m_commandsTree->insertTopLevelItem(m_commandsTree->topLevelItemCount(), item);
 
-        int subCommands = command.readEntry("Count").toInt();
-        if (subCommands > 0) {
-            for (int j = 0; j < subCommands; ++j) {
-                auto groupName = QString("Command_%1__Action_%2").arg(i).arg(j);
-                auto command = m_config->group(groupName);
-                auto childItem = createItemFromConfig(groupName, command.readEntry("Type"));
-                item->addChild(childItem);
-            }
+        int subCommands = group.readEntry("Count").toInt();
+        for (int j = 0; j < subCommands; ++j) {
+            auto groupName = QString("Command_%1__Action_%2").arg(i).arg(j);
+            auto group = m_config->group(groupName);
+            auto childItem = createItemFromConfig(group);
+            item->addChild(childItem);
         }
     }
 }
 
 void SettingsDialog::saveCommands()
 {
-    int commandsCount = m_commandsTree->model()->rowCount();
+    int commandsCount = m_commandsTree->topLevelItemCount();
     // save the commands
-    for (int i = 0; i < commandsCount; i++) {
+    for (int i = 0; i < commandsCount; ++i) {
         auto item = m_commandsTree->topLevelItem(i);
         QString name = item->text(0);
         QString iconName = item->icon(0).name();
-        QString command = item->text(1);
+        QString process = item->text(1);
         QString args = item->text(2);
 
         auto group = m_config->group(QString("Command_%1").arg(i));
         group.writeEntry("Name", name);
         group.writeEntry("Icon", iconName);
         if (item->data(0, QA::TypeRole) == "action") {
-            group.writeEntry("Process", command);
+            group.writeEntry("Process", process);
             group.writeEntry("Args", args);
         }
         group.writeEntry("Count", item->childCount());
         group.writeEntry("Type", item->data(0, QA::TypeRole));
         m_config->sync();
 
-        if (group.readEntry("Type") == "menu") {
+        if (item->data(0, QA::TypeRole) == "menu") {
             for (int j = 0; j < item->childCount(); ++j) {
                 auto group = m_config->group(QString("Command_%1__Action_%2").arg(i).arg(j));
                 group.writeEntry("Name", item->child(j)->text(0));

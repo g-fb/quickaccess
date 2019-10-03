@@ -80,7 +80,7 @@ private:
     AddMenu *m_addMenuDialog;
     bool m_changed;
     int m_dialogMode;
-    QTreeWidgetItem *createItemFromConfig(const QString groupName, const QString type);
+    QTreeWidgetItem *createItemFromConfig(KConfigGroup group);
     void contextMenu();
     void saveCommands();
     void deleteCommands();
