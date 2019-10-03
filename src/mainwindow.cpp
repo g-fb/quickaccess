@@ -70,8 +70,11 @@ void MainWindow::addMenuItem(QMenu *menu, QString path)
     if (file.isDir() && !itFolders.isEmpty() && QuickAccessSettings::submenuEntriesCount() != 0) {
         // folder has sub folders, create menu
         auto *submenu = new PathsMenu();
-        submenu->setMinimumWidth(300);
-        submenu->setTitle(path.split("/").takeLast());
+        submenu->setMinimumWidth(200);
+        submenu->setMaximumWidth(600);
+        QFontMetrics metrix(submenu->font());
+        QString elidedTitle = metrix.elidedText(path.split("/").takeLast(), Qt::ElideRight, 550);
+        submenu->setTitle(elidedTitle);
         submenu->setIcon(QIcon::fromTheme("folder"));
         submenu->setMainWindow(this);
 
@@ -179,7 +182,8 @@ void MainWindow::setupMenu()
     QClipboard *clipboard = QGuiApplication::clipboard();
     mMenu->clear();
     mMenu->setObjectName("mainMenu");
-    mMenu->setFixedWidth(300);
+    mMenu->setMinimumWidth(200);
+    mMenu->setMaximumWidth(350);
 
     auto paths = m_config->group("Paths").readPathEntry("paths", QStringList());
     for (auto path : paths) {
