@@ -303,7 +303,7 @@ void SettingsDialog::updateWidgets()
 
 void SettingsDialog::updateWidgetsDefault()
 {
-
+    m_commandsTree->clear();
     KConfigDialog::updateWidgetsDefault();
 }
 
