@@ -15,6 +15,7 @@
 #include <QListWidget>
 #include <QMenu>
 #include <QPushButton>
+#include <QScreen>
 #include <QStringListModel>
 #include <QSystemTrayIcon>
 #include <QVBoxLayout>
@@ -265,15 +266,55 @@ void MainWindow::setupMenu()
     mMenu->addAction(action);
 }
 
-void MainWindow::showMenu()
+void MainWindow::showMenu(int pos)
 {
-    mMenu->exec(QCursor::pos());
+    mMenu->adjustSize();
+    auto screenGeometry = QGuiApplication::primaryScreen()->availableGeometry();
+    int rightEdge = screenGeometry.width() - mMenu->rect().width() - 10;
+    int bottomEdge = screenGeometry.height() - mMenu->rect().height() - 10;
+    int xCenter = screenGeometry.center().x() - mMenu->rect().center().x();
+    int yCenter = screenGeometry.center().y() - mMenu->rect().center().y();
+
+    switch (pos) {
+    case 0:
+        mMenu->exec(QCursor::pos());
+        break;
+    case 1:
+        mMenu->exec(QPoint(10, 10));
+        break;
+    case 2:
+        mMenu->exec(QPoint(xCenter, 10));
+        break;
+    case 3:
+        mMenu->exec(QPoint(rightEdge, 10));
+        break;
+    case 4:
+        mMenu->exec(QPoint(10, yCenter));
+        break;
+    case 5:
+        mMenu->exec(QPoint(xCenter, yCenter));
+        break;
+    case 6:
+        mMenu->exec(QPoint(rightEdge, yCenter));
+        break;
+    case 7:
+        mMenu->exec(QPoint(10, bottomEdge));
+        break;
+    case 8:
+        mMenu->exec(QPoint(xCenter, bottomEdge));
+        break;
+    case 9:
+        mMenu->exec(QPoint(rightEdge, bottomEdge));
+        break;
+    default:
+        break;
+    }
 }
 
 // should be used when triggered by a double clicked
 // without a delay the menu doesn't close when clicking outside it
-void MainWindow::showDelayedMenu(int delay)
+void MainWindow::showDelayedMenu(int delay, int pos)
 {
     QThread::msleep(delay);
-    mMenu->exec(QCursor::pos());
+    showMenu(pos);
 }

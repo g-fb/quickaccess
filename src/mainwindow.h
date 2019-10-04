@@ -45,8 +45,8 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    Q_SCRIPTABLE void showMenu();
-    Q_SCRIPTABLE void showDelayedMenu(int delay = 150);
+    Q_SCRIPTABLE void showMenu(int pos = 0);
+    Q_SCRIPTABLE void showDelayedMenu(int delay = 150, int pos = 0);
 
     // actionClicked - prevent triggering of wrong action
     // clicking a normal QAction can trigger the action of PathsMenu

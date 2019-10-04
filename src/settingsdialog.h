@@ -37,8 +37,7 @@ class SettingsDialog : public KConfigDialog
 
     enum QA {
         DialogNewMode = Qt::UserRole,
-        DialogEditMode,
-        TypeRole
+        DialogEditMode
     };
 
 public:

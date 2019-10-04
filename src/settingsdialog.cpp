@@ -105,7 +105,7 @@ void SettingsDialog::manageAction()
     item->setToolTip(1, m_addActionDialog->actionProcess->text());
     item->setText(2, m_addActionDialog->actionArgs->text());
     item->setToolTip(2, m_addActionDialog->actionArgs->text());
-    item->setData(0, QA::TypeRole, "action");
+    item->setData(0, Qt::UserRole, "action");
 
     m_changed = true;
     updateButtons();
@@ -125,7 +125,7 @@ void SettingsDialog::manageMenu()
     item->setIcon(0, QIcon::fromTheme("application-menu"));
     item->setText(0, m_addMenuDialog->menuName->text());
     item->setToolTip(0, m_addMenuDialog->menuName->text());
-    item->setData(0, QA::TypeRole, "menu");
+    item->setData(0, Qt::UserRole, "menu");
 
     m_changed = true;
     updateButtons();
@@ -144,7 +144,7 @@ QTreeWidgetItem *SettingsDialog::createItemFromConfig(KConfigGroup group)
         item->setText(2, group.readEntry("Args"));
         item->setToolTip(2, group.readEntry("Args"));
     }
-    item->setData(0, QA::TypeRole, type);
+    item->setData(0, Qt::UserRole, type);
 
     return item;
 }
@@ -202,7 +202,7 @@ void SettingsDialog::editCommand()
 {
     m_dialogMode = QA::DialogEditMode;
     auto item = m_commandsTree->currentItem();
-    if (item->data(0, QA::TypeRole) == "menu") {
+    if (item->data(0, Qt::UserRole) == "menu") {
         m_addMenuDialog->setWindowTitle(i18n("Edit Menu"));
         m_addMenuDialog->menuName->setText(item->text(0));
         m_addMenuDialog->show();
@@ -220,7 +220,7 @@ void SettingsDialog::cloneCommand()
 {
     auto item = m_commandsTree->currentItem();
     auto clone = item->clone();
-    if (item->parent() && item->parent()->data(0, QA::TypeRole) == "menu") {
+    if (item->parent() && item->parent()->data(0, Qt::UserRole) == "menu") {
         item->parent()->addChild(clone);
     } else {
         m_commandsTree->insertTopLevelItem(m_commandsTree->topLevelItemCount(),clone);
@@ -262,22 +262,22 @@ void SettingsDialog::saveCommands()
         auto group = m_config->group(QString("Command_%1").arg(i));
         group.writeEntry("Name", name);
         group.writeEntry("Icon", iconName);
-        if (item->data(0, QA::TypeRole) == "action") {
+        if (item->data(0, Qt::UserRole) == "action") {
             group.writeEntry("Process", process);
             group.writeEntry("Args", args);
         }
         group.writeEntry("Count", item->childCount());
-        group.writeEntry("Type", item->data(0, QA::TypeRole));
+        group.writeEntry("Type", item->data(0, Qt::UserRole));
         m_config->sync();
 
-        if (item->data(0, QA::TypeRole) == "menu") {
+        if (item->data(0, Qt::UserRole) == "menu") {
             for (int j = 0; j < item->childCount(); ++j) {
                 auto group = m_config->group(QString("Command_%1__Action_%2").arg(i).arg(j));
                 group.writeEntry("Name", item->child(j)->text(0));
                 group.writeEntry("Icon", item->child(j)->icon(0).name());
                 group.writeEntry("Process", item->child(j)->text(1));
                 group.writeEntry("Args", item->child(j)->text(2));
-                group.writeEntry("Type", item->child(j)->data(0, QA::TypeRole));
+                group.writeEntry("Type", item->child(j)->data(0, Qt::UserRole));
             }
         }
     }
