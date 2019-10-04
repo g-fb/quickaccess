@@ -63,7 +63,6 @@ private:
     void addMenuItem(QMenu *menu, QString path);
     void onMenuHover(QMenu *menu, QString path);
     void openFolder(QString path);
-    void openSettings();
     void setupMenu();
     void setupDBus();
     QMenu *mMenu = nullptr;

@@ -49,7 +49,12 @@ MainWindow::MainWindow(QWidget *parent)
     } else if (showTrayIcon == "hide") {
         createTrayIcon(false);
     }
-    openSettings();
+
+    m_settingsDialog = new SettingsDialog(nullptr, "settings", QuickAccessSettings::self());
+    m_settingsDialog->setMinimumSize(700, 750);
+    m_settingsDialog->setFaceType(KPageDialog::Plain);
+    connect(m_settingsDialog, &SettingsDialog::settingsChanged, this, &MainWindow::setupMenu);
+
     setupMenu();
     setupDBus();
 }
@@ -118,7 +123,14 @@ void MainWindow::createTrayIcon(bool show)
     connect(aboutAction, &QAction::triggered,
             aboutDialog, &AboutDialog::show);
 
+    auto *settingsAction = new QAction(i18n("Settings"));
+    settingsAction->setIcon(QIcon::fromTheme("configure"));
+    connect(settingsAction, &QAction::triggered, this, [=]() {
+        KConfigDialog::showDialog("settings");
+    });
+
     trayIconMenu->addAction(aboutAction);
+    trayIconMenu->addAction(settingsAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
 
@@ -155,18 +167,6 @@ void MainWindow::onMenuHover(QMenu *menu, QString path)
 void MainWindow::openFolder(QString path)
 {
     QDesktopServices::openUrl(QUrl::fromLocalFile(QDir::toNativeSeparators(path)));
-}
-
-void MainWindow::openSettings()
-{
-    if (KConfigDialog::showDialog("settings")) {
-        return;
-    }
-    m_settingsDialog = new SettingsDialog(nullptr, "settings", QuickAccessSettings::self());
-    m_settingsDialog->setMinimumSize(700, 750);
-    m_settingsDialog->setFaceType(KPageDialog::Plain);
-    connect(m_settingsDialog, &SettingsDialog::settingsChanged, this, &MainWindow::setupMenu);
-    m_settingsDialog->show();
 }
 
 void MainWindow::setupDBus()
@@ -211,7 +211,7 @@ void MainWindow::setupMenu()
                 action->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
                 connect(action, &QAction::triggered, [=]() {
                     auto args = group.readEntry("Args");
-                    args.replace("{clipboard}", clipboard->text());
+                    args.replace("{clipboard}", clipboard->text().prepend("\"").append("\""));
                     auto *process = new QProcess();
                     process->setProgram(group.readEntry("Process"));
                     process->setArguments(KShell::splitArgs(args));
@@ -242,7 +242,7 @@ void MainWindow::setupMenu()
     action->setIcon(QIcon::fromTheme("configure"));
     connect(action, &QAction::triggered, this, [=]() {
         actionClicked = true;
-        openSettings();
+        KConfigDialog::showDialog("settings");
     });
     mMenu->addAction(action);
 
