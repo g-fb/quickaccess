@@ -41,7 +41,7 @@ SettingsDialog::SettingsDialog(Settings *settings, QWidget *parent, const QStrin
     populateTree();
 
     m_settings->submenuEntriesCountInfo->setText(
-                i18n("Use %1 to show all or %2 to show none").arg("-1").arg(0));
+                i18n("Use %1 to show all or %2 to show none", QStringLiteral("-1"), QStringLiteral("0")));
 
     // add button to open file dialog to select a folder
     // and add it to the folders list
@@ -185,10 +185,10 @@ void SettingsDialog::deleteCommands()
     int commandsCount = m_config->group("Commands").readEntry("Count").toInt();
     // delete all commands
     for (int i = 0; i < commandsCount; ++i) {
-        auto group = m_config->group(QString("Command_%1").arg(i));
+        auto group = m_config->group(QString("Command_%0").arg(i));
         if (group.readEntry("Type") == "menu") {
             for (int j = 0; j < group.readEntry("Count"); ++j) {
-                auto group = m_config->group(QString("Command_%1__Action_%2").arg(i).arg(j));
+                auto group = m_config->group(QString("Command_%0__Action_%1").arg(i).arg(j));
                 m_config->deleteGroup(group.name());
             }
         }
@@ -233,14 +233,14 @@ void SettingsDialog::populateTree()
 {
     int commandsCount = m_config->group("Commands").readEntry("Count").toInt();
     for (int i = 0; i < commandsCount; i++) {
-        auto groupName = QString("Command_%1").arg(i);
+        auto groupName = QString("Command_%0").arg(i);
         auto group = m_config->group(groupName);
         auto item = createItemFromConfig(group);
         m_commandsTree->insertTopLevelItem(m_commandsTree->topLevelItemCount(), item);
 
         int subCommands = group.readEntry("Count").toInt();
         for (int j = 0; j < subCommands; ++j) {
-            auto groupName = QString("Command_%1__Action_%2").arg(i).arg(j);
+            auto groupName = QString("Command_%0__Action_%1").arg(i).arg(j);
             auto group = m_config->group(groupName);
             auto childItem = createItemFromConfig(group);
             item->addChild(childItem);
@@ -259,7 +259,7 @@ void SettingsDialog::saveCommands()
         QString process = item->text(1);
         QString args = item->text(2);
 
-        auto group = m_config->group(QString("Command_%1").arg(i));
+        auto group = m_config->group(QString("Command_%0").arg(i));
         group.writeEntry("Name", name);
         group.writeEntry("Icon", iconName);
         if (item->data(0, Qt::UserRole) == "action") {
@@ -272,7 +272,7 @@ void SettingsDialog::saveCommands()
 
         if (item->data(0, Qt::UserRole) == "menu") {
             for (int j = 0; j < item->childCount(); ++j) {
-                auto group = m_config->group(QString("Command_%1__Action_%2").arg(i).arg(j));
+                auto group = m_config->group(QString("Command_%0__Action_%1").arg(i).arg(j));
                 group.writeEntry("Name", item->child(j)->text(0));
                 group.writeEntry("Icon", item->child(j)->icon(0).name());
                 group.writeEntry("Process", item->child(j)->text(1));

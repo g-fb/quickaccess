@@ -161,7 +161,7 @@ void MainWindow::onMenuHover(QMenu *menu, QString path)
         if (index == maxSubItems) {
             menu->addSeparator();
             auto action = new QAction();
-            action->setText(i18n("There are more folders than configured to show (%1).").arg(maxSubItems));
+            action->setText(i18n("There are more folders than configured to show (%1).", maxSubItems));
             connect(action, &QAction::triggered, this, [=]() {
                 actionClicked = true;
                 KConfigDialog::showDialog("settings");
