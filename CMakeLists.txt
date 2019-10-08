@@ -38,7 +38,7 @@ ki18n_wrap_ui(quickaccess_SRC
 )
 
 qt5_generate_dbus_interface(
-    mainwindow.h
+    src/mainwindow.h
     data/com.georgefb.quickaccess.xml
     OPTIONS -a
 )
