@@ -70,6 +70,7 @@ private:
     QMenu *trayIconMenu;
     KSharedConfig::Ptr m_config;
     KConfigDialog *m_settingsDialog;
+    Settings *m_settings;
 };
 
 #endif // MAINWINDOW

@@ -7,10 +7,10 @@
 #include <QHeaderView>
 #include <QMenu>
 
-SettingsDialog::SettingsDialog(QWidget *parent, const QString &name, KConfigSkeleton *config)
+SettingsDialog::SettingsDialog(Settings *settings, QWidget *parent, const QString &name, KConfigSkeleton *config)
     : KConfigDialog(parent, name, config)
     , m_config(KSharedConfig::openConfig("quickaccessrc"))
-    , m_settings(new Settings(this))
+    , m_settings(settings)
     , m_changed(false)
     , m_dialogMode(QA::DialogNewMode)
 {

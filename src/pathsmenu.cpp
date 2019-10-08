@@ -1,7 +1,6 @@
 #include "pathsmenu.h"
 #include "mainwindow.h"
 
-#include <QDebug>
 #include <QMouseEvent>
 
 PathsMenu::PathsMenu(QWidget *parent)

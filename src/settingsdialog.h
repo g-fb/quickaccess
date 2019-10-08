@@ -41,7 +41,7 @@ class SettingsDialog : public KConfigDialog
     };
 
 public:
-    SettingsDialog(QWidget *parent, const QString &name, KConfigSkeleton *config);
+    SettingsDialog(Settings *settings, QWidget *parent, const QString &name, KConfigSkeleton *config);
 signals:
     void addMenu(QString name);
 private slots:

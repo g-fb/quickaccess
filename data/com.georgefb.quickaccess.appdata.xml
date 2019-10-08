@@ -34,6 +34,11 @@
         </p>
     </description>
     <releases>
+        <release version="2.0.0" date="2019-10-10">
+            <description>
+                <p>Add command line option to start without tray icon.</p>
+            </description>
+        </release>
         <release version="1.0.2" date="2019-07-09">
             <description>
                 <p>Add command line option to start without tray icon.</p>

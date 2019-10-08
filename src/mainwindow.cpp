@@ -51,7 +51,8 @@ MainWindow::MainWindow(QWidget *parent)
         createTrayIcon(false);
     }
 
-    m_settingsDialog = new SettingsDialog(nullptr, "settings", QuickAccessSettings::self());
+    m_settings = new Settings(this);
+    m_settingsDialog = new SettingsDialog(m_settings, nullptr, "settings", QuickAccessSettings::self());
     m_settingsDialog->setMinimumSize(700, 750);
     m_settingsDialog->setFaceType(KPageDialog::Plain);
     connect(m_settingsDialog, &SettingsDialog::settingsChanged, this, &MainWindow::setupMenu);
@@ -156,9 +157,17 @@ void MainWindow::onMenuHover(QMenu *menu, QString path)
     collator.setNumericMode(true);
     std::sort(m_allFiles.begin(), m_allFiles.end(), collator);
     for (int index = 0; index < m_allFiles.size(); index++) {
-        if (index == QuickAccessSettings::submenuEntriesCount()) {
+        int maxSubItems = QuickAccessSettings::submenuEntriesCount();
+        if (index == maxSubItems) {
             menu->addSeparator();
-            menu->addAction(new QAction(i18n("Folder has to many items.")));
+            auto action = new QAction();
+            action->setText(i18n("There are more folders than configured to show (%1).").arg(maxSubItems));
+            connect(action, &QAction::triggered, this, [=]() {
+                actionClicked = true;
+                KConfigDialog::showDialog("settings");
+                m_settings->kcfg_submenuEntriesCount->setFocus();
+            });
+            menu->addAction(action);
             break;
         }
         addMenuItem(menu, m_allFiles[index]);
