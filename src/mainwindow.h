@@ -5,7 +5,7 @@
 #include <KSharedConfig>
 #include <QSystemTrayIcon>
 
-#include "ui_AboutDialog.h"
+#include "ui_aboutdialog.h"
 #include "ui_settings.h"
 
 namespace Ui {

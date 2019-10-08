@@ -31,10 +31,10 @@ set(quickaccess_SRC
 )
 
 ki18n_wrap_ui(quickaccess_SRC
-    addaction.ui
-    addmenu.ui
-    settings.ui
-    src/AboutDialog.ui
+    ui/aboutdialog.ui
+    ui/addaction.ui
+    ui/addmenu.ui
+    ui/settings.ui
 )
 
 qt5_generate_dbus_interface(
