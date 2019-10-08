@@ -7,7 +7,7 @@
     <metadata_license>CC0-1.0</metadata_license>
     <project_license>LGPL-3.0+</project_license>
     <url type="homepage">https://gitlab.com/g-fb/quickaccess</url>
-    <summary>Quickly access user defined folders and their subfolders</summary>
+    <summary>A global menu giving you quick access to folders and custom commands.</summary>
     <description>
         <p>QuickAccess is a program running in the background providing a global menu to quickly access user defined folders and their subfolders as well as creating and running custom commands. The menu can be opened through two dbus methods: showMenu and showDelayedMenu. Both methods can open the menu in a predefined fixed position or on mouse position.</p>
         <p>showMenu shows the menu instantly, but in certain circumstances there are problems with the menu not showing or not closing. In these cases use the showDelayedMenu, there is a default delay of 150 miliseconds, but can be changed (see example below).</p>
@@ -34,9 +34,12 @@
         </p>
     </description>
     <releases>
-        <release version="2.0.0" date="2019-10-10">
+        <release version="2.0.0" date="2019-10-08">
             <description>
-                <p>Add command line option to start without tray icon.</p>
+                <p>Add support for custom commands.</p>
+                <p>Custom commands can be grouped.</p>
+                <p>Can set the number of subfolders to show.</p>
+                <p>Menu can open in 9 predefined positions.</p>
             </description>
         </release>
         <release version="1.0.2" date="2019-07-09">

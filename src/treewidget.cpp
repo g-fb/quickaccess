@@ -1,6 +1,5 @@
 #include "treewidget.h"
 
-#include <QDebug>
 #include <QDropEvent>
 #include <QMimeData>
 
