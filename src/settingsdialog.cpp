@@ -153,13 +153,13 @@ void SettingsDialog::contextMenu()
 {
     auto menu = new QMenu();
 
-    auto action = new QAction();
+    auto action = new QAction(nullptr);
     action->setText(i18n("Edit"));
     action->setIcon(QIcon::fromTheme("edit-entry"));
     menu->addAction(action);
     connect(action, &QAction::triggered, this, &SettingsDialog::editCommand);
 
-    action = new QAction();
+    action = new QAction(nullptr);
     action->setText(i18n("Clone"));
     action->setIcon(QIcon::fromTheme("edit-copy"));
     menu->addAction(action);
@@ -167,7 +167,7 @@ void SettingsDialog::contextMenu()
 
     menu->addSeparator();
 
-    action = new QAction();
+    action = new QAction(nullptr);
     action->setText(i18n("Remove"));
     action->setIcon(QIcon::fromTheme("edit-delete-remove"));
     menu->addAction(action);
@@ -187,7 +187,7 @@ void SettingsDialog::deleteCommands()
     for (int i = 0; i < commandsCount; ++i) {
         auto group = m_config->group(QString("Command_%0").arg(i));
         if (group.readEntry("Type") == "menu") {
-            for (int j = 0; j < group.readEntry("Count"); ++j) {
+            for (int j = 0; j < group.readEntry("Count").toInt(); ++j) {
                 auto group = m_config->group(QString("Command_%0__Action_%1").arg(i).arg(j));
                 m_config->deleteGroup(group.name());
             }

@@ -95,7 +95,7 @@ void MainWindow::addMenuItem(QMenu *menu, QString path)
         menu->addMenu(submenu);
     } else {
         // folder has no sub folders, create action
-        auto *action = new QAction();
+        auto *action = new QAction(nullptr);
         action->setText(path.split("/").takeLast());
         action->setIcon(QIcon::fromTheme("folder"));
         menu->addAction(action);
@@ -115,17 +115,17 @@ void MainWindow::createTrayIcon(bool show)
     aboutDialog->setWindowIcon(QIcon::fromTheme("quickaccess", QIcon::fromTheme("folder")));
     trayIconMenu = new QMenu(this);
 
-    auto *quitAction = new QAction(i18n("Quit"));
+    auto *quitAction = new QAction(i18n("Quit"), nullptr);
     quitAction->setIcon(QIcon::fromTheme("application-exit"));
     connect(quitAction, &QAction::triggered,
             QCoreApplication::instance(), &QCoreApplication::quit);
 
-    auto *aboutAction = new QAction(i18n("About QuickAccess"));
+    auto *aboutAction = new QAction(i18n("About QuickAccess"), nullptr);
     aboutAction->setIcon(QIcon::fromTheme("help-about"));
     connect(aboutAction, &QAction::triggered,
             aboutDialog, &AboutDialog::show);
 
-    auto *settingsAction = new QAction(i18n("Settings"));
+    auto *settingsAction = new QAction(i18n("Settings"), nullptr);
     settingsAction->setIcon(QIcon::fromTheme("configure"));
     connect(settingsAction, &QAction::triggered, this, [=]() {
         KConfigDialog::showDialog("settings");
@@ -160,7 +160,7 @@ void MainWindow::onMenuHover(QMenu *menu, QString path)
         int maxSubItems = QuickAccessSettings::submenuEntriesCount();
         if (index == maxSubItems) {
             menu->addSeparator();
-            auto action = new QAction();
+            auto action = new QAction(nullptr);
             action->setText(i18n("There are more folders than configured to show (%1).", maxSubItems));
             connect(action, &QAction::triggered, this, [=]() {
                 actionClicked = true;
@@ -216,7 +216,7 @@ void MainWindow::setupMenu()
             menu->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
             for (int j = 0; j < menuCount; ++j) {
                 auto group = m_config->group(QString("Command_%1__Action_%2").arg(i).arg(j));
-                auto action = new QAction();
+                auto action = new QAction(nullptr);
                 action->setText(group.readEntry("Name"));
                 action->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
                 connect(action, &QAction::triggered, [=]() {
@@ -231,7 +231,7 @@ void MainWindow::setupMenu()
             }
             mMenu->addMenu(menu);
         } else {
-            auto action = new QAction();
+            auto action = new QAction(nullptr);
             action->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
             action->setText(group.readEntry("Name"));
             connect(action, &QAction::triggered, [=]() {
@@ -247,7 +247,7 @@ void MainWindow::setupMenu()
     }
     mMenu->addSeparator();
 
-    auto action = new QAction();
+    auto action = new QAction(nullptr);
     action->setText(i18n("Settings"));
     action->setIcon(QIcon::fromTheme("configure"));
     connect(action, &QAction::triggered, this, [=]() {
@@ -256,7 +256,7 @@ void MainWindow::setupMenu()
     });
     mMenu->addAction(action);
 
-    action = new QAction();
+    action = new QAction(nullptr);
     action->setText(i18n("Close Menu"));
     connect(action, &QAction::triggered, this, [=]() {
         actionClicked = true;
@@ -265,7 +265,7 @@ void MainWindow::setupMenu()
     mMenu->addAction(action);
 
     mMenu->addSeparator();
-    action = new QAction();
+    action = new QAction(nullptr);
     action->setText(i18n("Quit"));
     action->setIcon(QIcon::fromTheme("application-exit"));
     connect(action, &QAction::triggered, this, [=]() {
