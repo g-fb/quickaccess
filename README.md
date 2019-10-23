@@ -100,6 +100,12 @@ replace x with a number from 0 to 9 to set the preffered position where the menu
 - Click "OK" to add the action
 - Click "Apply" or "OK" to save the settings
 
+#### When using the flatpak version the custom commands must be in the form:
+- process: `flatpak-spawn`
+- arguments: `--host actual_command_to_execute --followed-by-arguments`
+- example opening a new firefox tab:
+![Action example](data/images/quickaccess-action-example.png)
+
 ### Group Commands
 - Open Settings
 - Click "Add Menu"
