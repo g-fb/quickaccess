@@ -28,8 +28,8 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , m_config(KSharedConfig::openConfig("quickaccessrc"))
     , mMenu(new QMenu())
+    , m_config(KSharedConfig::openConfig("quickaccessrc"))
 {
     QCommandLineParser parser;
     parser.setApplicationDescription("QuickAccess");
@@ -43,6 +43,8 @@ MainWindow::MainWindow(QWidget *parent)
                 QCoreApplication::translate("main", "visibility"), QStringLiteral("show"));
     parser.addOption(showTrayIconOption);
     parser.process(QCoreApplication::instance()->arguments());
+
+    m_clipboard = QGuiApplication::clipboard();
 
     QString showTrayIcon = parser.value(showTrayIconOption);
     if (showTrayIcon == "show") {
@@ -187,9 +189,31 @@ void MainWindow::setupDBus()
     dbus.registerService("com.georgefb.quickaccess");
 }
 
+QAction *MainWindow::createCustomCommand(KConfigGroup group)
+{
+    auto action = new QAction(nullptr);
+    action->setText(group.readEntry("Name"));
+    action->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
+    connect(action, &QAction::triggered, [=]() {
+        QString processName = group.readEntry("Process");
+        QString argsString = group.readEntry("Args");
+        argsString.replace("{clipboard}", KShell::quoteArg(m_clipboard->text()));
+        QStringList args = KShell::splitArgs(argsString);
+        if (isRunningSandbox()) {
+            processName = QStringLiteral("flatpak-spawn");
+            args = QStringList() << QStringLiteral("--host") << group.readEntry("Process") << args;
+        }
+        auto *process = new QProcess();
+        process->setProgram(processName);
+        process->setArguments(args);
+        process->start();
+    });
+
+    return action;
+}
+
 void MainWindow::setupMenu()
 {
-    QClipboard *clipboard = QGuiApplication::clipboard();
     mMenu->clear();
     mMenu->setObjectName("mainMenu");
     mMenu->setMinimumWidth(200);
@@ -216,32 +240,12 @@ void MainWindow::setupMenu()
             menu->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
             for (int j = 0; j < menuCount; ++j) {
                 auto group = m_config->group(QString("Command_%1__Action_%2").arg(i).arg(j));
-                auto action = new QAction(nullptr);
-                action->setText(group.readEntry("Name"));
-                action->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
-                connect(action, &QAction::triggered, [=]() {
-                    auto args = group.readEntry("Args");
-                    args.replace("{clipboard}", clipboard->text().prepend("\"").append("\""));
-                    auto *process = new QProcess();
-                    process->setProgram(group.readEntry("Process"));
-                    process->setArguments(KShell::splitArgs(args));
-                    process->start();
-                });
+                auto action = createCustomCommand(group);
                 menu->addAction(action);
             }
             mMenu->addMenu(menu);
         } else {
-            auto action = new QAction(nullptr);
-            action->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
-            action->setText(group.readEntry("Name"));
-            connect(action, &QAction::triggered, [=]() {
-                auto args = group.readEntry("Args");
-                args.replace("{clipboard}", clipboard->text());
-                auto *process = new QProcess();
-                process->setProgram(group.readEntry("Process"));
-                process->setArguments(KShell::splitArgs(args));
-                process->start();
-            });
+            auto action = createCustomCommand(group);
             mMenu->addAction(action);
         }
     }
@@ -270,8 +274,8 @@ void MainWindow::setupMenu()
     action->setIcon(QIcon::fromTheme("application-exit"));
     connect(action, &QAction::triggered, this, [=]() {
         actionClicked = true;
-        QCoreApplication::quit(), Qt::QueuedConnection;
-    });
+        QCoreApplication::quit();
+    }, Qt::QueuedConnection);
     mMenu->addAction(action);
 }
 
@@ -322,8 +326,21 @@ void MainWindow::showMenu(int pos)
 
 // should be used when triggered by a double clicked
 // without a delay the menu doesn't close when clicking outside it
-void MainWindow::showDelayedMenu(int delay, int pos)
+void MainWindow::showDelayedMenu(unsigned long delay, int pos)
 {
     QThread::msleep(delay);
     showMenu(pos);
+}
+
+bool MainWindow::isRunningSandbox()
+{
+    QString runtimeDir = qgetenv("XDG_RUNTIME_DIR");
+
+    if (runtimeDir.isEmpty()) {
+        return false;
+    }
+
+    QFile file(runtimeDir + QLatin1String("/flatpak-info"));
+
+    return file.exists();
 }

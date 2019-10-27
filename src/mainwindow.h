@@ -18,6 +18,7 @@ class QMenu;
 class QDBusConnectionInterface;
 class QListWidget;
 class KConfigDialog;
+class KConfigGroup;
 
 class Settings: public QWidget, public Ui::Settings
 {
@@ -46,7 +47,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     Q_SCRIPTABLE void showMenu(int pos = 0);
-    Q_SCRIPTABLE void showDelayedMenu(int delay = 150, int pos = 0);
+    Q_SCRIPTABLE void showDelayedMenu(unsigned long delay = 150, int pos = 0);
 
     // actionClicked - prevent triggering of wrong action
     // clicking a normal QAction can trigger the action of PathsMenu
@@ -65,12 +66,15 @@ private:
     void openFolder(QString path);
     void setupMenu();
     void setupDBus();
+    bool isRunningSandbox();
     QMenu *mMenu = nullptr;
     QDBusConnectionInterface *bus;
     QMenu *trayIconMenu;
     KSharedConfig::Ptr m_config;
     KConfigDialog *m_settingsDialog;
     Settings *m_settings;
+    QAction *createCustomCommand(KConfigGroup group);
+    QClipboard *m_clipboard;
 };
 
 #endif // MAINWINDOW
