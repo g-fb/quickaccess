@@ -42,7 +42,7 @@
         </font>
        </property>
        <property name="text">
-        <string>QuickAccess version 2.0.0</string>
+        <string>QuickAccess version 2.0.1</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>

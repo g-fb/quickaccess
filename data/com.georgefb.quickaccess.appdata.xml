@@ -34,6 +34,11 @@
         </p>
     </description>
     <releases>
+        <release version="2.0.1" date="2019-10-27">
+            <description>
+                <p>Check if running as flatpak and use flatpack-spawn to run commands if that is the case.</p>
+            </description>
+        </release>
         <release version="2.0.0" date="2019-10-08">
             <description>
                 <p>Add support for custom commands.</p>
