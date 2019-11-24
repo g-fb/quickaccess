@@ -32,7 +32,7 @@ set(quickaccess_SRC
 
 ki18n_wrap_ui(quickaccess_SRC
     ui/aboutdialog.ui
-    ui/addaction.ui
+    ui/addcommand.ui
     ui/addmenu.ui
     ui/settings.ui
 )

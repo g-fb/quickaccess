@@ -31,6 +31,12 @@ SettingsDialog::SettingsDialog(Settings *settings, QWidget *parent, const QStrin
     m_commandsTree->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(m_commandsTree, &QTreeWidget::customContextMenuRequested,
             this, &SettingsDialog::contextMenu);
+    connect(m_commandsTree, &QTreeWidget::doubleClicked, this, [=]() {
+        auto item = m_commandsTree->currentItem();
+        if (item->data(0, Qt::UserRole) == "command") {
+            editCommand();
+        }
+    });
     connect(m_commandsTree, &TreeWidget::drop, this, [=]() {
         m_changed = true;
         updateButtons();
@@ -63,18 +69,18 @@ SettingsDialog::SettingsDialog(Settings *settings, QWidget *parent, const QStrin
     // add widget to the keditlistwidget's layout
     m_settings->kcfg_paths->layout()->addWidget(widget);
 
-    // add action to the tree widget
-    m_addActionDialog = new AddAction(nullptr);
-    connect(m_settings->addActionButton, &QPushButton::clicked, this, [=]() {
+    // add command to the tree widget
+    m_addCommandDialog = new AddCommand(nullptr);
+    connect(m_settings->addCommandButton, &QPushButton::clicked, this, [=]() {
         m_dialogMode = QA::DialogNewMode;
-        m_addActionDialog->setWindowTitle(i18n("New Action"));
-        m_addActionDialog->actionProcess->clear();
-        m_addActionDialog->actionArgs->clear();
-        m_addActionDialog->actionName->clear();
-        m_addActionDialog->actionIcon->clear();
-        m_addActionDialog->show();
+        m_addCommandDialog->setWindowTitle(i18n("New Command"));
+        m_addCommandDialog->commandProcess->clear();
+        m_addCommandDialog->commandArgs->clear();
+        m_addCommandDialog->commandName->clear();
+        m_addCommandDialog->commandIcon->clear();
+        m_addCommandDialog->show();
     });
-    connect(m_addActionDialog, &AddAction::accepted, this, &SettingsDialog::manageAction);
+    connect(m_addCommandDialog, &AddCommand::accepted, this, &SettingsDialog::manageCommand);
 
     // add menu to the tree widget
     m_addMenuDialog = new AddMenu(nullptr);
@@ -87,7 +93,7 @@ SettingsDialog::SettingsDialog(Settings *settings, QWidget *parent, const QStrin
     connect(m_addMenuDialog, &AddMenu::accepted, this, &SettingsDialog::manageMenu);
 }
 
-void SettingsDialog::manageAction()
+void SettingsDialog::manageCommand()
 {
     QTreeWidgetItem *item;
     if (m_dialogMode == QA::DialogNewMode) {
@@ -98,14 +104,14 @@ void SettingsDialog::manageAction()
         // edit the current item
         item = m_commandsTree->currentItem();
     }
-    item->setIcon(0, QIcon::fromTheme(m_addActionDialog->actionIcon->text()));
-    item->setText(0, m_addActionDialog->actionName->text());
-    item->setToolTip(0, m_addActionDialog->actionName->text());
-    item->setText(1, m_addActionDialog->actionProcess->text());
-    item->setToolTip(1, m_addActionDialog->actionProcess->text());
-    item->setText(2, m_addActionDialog->actionArgs->text());
-    item->setToolTip(2, m_addActionDialog->actionArgs->text());
-    item->setData(0, Qt::UserRole, "action");
+    item->setIcon(0, QIcon::fromTheme(m_addCommandDialog->commandIcon->text()));
+    item->setText(0, m_addCommandDialog->commandName->text());
+    item->setToolTip(0, m_addCommandDialog->commandName->text());
+    item->setText(1, m_addCommandDialog->commandProcess->text());
+    item->setToolTip(1, m_addCommandDialog->commandProcess->text());
+    item->setText(2, m_addCommandDialog->commandArgs->text());
+    item->setToolTip(2, m_addCommandDialog->commandArgs->text());
+    item->setData(0, Qt::UserRole, "command");
 
     m_changed = true;
     updateButtons();
@@ -138,7 +144,7 @@ QTreeWidgetItem *SettingsDialog::createItemFromConfig(KConfigGroup group)
     item->setIcon(0, QIcon::fromTheme(group.readEntry("Icon")));
     item->setText(0, group.readEntry("Name"));
     item->setToolTip(0, group.readEntry("Name"));
-    if (type == "action") {
+    if (type == "command") {
         item->setText(1, group.readEntry("Process"));
         item->setToolTip(1, group.readEntry("Process"));
         item->setText(2, group.readEntry("Args"));
@@ -153,25 +159,25 @@ void SettingsDialog::contextMenu()
 {
     auto menu = new QMenu();
 
-    auto action = new QAction(nullptr);
-    action->setText(i18n("Edit"));
-    action->setIcon(QIcon::fromTheme("edit-entry"));
-    menu->addAction(action);
-    connect(action, &QAction::triggered, this, &SettingsDialog::editCommand);
+    auto command = new QAction(nullptr);
+    command->setText(i18n("Edit"));
+    command->setIcon(QIcon::fromTheme("edit-entry"));
+    menu->addAction(command);
+    connect(command, &QAction::triggered, this, &SettingsDialog::editCommand);
 
-    action = new QAction(nullptr);
-    action->setText(i18n("Clone"));
-    action->setIcon(QIcon::fromTheme("edit-copy"));
-    menu->addAction(action);
-    connect(action, &QAction::triggered, this, &SettingsDialog::cloneCommand);
+    command = new QAction(nullptr);
+    command->setText(i18n("Clone"));
+    command->setIcon(QIcon::fromTheme("edit-copy"));
+    menu->addAction(command);
+    connect(command, &QAction::triggered, this, &SettingsDialog::cloneCommand);
 
     menu->addSeparator();
 
-    action = new QAction(nullptr);
-    action->setText(i18n("Remove"));
-    action->setIcon(QIcon::fromTheme("edit-delete-remove"));
-    menu->addAction(action);
-    connect(action, &QAction::triggered, this, [=]() {
+    command = new QAction(nullptr);
+    command->setText(i18n("Remove"));
+    command->setIcon(QIcon::fromTheme("edit-delete-remove"));
+    menu->addAction(command);
+    connect(command, &QAction::triggered, this, [=]() {
         delete m_commandsTree->currentItem();
         m_changed = true;
         updateButtons();
@@ -188,7 +194,7 @@ void SettingsDialog::deleteCommands()
         auto group = m_config->group(QString("Command_%0").arg(i));
         if (group.readEntry("Type") == "menu") {
             for (int j = 0; j < group.readEntry("Count").toInt(); ++j) {
-                auto group = m_config->group(QString("Command_%0__Action_%1").arg(i).arg(j));
+                auto group = m_config->group(QString("Command_%0__Subcommand_%1").arg(i).arg(j));
                 m_config->deleteGroup(group.name());
             }
         }
@@ -207,12 +213,12 @@ void SettingsDialog::editCommand()
         m_addMenuDialog->menuName->setText(item->text(0));
         m_addMenuDialog->show();
     } else {
-        m_addActionDialog->setWindowTitle(i18n("Edit Action"));
-        m_addActionDialog->actionProcess->setText(item->text(1));
-        m_addActionDialog->actionArgs->setText(item->text(2));
-        m_addActionDialog->actionName->setText(item->text(0));
-        m_addActionDialog->actionIcon->setText(item->icon(0).name());
-        m_addActionDialog->show();
+        m_addCommandDialog->setWindowTitle(i18n("Edit Command"));
+        m_addCommandDialog->commandProcess->setText(item->text(1));
+        m_addCommandDialog->commandArgs->setText(item->text(2));
+        m_addCommandDialog->commandName->setText(item->text(0));
+        m_addCommandDialog->commandIcon->setText(item->icon(0).name());
+        m_addCommandDialog->show();
     }
 }
 
@@ -240,9 +246,9 @@ void SettingsDialog::populateTree()
 
         int subCommands = group.readEntry("Count").toInt();
         for (int j = 0; j < subCommands; ++j) {
-            auto groupName = QString("Command_%0__Action_%1").arg(i).arg(j);
+            auto groupName = QString("Command_%0__Subcommand_%1").arg(i).arg(j);
             auto group = m_config->group(groupName);
-            auto childItem = createItemFromConfig(group);
+            QTreeWidgetItem *childItem = createItemFromConfig(group);
             item->addChild(childItem);
         }
     }
@@ -262,7 +268,7 @@ void SettingsDialog::saveCommands()
         auto group = m_config->group(QString("Command_%0").arg(i));
         group.writeEntry("Name", name);
         group.writeEntry("Icon", iconName);
-        if (item->data(0, Qt::UserRole) == "action") {
+        if (item->data(0, Qt::UserRole) == "command") {
             group.writeEntry("Process", process);
             group.writeEntry("Args", args);
         }
@@ -272,7 +278,7 @@ void SettingsDialog::saveCommands()
 
         if (item->data(0, Qt::UserRole) == "menu") {
             for (int j = 0; j < item->childCount(); ++j) {
-                auto group = m_config->group(QString("Command_%0__Action_%1").arg(i).arg(j));
+                auto group = m_config->group(QString("Command_%0__Subcommand_%1").arg(i).arg(j));
                 group.writeEntry("Name", item->child(j)->text(0));
                 group.writeEntry("Icon", item->child(j)->icon(0).name());
                 group.writeEntry("Process", item->child(j)->text(1));

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AddAction</class>
- <widget class="QDialog" name="AddAction">
+ <class>AddCommand</class>
+ <widget class="QDialog" name="AddCommand">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -22,9 +22,9 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QLineEdit" name="actionName">
+    <widget class="QLineEdit" name="commandName">
      <property name="placeholderText">
-      <string>action display name</string>
+      <string>command display name</string>
      </property>
     </widget>
    </item>
@@ -50,21 +50,21 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="actionIcon">
+    <widget class="QLineEdit" name="commandIcon">
      <property name="placeholderText">
-      <string>action icon name</string>
+      <string>icon name</string>
      </property>
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QLineEdit" name="actionProcess">
+    <widget class="QLineEdit" name="commandProcess">
      <property name="placeholderText">
       <string>process or path to script to execute</string>
      </property>
     </widget>
    </item>
    <item row="3" column="1">
-    <widget class="QLineEdit" name="actionArgs">
+    <widget class="QLineEdit" name="commandArgs">
      <property name="placeholderText">
       <string>arguments</string>
      </property>
@@ -87,7 +87,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>AddAction</receiver>
+   <receiver>AddCommand</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -103,7 +103,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>AddAction</receiver>
+   <receiver>AddCommand</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

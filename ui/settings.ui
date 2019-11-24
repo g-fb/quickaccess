@@ -79,9 +79,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="addActionButton">
+         <widget class="QPushButton" name="addCommandButton">
           <property name="text">
-           <string>Add Action</string>
+           <string>Add Command</string>
           </property>
          </widget>
         </item>

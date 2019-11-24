@@ -5,7 +5,7 @@
 #include <KConfigSkeleton>
 
 #include "ui_addmenu.h"
-#include "ui_addaction.h"
+#include "ui_addcommand.h"
 
 class Settings;
 class TreeWidget;
@@ -21,11 +21,11 @@ public:
 };
 
 
-class AddAction: public QDialog, public Ui::AddAction
+class AddCommand: public QDialog, public Ui::AddCommand
 {
     Q_OBJECT
 public:
-    explicit AddAction(QWidget *parent) : QDialog(parent) {
+    explicit AddCommand(QWidget *parent) : QDialog(parent) {
         setupUi(this);
     }
 };
@@ -75,7 +75,7 @@ private:
     KSharedConfig::Ptr m_config;
     Settings *m_settings;
     TreeWidget *m_commandsTree;
-    AddAction *m_addActionDialog;
+    AddCommand *m_addCommandDialog;
     AddMenu *m_addMenuDialog;
     bool m_changed;
     int m_dialogMode;
@@ -86,7 +86,7 @@ private:
     void editCommand();
     void cloneCommand();
     void populateTree();
-    void manageAction();
+    void manageCommand();
     void addMenu();
     void manageMenu();
 };

@@ -18,10 +18,10 @@ void TreeWidget::dropEvent(QDropEvent *event)
         QString dropItemType = dropIntoItem->data(0, Qt::UserRole).toString();
         QString draggedItemType = draggedItem->data(0, Qt::UserRole).toString();
 
-        if (draggedItemType == "action" && dropItemType == "menu") {
+        if (draggedItemType == "command" && dropItemType == "menu") {
             emit drop();
         } else {
-            // prevent adding children to an action
+            // prevent adding children to a command
             event->setDropAction(Qt::IgnoreAction);
             if (dropIndicator != QAbstractItemView::OnItem) {
                 event->setDropAction(Qt::MoveAction);

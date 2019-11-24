@@ -239,7 +239,7 @@ void MainWindow::setupMenu()
             menu->setMinimumWidth(200);
             menu->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
             for (int j = 0; j < menuCount; ++j) {
-                auto group = m_config->group(QString("Command_%1__Action_%2").arg(i).arg(j));
+                auto group = m_config->group(QString("Command_%1__Subcommand_%2").arg(i).arg(j));
                 auto action = createCustomCommand(group);
                 menu->addAction(action);
             }
