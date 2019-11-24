@@ -34,6 +34,12 @@
         </p>
     </description>
     <releases>
+        <release version="2.0.2" date="2019-11-24">
+            <description>
+                <p>Double click a command in settings to edit it.</p>
+                <p>Fix a bug with drag and drop of commands not enabling the apply button.</p>
+            </description>
+        </release>
         <release version="2.0.1" date="2019-10-27">
             <description>
                 <p>Check if running as flatpak and use flatpack-spawn to run commands if that is the case.</p>
