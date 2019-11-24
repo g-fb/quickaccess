@@ -21,12 +21,16 @@ void TreeWidget::dropEvent(QDropEvent *event)
         if (draggedItemType == "action" && dropItemType == "menu") {
             emit drop();
         } else {
+            // prevent adding children to an action
             event->setDropAction(Qt::IgnoreAction);
             if (dropIndicator != QAbstractItemView::OnItem) {
                 event->setDropAction(Qt::MoveAction);
                 emit drop();
             }
         }
+    } else {
+        // item drag'n'dropped from menu to root
+        emit drop();
     }
     QTreeWidget::dropEvent(event);
 }
