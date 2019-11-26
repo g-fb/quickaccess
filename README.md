@@ -91,13 +91,13 @@ replace x with a number from 0 to 9 to set the preffered position where the menu
 
 ### Add Command
 - Open Settings
-- Click "Add Action"
+- Click "Add Command"
 - Fill the fields
 - **Name**: text to be displayed in the menu
 - **Icon**: name of the icon to be displayed in menu
 - **Process**: name of the process/executable or path to script to be executed
 - **Arguments**: arguments to be passed to the process, use **{clipboard}** to get the clipboard's text
-- Click "OK" to add the action
+- Click "OK" to add the command
 - Click "Apply" or "OK" to save the settings
 
 ### Group Commands

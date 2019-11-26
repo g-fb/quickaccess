@@ -67,7 +67,8 @@ private:
     void setupMenu();
     void setupDBus();
     bool isRunningSandbox();
-    QMenu *mMenu = nullptr;
+    QIcon m_appIcon;
+    QMenu *m_menu = nullptr;
     QDBusConnectionInterface *bus;
     QMenu *trayIconMenu;
     KSharedConfig::Ptr m_config;

@@ -9,6 +9,7 @@ include(ECMInstallIcons)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 
 find_package(Qt5 CONFIG REQUIRED COMPONENTS
@@ -28,6 +29,7 @@ set(quickaccess_SRC
     src/treewidget.cpp
     src/settingsdialog.cpp
     data/com.georgefb.quickaccess.xml
+    data/icons/icons.qrc
 )
 
 ki18n_wrap_ui(quickaccess_SRC
@@ -54,8 +56,9 @@ target_link_libraries(quickaccess
     KF5::XmlGui
 )
 
-ecm_install_icons(ICONS data/icons/512-apps-quickaccess.svg
-        DESTINATION ${KDE_INSTALL_ICONDIR})
+ecm_install_icons(ICONS
+    data/icons/512-apps-quickaccess.svg
+    DESTINATION ${KDE_INSTALL_ICONDIR} THEME hicolor)
 
 install(TARGETS quickaccess DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES data/com.georgefb.quickaccess.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})

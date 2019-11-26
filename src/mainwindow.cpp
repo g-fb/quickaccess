@@ -28,7 +28,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , mMenu(new QMenu())
+    , m_menu(new QMenu())
     , m_config(KSharedConfig::openConfig("quickaccessrc"))
 {
     QCommandLineParser parser;
@@ -46,6 +46,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_clipboard = QGuiApplication::clipboard();
 
+    if (isRunningSandbox()) {
+        m_appIcon = QIcon::fromTheme("com.georgefb.quickaccess", QIcon(":/icons/quickaccess"));
+    } else {
+        m_appIcon = QIcon::fromTheme("quickaccess", QIcon(":/icons/quickaccess"));
+    }
+
     QString showTrayIcon = parser.value(showTrayIconOption);
     if (showTrayIcon == "show") {
         createTrayIcon(true);
@@ -55,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_settings = new Settings(this);
     m_settingsDialog = new SettingsDialog(m_settings, nullptr, "settings", QuickAccessSettings::self());
+    m_settingsDialog->setWindowIcon(m_appIcon);
     m_settingsDialog->setMinimumSize(700, 750);
     m_settingsDialog->setFaceType(KPageDialog::Plain);
     connect(m_settingsDialog, &SettingsDialog::settingsChanged, this, &MainWindow::setupMenu);
@@ -89,7 +96,7 @@ void MainWindow::addMenuItem(QMenu *menu, QString path)
 
         connect(submenu, &PathsMenu::actionTriggered, this, [=]() {
             openFolder(path);
-            mMenu->close();
+            m_menu->close();
         });
         connect(submenu, &QMenu::aboutToShow, this, [=]() {
             onMenuHover(submenu, path);
@@ -113,8 +120,9 @@ void MainWindow::createTrayIcon(bool show)
     if (!show) {
         return;
     }
+
     auto *aboutDialog = new AboutDialog(nullptr);
-    aboutDialog->setWindowIcon(QIcon::fromTheme("quickaccess", QIcon::fromTheme("folder")));
+    aboutDialog->setWindowIcon(m_appIcon);
     trayIconMenu = new QMenu(this);
 
     auto *quitAction = new QAction(i18n("Quit"), nullptr);
@@ -140,7 +148,7 @@ void MainWindow::createTrayIcon(bool show)
 
     auto *trayIcon = new QSystemTrayIcon(this);
     trayIcon->setToolTip("QuickAccess");
-    trayIcon->setIcon(QIcon::fromTheme("quickaccess", QIcon::fromTheme("folder")));
+    trayIcon->setIcon(m_appIcon);
     trayIcon->setContextMenu(trayIconMenu);
     trayIcon->show();
 }
@@ -214,16 +222,16 @@ QAction *MainWindow::createCustomCommand(KConfigGroup group)
 
 void MainWindow::setupMenu()
 {
-    mMenu->clear();
-    mMenu->setObjectName("mainMenu");
-    mMenu->setMinimumWidth(200);
-    mMenu->setMaximumWidth(350);
+    m_menu->clear();
+    m_menu->setObjectName("mainMenu");
+    m_menu->setMinimumWidth(200);
+    m_menu->setMaximumWidth(350);
 
     auto paths = m_config->group("Paths").readPathEntry("paths", QStringList());
     for (auto path : paths) {
-        addMenuItem(mMenu, path);
+        addMenuItem(m_menu, path);
     }
-    mMenu->addSeparator();
+    m_menu->addSeparator();
     // ----------------------------- //
 
     int commandsCount = m_config->group("Commands").readEntry("Count").toInt();
@@ -243,13 +251,13 @@ void MainWindow::setupMenu()
                 auto action = createCustomCommand(group);
                 menu->addAction(action);
             }
-            mMenu->addMenu(menu);
+            m_menu->addMenu(menu);
         } else {
             auto action = createCustomCommand(group);
-            mMenu->addAction(action);
+            m_menu->addAction(action);
         }
     }
-    mMenu->addSeparator();
+    m_menu->addSeparator();
 
     auto action = new QAction(nullptr);
     action->setText(i18n("Settings"));
@@ -258,17 +266,17 @@ void MainWindow::setupMenu()
         actionClicked = true;
         KConfigDialog::showDialog("settings");
     });
-    mMenu->addAction(action);
+    m_menu->addAction(action);
 
     action = new QAction(nullptr);
     action->setText(i18n("Close Menu"));
     connect(action, &QAction::triggered, this, [=]() {
         actionClicked = true;
-        mMenu->close();
+        m_menu->close();
     });
-    mMenu->addAction(action);
+    m_menu->addAction(action);
 
-    mMenu->addSeparator();
+    m_menu->addSeparator();
     action = new QAction(nullptr);
     action->setText(i18n("Quit"));
     action->setIcon(QIcon::fromTheme("application-exit"));
@@ -276,48 +284,48 @@ void MainWindow::setupMenu()
         actionClicked = true;
         QCoreApplication::quit();
     }, Qt::QueuedConnection);
-    mMenu->addAction(action);
+    m_menu->addAction(action);
 }
 
 void MainWindow::showMenu(int pos)
 {
-    mMenu->adjustSize();
+    m_menu->adjustSize();
     auto screenGeometry = QGuiApplication::primaryScreen()->availableGeometry();
-    int rightEdge = screenGeometry.width() - mMenu->rect().width() - 10;
-    int bottomEdge = screenGeometry.height() - mMenu->rect().height() - 10;
-    int xCenter = screenGeometry.center().x() - mMenu->rect().center().x();
-    int yCenter = screenGeometry.center().y() - mMenu->rect().center().y();
+    int rightEdge = screenGeometry.width() - m_menu->rect().width() - 10;
+    int bottomEdge = screenGeometry.height() - m_menu->rect().height() - 10;
+    int xCenter = screenGeometry.center().x() - m_menu->rect().center().x();
+    int yCenter = screenGeometry.center().y() - m_menu->rect().center().y();
 
     switch (pos) {
     case 0:
-        mMenu->exec(QCursor::pos());
+        m_menu->exec(QCursor::pos());
         break;
     case 1:
-        mMenu->exec(QPoint(10, 10));
+        m_menu->exec(QPoint(10, 10));
         break;
     case 2:
-        mMenu->exec(QPoint(xCenter, 10));
+        m_menu->exec(QPoint(xCenter, 10));
         break;
     case 3:
-        mMenu->exec(QPoint(rightEdge, 10));
+        m_menu->exec(QPoint(rightEdge, 10));
         break;
     case 4:
-        mMenu->exec(QPoint(10, yCenter));
+        m_menu->exec(QPoint(10, yCenter));
         break;
     case 5:
-        mMenu->exec(QPoint(xCenter, yCenter));
+        m_menu->exec(QPoint(xCenter, yCenter));
         break;
     case 6:
-        mMenu->exec(QPoint(rightEdge, yCenter));
+        m_menu->exec(QPoint(rightEdge, yCenter));
         break;
     case 7:
-        mMenu->exec(QPoint(10, bottomEdge));
+        m_menu->exec(QPoint(10, bottomEdge));
         break;
     case 8:
-        mMenu->exec(QPoint(xCenter, bottomEdge));
+        m_menu->exec(QPoint(xCenter, bottomEdge));
         break;
     case 9:
-        mMenu->exec(QPoint(rightEdge, bottomEdge));
+        m_menu->exec(QPoint(rightEdge, bottomEdge));
         break;
     default:
         break;
