@@ -61,8 +61,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_settings = new Settings(this);
     m_settingsDialog = new SettingsDialog(m_settings, nullptr, "settings", QuickAccessSettings::self());
+    m_settingsDialog->setMinimumSize(500, 480);
     m_settingsDialog->setWindowIcon(m_appIcon);
-    m_settingsDialog->setMinimumSize(700, 750);
     m_settingsDialog->setFaceType(KPageDialog::Plain);
     connect(m_settingsDialog, &SettingsDialog::settingsChanged, this, &MainWindow::setupMenu);
 
@@ -89,7 +89,9 @@ void MainWindow::addMenuItem(QMenu *menu, QString path)
         submenu->setMinimumWidth(200);
         submenu->setMaximumWidth(600);
         QFontMetrics metrix(submenu->font());
-        QString elidedTitle = metrix.elidedText(path.split("/").takeLast(), Qt::ElideRight, 500);
+        QStringList pathFolders = path.split("/");
+        pathFolders.removeAll(QString(""));
+        QString elidedTitle = metrix.elidedText(pathFolders.takeLast(), Qt::ElideRight, 500);
         submenu->setTitle(elidedTitle);
         submenu->setIcon(QIcon::fromTheme("folder"));
         submenu->setMainWindow(this);

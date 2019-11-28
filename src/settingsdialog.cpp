@@ -42,7 +42,7 @@ SettingsDialog::SettingsDialog(Settings *settings, QWidget *parent, const QStrin
         updateButtons();
     });
     // insert the commands tree widget in the dialog's group box
-    auto treeWidgetLayout = qobject_cast<QVBoxLayout *>(m_settings->commandsGroupBox->layout());
+    auto treeWidgetLayout = qobject_cast<QVBoxLayout *>(m_settings->commandsTab->layout());
     treeWidgetLayout->insertWidget(0, m_commandsTree);
     populateTree();
 
