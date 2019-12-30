@@ -19,6 +19,11 @@
         <p>Check the project page for more info https://gitlab.com/g-fb/quickaccess.</p>
     </description>
     <releases>
+        <release version="2.0.5" date="2019-12-30">
+            <description>
+                <p>Fix text for menu without children not being elided.</p>
+            </description>
+        </release>
         <release version="2.0.4" date="2019-11-28">
             <description>
                 <p>Fix paths ending in "/" having no text in the menu.</p>
