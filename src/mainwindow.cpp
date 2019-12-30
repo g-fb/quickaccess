@@ -107,7 +107,11 @@ void MainWindow::addMenuItem(QMenu *menu, QString path)
     } else {
         // folder has no sub folders, create action
         auto *action = new QAction(nullptr);
-        action->setText(path.split("/").takeLast());
+        QFontMetrics metrix(action->font());
+        QStringList pathFolders = path.split("/");
+        pathFolders.removeAll(QString(""));
+        QString elidedTitle = metrix.elidedText(pathFolders.takeLast(), Qt::ElideRight, 500);
+        action->setText(elidedTitle);
         action->setIcon(QIcon::fromTheme("folder"));
         menu->addAction(action);
         connect(action, &QAction::triggered, this, [=]() {
