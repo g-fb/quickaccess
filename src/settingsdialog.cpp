@@ -15,6 +15,7 @@ SettingsDialog::SettingsDialog(Settings *settings, QWidget *parent, const QStrin
     , m_dialogMode(QA::DialogNewMode)
 {
     addPage(m_settings, i18n("Settings"));
+    setHelp(QStringLiteral(), QStringLiteral("com.georgefb.quickaccess"));
     // setup the commands tree
     m_commandsTree = new TreeWidget();
     m_commandsTree->setColumnCount(2);

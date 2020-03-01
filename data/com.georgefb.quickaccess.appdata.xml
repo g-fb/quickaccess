@@ -5,8 +5,9 @@
     <id>com.georgefb.quickaccess</id>
     <launchable type="desktop-id">com.georgefb.quickaccess.desktop</launchable>
     <metadata_license>CC0-1.0</metadata_license>
-    <project_license>LGPL-3.0+</project_license>
+    <project_license>GPL-3.0-or-later</project_license>
     <url type="homepage">https://gitlab.com/g-fb/quickaccess</url>
+    <url type="donation">https://www.patreon.com/georgefb</url>
     <summary>A global menu giving you quick access to folders and custom commands.</summary>
     <description>
         <p>QuickAccess is a program running in the background providing a global menu to quickly access user defined folders and their subfolders as well as creating and running custom commands. The menu can be opened through two dbus methods: showMenu and showDelayedMenu. Both methods can open the menu in a predefined fixed position or on mouse position.</p>
@@ -19,6 +20,11 @@
         <p>Check the project page for more info https://gitlab.com/g-fb/quickaccess.</p>
     </description>
     <releases>
+        <release version="2.0.6" date="2020-03-01">
+            <description>
+                <p>Help button in settings opens website.</p>
+            </description>
+        </release>
         <release version="2.0.5" date="2019-12-30">
             <description>
                 <p>Fix text for menu without children not being elided.</p>
