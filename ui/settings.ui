@@ -106,6 +106,13 @@
      </widget>
     </widget>
    </item>
+   <item>
+    <widget class="QPushButton" name="openStartUpDialogButton">
+     <property name="text">
+      <string>Open start up dialog</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>

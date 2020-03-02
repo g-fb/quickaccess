@@ -37,6 +37,7 @@ ki18n_wrap_ui(quickaccess_SRC
     ui/addcommand.ui
     ui/addmenu.ui
     ui/settings.ui
+    ui/startupdialog.ui
 )
 
 qt5_add_dbus_adaptor(quickaccess_SRC data/com.georgefb.quickaccess.xml

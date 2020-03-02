@@ -7,6 +7,7 @@
 
 #include "ui_aboutdialog.h"
 #include "ui_settings.h"
+#include "ui_startupdialog.h"
 
 namespace Ui {
     class MainWindow;
@@ -39,6 +40,18 @@ public:
         setupUi(this);
     }
 };
+
+
+class StartUpDialog: public QDialog, public Ui::StartUpDialog
+{
+    Q_OBJECT
+public:
+    explicit StartUpDialog(QWidget *parent) : QDialog(parent) {
+        setupUi(this);
+    }
+};
+
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

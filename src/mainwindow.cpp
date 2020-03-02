@@ -9,6 +9,7 @@
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QDesktopServices>
+#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QLabel>
 #include <QLineEdit>
@@ -31,6 +32,28 @@ MainWindow::MainWindow(QWidget *parent)
     , m_menu(new QMenu())
     , m_config(KSharedConfig::openConfig("quickaccessrc"))
 {
+    m_clipboard = QGuiApplication::clipboard();
+
+    auto startUpDialog = new StartUpDialog(this);
+    startUpDialog->setWindowTitle(QStringLiteral("QuickAccess"));
+    QRect screenGeometry = QGuiApplication::primaryScreen()->geometry();
+    int x = (screenGeometry.width() - startUpDialog->width()) / 2;
+    int y = (screenGeometry.height() - startUpDialog->height()) / 2;
+    startUpDialog->move(screenGeometry.x() + x, screenGeometry.y() + y);
+    if (m_config->group("General").readEntry("ShowStartUpDialog", true)) {
+        startUpDialog->showOnStartUp->setChecked(m_config->group("General").readEntry("ShowStartUpDialog", true));
+        startUpDialog->show();
+    }
+    connect(startUpDialog->openMenuButton, &QPushButton::clicked,
+            this, &MainWindow::showMenu);
+    connect(startUpDialog->copyCommandButton, &QPushButton::clicked, this, [=]() {
+        m_clipboard->setText(QStringLiteral("dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showMenu"));
+    });
+    connect(startUpDialog->showOnStartUp, &QCheckBox::stateChanged, this, [=]() {
+        m_config->group("General").writeEntry("ShowStartUpDialog", startUpDialog->showOnStartUp->isChecked());
+        m_config->sync();
+    });
+
     QCommandLineParser parser;
     parser.setApplicationDescription("QuickAccess");
     parser.addHelpOption();
@@ -43,8 +66,6 @@ MainWindow::MainWindow(QWidget *parent)
                 QCoreApplication::translate("main", "visibility"), QStringLiteral("show"));
     parser.addOption(showTrayIconOption);
     parser.process(QCoreApplication::instance()->arguments());
-
-    m_clipboard = QGuiApplication::clipboard();
 
     if (isRunningSandbox()) {
         m_appIcon = QIcon::fromTheme("com.georgefb.quickaccess", QIcon(":/icons/quickaccess"));
@@ -61,10 +82,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_settings = new Settings(this);
     m_settingsDialog = new SettingsDialog(m_settings, nullptr, "settings", QuickAccessSettings::self());
-    m_settingsDialog->setMinimumSize(500, 480);
+    m_settingsDialog->setMinimumSize(500, 500);
     m_settingsDialog->setWindowIcon(m_appIcon);
     m_settingsDialog->setFaceType(KPageDialog::Plain);
     connect(m_settingsDialog, &SettingsDialog::settingsChanged, this, &MainWindow::setupMenu);
+
+    connect(m_settings->openStartUpDialogButton, &QPushButton::clicked,
+            startUpDialog, &StartUpDialog::show);
+    connect(startUpDialog->openSettingsButton, &QPushButton::clicked,
+            m_settingsDialog, &SettingsDialog::show);
 
     setupMenu();
     setupDBus();
