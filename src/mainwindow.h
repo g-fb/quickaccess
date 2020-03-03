@@ -83,7 +83,7 @@ private:
     QIcon m_appIcon;
     QMenu *m_menu = nullptr;
     QDBusConnectionInterface *bus;
-    QMenu *trayIconMenu;
+    QSystemTrayIcon *m_trayIcon;
     KSharedConfig::Ptr m_config;
     KConfigDialog *m_settingsDialog;
     Settings *m_settings;

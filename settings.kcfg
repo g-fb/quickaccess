@@ -3,6 +3,16 @@
     xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
                           http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
     <kcfgfile name="quickaccessrc" />
+    <group name="General">
+        <entry name="ShowInTray" type="bool">
+            <label>Show in system tray.</label>
+            <default>true</default>
+        </entry>
+        <entry name="ShowStartUpDialog" type="bool">
+            <label>Show when application starts.</label>
+            <default>true</default>
+        </entry>
+    </group>
     <group name="Paths">
         <entry name="paths" type="PathList">
             <label>Folders.</label>

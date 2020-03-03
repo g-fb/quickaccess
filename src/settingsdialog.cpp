@@ -49,6 +49,7 @@ SettingsDialog::SettingsDialog(Settings *settings, QWidget *parent, const QStrin
 
     m_settings->submenuEntriesCountInfo->setText(
                 i18n("Use %1 to show all or %2 to show none", QStringLiteral("-1"), QStringLiteral("0")));
+    m_settings->kcfg_ShowInTray->setChecked(m_config->group("General").readEntry("ShowInTray", true));
 
     // add button to open file dialog to select a folder
     // and add it to the folders list

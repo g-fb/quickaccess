@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
     int y = (screenGeometry.height() - startUpDialog->height()) / 2;
     startUpDialog->move(screenGeometry.x() + x, screenGeometry.y() + y);
     if (m_config->group("General").readEntry("ShowStartUpDialog", true)) {
-        startUpDialog->showOnStartUp->setChecked(m_config->group("General").readEntry("ShowStartUpDialog", true));
+        startUpDialog->kcfg_ShowOnStartUp->setChecked(m_config->group("General").readEntry("ShowStartUpDialog", true));
         startUpDialog->show();
     }
     connect(startUpDialog->openMenuButton, &QPushButton::clicked,
@@ -49,8 +49,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(startUpDialog->copyCommandButton, &QPushButton::clicked, this, [=]() {
         m_clipboard->setText(QStringLiteral("dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showMenu"));
     });
-    connect(startUpDialog->showOnStartUp, &QCheckBox::stateChanged, this, [=]() {
-        m_config->group("General").writeEntry("ShowStartUpDialog", startUpDialog->showOnStartUp->isChecked());
+    connect(startUpDialog->kcfg_ShowOnStartUp, &QCheckBox::stateChanged, this, [=]() {
+        m_config->group("General").writeEntry("ShowStartUpDialog", startUpDialog->kcfg_ShowOnStartUp->isChecked());
         m_config->sync();
     });
 
@@ -73,13 +73,6 @@ MainWindow::MainWindow(QWidget *parent)
         m_appIcon = QIcon::fromTheme("quickaccess", QIcon(":/icons/quickaccess"));
     }
 
-    QString showTrayIcon = parser.value(showTrayIconOption);
-    if (showTrayIcon == "show") {
-        createTrayIcon(true);
-    } else if (showTrayIcon == "hide") {
-        createTrayIcon(false);
-    }
-
     m_settings = new Settings(this);
     m_settingsDialog = new SettingsDialog(m_settings, nullptr, "settings", QuickAccessSettings::self());
     m_settingsDialog->setMinimumSize(500, 500);
@@ -91,6 +84,17 @@ MainWindow::MainWindow(QWidget *parent)
             startUpDialog, &StartUpDialog::show);
     connect(startUpDialog->openSettingsButton, &QPushButton::clicked,
             m_settingsDialog, &SettingsDialog::show);
+
+    connect(m_settingsDialog, &SettingsDialog::settingsChanged, this, [=]() {
+        m_trayIcon->setVisible(m_settings->kcfg_ShowInTray->isChecked());
+    });
+
+    QString showTrayIcon = parser.value(showTrayIconOption);
+    if (showTrayIcon == "show" && m_settings->kcfg_ShowInTray->isChecked()) {
+        createTrayIcon(true);
+    } else if (showTrayIcon == "hide" || !m_settings->kcfg_ShowInTray->isChecked()) {
+        createTrayIcon(false);
+    }
 
     setupMenu();
     setupDBus();
@@ -149,13 +153,9 @@ void MainWindow::addMenuItem(QMenu *menu, QString path)
 
 void MainWindow::createTrayIcon(bool show)
 {
-    if (!show) {
-        return;
-    }
-
     auto *aboutDialog = new AboutDialog(nullptr);
     aboutDialog->setWindowIcon(m_appIcon);
-    trayIconMenu = new QMenu(this);
+    auto trayIconMenu = new QMenu(this);
 
     auto *quitAction = new QAction(i18n("Quit"), nullptr);
     quitAction->setIcon(QIcon::fromTheme("application-exit"));
@@ -178,11 +178,11 @@ void MainWindow::createTrayIcon(bool show)
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
 
-    auto *trayIcon = new QSystemTrayIcon(this);
-    trayIcon->setToolTip("QuickAccess");
-    trayIcon->setIcon(m_appIcon);
-    trayIcon->setContextMenu(trayIconMenu);
-    trayIcon->show();
+    m_trayIcon = new QSystemTrayIcon(this);
+    m_trayIcon->setToolTip("QuickAccess");
+    m_trayIcon->setIcon(m_appIcon);
+    m_trayIcon->setContextMenu(trayIconMenu);
+    m_trayIcon->setVisible(show);
 }
 
 void MainWindow::onMenuHover(QMenu *menu, QString path)

@@ -107,6 +107,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="kcfg_ShowInTray">
+     <property name="text">
+      <string>Show in system tray/notification area</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QPushButton" name="openStartUpDialogButton">
      <property name="text">
       <string>Open start up dialog</string>

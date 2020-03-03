@@ -2,7 +2,6 @@
 1. [Introduction](#introduction)
 2. [Installation](#installation)
 3. [Usage](#usage)
-    * [Start](#start)
     * [Open Menu](#open-menu)
     * [Open Settings](#open-settings)
     * [Add Folder](#add-folder)
@@ -38,19 +37,6 @@ flatpak run com.georgefb.quickaccess
 If you don't like flatpak you can build from source or ask the your distro to provide a package.
 
 # Usage
-
-### Start
-```bash
-# with tray icon
-quickaccess
-# or
-quickaccess --tray-icon=show
-```
-
-```bash
-# without tray icon
-quickaccess --tray-icon=hide
-```
 
 ### Open Menu
 ```bash

@@ -48,8 +48,7 @@ kconfig_add_kcfg_files(quickaccess_SRC GENERATE_MOC settings.kcfgc)
 add_executable(quickaccess ${quickaccess_SRC})
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-
-target_link_libraries(quickaccess
+target_link_libraries(quickaccess PRIVATE
     Qt5::Widgets
     Qt5::DBus
     KF5::I18n
