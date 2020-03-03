@@ -12,14 +12,18 @@
     <description>
         <p>QuickAccess is a program running in the background providing a global menu to quickly access user defined folders and their subfolders as well as creating and running custom commands. The menu can be opened through two dbus methods: showMenu and showDelayedMenu. Both methods can open the menu in a predefined fixed position or on mouse position.</p>
         <p>showMenu shows the menu instantly, but in certain circumstances there are problems with the menu not showing or not closing. In these cases use the showDelayedMenu, there is a default delay of 150 miliseconds, but can be changed (see example below).</p>
-        <p>Start with tray icon: quickaccess or quickaccess --tray-icon=show</p>
-        <p>Start without tray icon: quickaccess --tray-icon=hide</p>
         <p>Open menu with dbus-send</p>
-        <p>"dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showMenu int32:x" or "dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showDelayedMenu int32:200 int32:x"</p>
-        <p>replace x with an int from 0 to 9 to set the preffered position to open the menu.</p>
+        <p>dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showMenu int32:x</p>
+        <p>dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showDelayedMenu int32:200 int32:x</p>
+        <p>Replace x with an int from 0 to 9 to set the preffered position to open the menu.</p>
         <p>Check the project page for more info https://gitlab.com/g-fb/quickaccess.</p>
     </description>
     <releases>
+    <release version="2.0.8" date="2020-03-03">
+        <description>
+            <p>Add setting to toggle tray icon.</p>
+        </description>
+    </release>
     <release version="2.0.7" date="2020-03-02">
         <description>
             <p>Add start up window explaining how the application works.</p>
@@ -84,7 +88,7 @@
     <screenshots>
         <screenshot type="default">
             <caption>QuickAccess menu and settings</caption>
-            <image>https://s.put.re/ffGQUDe5.png</image>
+            <image>https://i.imgur.com/uTR6EeD.png</image>
         </screenshot>
     </screenshots>
     <content_rating type="oars-1.0" />
