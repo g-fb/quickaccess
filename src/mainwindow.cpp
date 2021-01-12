@@ -234,7 +234,7 @@ QAction *MainWindow::createCustomCommand(KConfigGroup group)
     auto action = new QAction(nullptr);
     action->setText(group.readEntry("Name"));
     action->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
-    connect(action, &QAction::triggered, [=]() {
+    connect(action, &QAction::triggered, this, [=]() {
         QString processName = group.readEntry("Process");
         QString argsString = group.readEntry("Args");
         argsString.replace("{clipboard}", KShell::quoteArg(m_clipboard->text()));
@@ -259,8 +259,8 @@ void MainWindow::setupMenu()
     m_menu->setMinimumWidth(200);
     m_menu->setMaximumWidth(350);
 
-    auto paths = m_config->group("Paths").readPathEntry("paths", QStringList());
-    for (auto path : paths) {
+    const auto paths = m_config->group("Paths").readPathEntry("paths", QStringList());
+    for (const auto &path : paths) {
         addMenuItem(m_menu, path);
     }
     m_menu->addSeparator();

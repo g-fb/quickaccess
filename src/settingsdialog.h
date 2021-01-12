@@ -42,8 +42,7 @@ class SettingsDialog : public KConfigDialog
 
 public:
     SettingsDialog(Settings *settings, QWidget *parent, const QString &name, KConfigSkeleton *config);
-signals:
-    void addMenu(QString name);
+
 private slots:
     /**
      * Called when the user clicks Apply or OK.
