@@ -98,6 +98,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     setupMenu();
     setupDBus();
+    m_settingsDialog->show();
 }
 
 // Ads a menu or an action to menu
@@ -259,11 +260,19 @@ void MainWindow::setupMenu()
     m_menu->setMinimumWidth(200);
     m_menu->setMaximumWidth(350);
 
+    if (QuickAccessSettings::useSections()) {
+        m_menu->addSection(i18n("Paths"));
+    }
+
     const auto paths = m_config->group("Paths").readPathEntry("paths", QStringList());
     for (const auto &path : paths) {
         addMenuItem(m_menu, path);
     }
-    m_menu->addSeparator();
+    if (QuickAccessSettings::useSections()) {
+        m_menu->addSection(i18n("Commands"));
+    } else {
+        m_menu->addSeparator();
+    }
     // ----------------------------- //
 
     int commandsCount = m_config->group("Commands").readEntry("Count").toInt();
