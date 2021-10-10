@@ -17,9 +17,10 @@ find_package(Qt5 CONFIG REQUIRED COMPONENTS
     DBus
 )
 find_package(KF5 REQUIRED COMPONENTS
-    I18n
     Config
     ConfigWidgets
+    I18n
+    IconThemes
 )
 
 set(quickaccess_SRC
@@ -27,7 +28,10 @@ set(quickaccess_SRC
     src/mainwindow.cpp
     src/pathsmenu.cpp
     src/treewidget.cpp
-    src/settingsdialog.cpp
+    src/settings/settingswindow.cpp
+    src/settings/generalsettingspage.cpp
+    src/settings/folderssettingspage.cpp
+    src/settings/commandssettingspage.cpp
     data/com.georgefb.quickaccess.xml
     data/icons/icons.qrc
 )
@@ -47,13 +51,18 @@ kconfig_add_kcfg_files(quickaccess_SRC GENERATE_MOC settings.kcfgc)
 
 add_executable(quickaccess ${quickaccess_SRC})
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(${PROJECT_NAME}
+    PRIVATE
+        ${CMAKE_CURRENT_BINARY_DIR}
+        src
+        src/settings)
 target_link_libraries(quickaccess PRIVATE
     Qt5::Widgets
     Qt5::DBus
-    KF5::I18n
     KF5::ConfigCore
     KF5::ConfigWidgets
+    KF5::I18n
+    KF5::IconThemes
 )
 
 ecm_install_icons(ICONS

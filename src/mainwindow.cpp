@@ -2,7 +2,8 @@
 #include "pathsmenu.h"
 #include "quickaccessadaptor.h"
 #include "settings.h"
-#include "settingsdialog.h"
+//#include "settingsdialog.h"
+#include "settings/settingswindow.h"
 
 #include <QClipboard>
 #include <QCommandLineParser>
@@ -32,6 +33,9 @@ MainWindow::MainWindow(QWidget *parent)
     , m_menu(new QMenu())
     , m_config(KSharedConfig::openConfig("quickaccessrc"))
 {
+    // call adjustSize so the settings window opens in the center of the screen
+    adjustSize();
+
     m_clipboard = QGuiApplication::clipboard();
 
     auto startUpDialog = new StartUpDialog(this);
@@ -73,32 +77,17 @@ MainWindow::MainWindow(QWidget *parent)
         m_appIcon = QIcon::fromTheme("quickaccess", QIcon(":/icons/quickaccess"));
     }
 
-    m_settings = new Settings(this);
-    m_settingsDialog = new SettingsDialog(m_settings, nullptr, "settings", QuickAccessSettings::self());
-    m_settingsDialog->setMinimumSize(500, 500);
-    m_settingsDialog->setWindowIcon(m_appIcon);
-    m_settingsDialog->setFaceType(KPageDialog::Plain);
-    connect(m_settingsDialog, &SettingsDialog::settingsChanged, this, &MainWindow::setupMenu);
-
-    connect(m_settings->openStartUpDialogButton, &QPushButton::clicked,
-            startUpDialog, &StartUpDialog::show);
-    connect(startUpDialog->openSettingsButton, &QPushButton::clicked,
-            m_settingsDialog, &SettingsDialog::show);
-
-    connect(m_settingsDialog, &SettingsDialog::settingsChanged, this, [=]() {
-        m_trayIcon->setVisible(m_settings->kcfg_ShowInTray->isChecked());
-    });
-
     QString showTrayIcon = parser.value(showTrayIconOption);
-    if (showTrayIcon == "show" && m_settings->kcfg_ShowInTray->isChecked()) {
+    if (showTrayIcon == "show" && QuickAccessSettings::showInTray()) {
         createTrayIcon(true);
-    } else if (showTrayIcon == "hide" || !m_settings->kcfg_ShowInTray->isChecked()) {
+    } else if (showTrayIcon == "hide" || !QuickAccessSettings::showInTray()) {
         createTrayIcon(false);
     }
 
     setupMenu();
     setupDBus();
-    m_settingsDialog->show();
+    auto settingsWindow = new SettingsWindow(this, QuickAccessSettings::self());
+    settingsWindow->showDialog(QStringLiteral("settings"));
 }
 
 // Ads a menu or an action to menu
@@ -208,7 +197,6 @@ void MainWindow::onMenuHover(QMenu *menu, QString path)
             connect(action, &QAction::triggered, this, [=]() {
                 actionClicked = true;
                 KConfigDialog::showDialog("settings");
-                m_settings->kcfg_submenuEntriesCount->setFocus();
             });
             menu->addAction(action);
             break;
