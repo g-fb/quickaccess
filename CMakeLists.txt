@@ -1,75 +1,44 @@
-cmake_minimum_required(VERSION 3.0)
-project(quickaccess)
-
-find_package(ECM 1.0.0 REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
-include(KDEInstallDirs)
-include(ECMInstallIcons)
+cmake_minimum_required(VERSION 3.15)
+project(quickaccess VERSION 2.0.9 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt5 CONFIG REQUIRED COMPONENTS
-    Widgets
-    DBus
-)
-find_package(KF5 REQUIRED COMPONENTS
-    Config
-    ConfigWidgets
-    I18n
-    IconThemes
-)
+find_package(ECM 5.66 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-set(quickaccess_SRC
-    src/main.cpp
-    src/mainwindow.cpp
-    src/pathsmenu.cpp
-    src/treewidget.cpp
-    src/settings/settingswindow.cpp
-    src/settings/generalsettingspage.cpp
-    src/settings/folderssettingspage.cpp
-    src/settings/commandssettingspage.cpp
-    data/com.georgefb.quickaccess.xml
-    data/icons/icons.qrc
+include(KDEInstallDirs)
+include(ECMInstallIcons)
+include(ECMSetupVersion)
+include(FeatureSummary)
+
+ecm_setup_version(${PROJECT_VERSION}
+    VARIABLE_PREFIX QUICKACCESS
+    VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/src/quickaccess-version.h"
 )
 
-ki18n_wrap_ui(quickaccess_SRC
-    ui/aboutdialog.ui
-    ui/addcommand.ui
-    ui/addmenu.ui
-    ui/settings.ui
-    ui/startupdialog.ui
-)
+find_package(Qt5Widgets)
+set_package_properties(Qt5Widgets PROPERTIES TYPE REQUIRED)
 
-qt5_add_dbus_adaptor(quickaccess_SRC data/com.georgefb.quickaccess.xml
-    src/mainwindow.h MainWindow)
+find_package(Qt5DBus)
+set_package_properties(Qt5DBus PROPERTIES TYPE REQUIRED)
 
-kconfig_add_kcfg_files(quickaccess_SRC GENERATE_MOC settings.kcfgc)
+find_package(KF5Config)
+set_package_properties(KF5Config PROPERTIES TYPE REQUIRED)
 
-add_executable(quickaccess ${quickaccess_SRC})
+find_package(KF5ConfigWidgets)
+set_package_properties(KF5ConfigWidgets PROPERTIES TYPE REQUIRED)
 
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        ${CMAKE_CURRENT_BINARY_DIR}
-        src
-        src/settings)
-target_link_libraries(quickaccess PRIVATE
-    Qt5::Widgets
-    Qt5::DBus
-    KF5::ConfigCore
-    KF5::ConfigWidgets
-    KF5::I18n
-    KF5::IconThemes
-)
+find_package(KF5I18n)
+set_package_properties(KF5I18n PROPERTIES TYPE REQUIRED)
 
-ecm_install_icons(ICONS
-    data/icons/512-apps-quickaccess.svg
-    DESTINATION ${KDE_INSTALL_ICONDIR} THEME hicolor)
+find_package(KF5IconThemes)
+set_package_properties(KF5IconThemes PROPERTIES TYPE REQUIRED)
 
-install(TARGETS quickaccess DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
-install(FILES data/com.georgefb.quickaccess.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
-install(FILES data/com.georgefb.quickaccess.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
-install(PROGRAMS data/com.georgefb.quickaccess.desktop DESTINATION ${KDE_INSTALL_APPDIR})
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
+
+add_subdirectory(data)
+add_subdirectory(src)
