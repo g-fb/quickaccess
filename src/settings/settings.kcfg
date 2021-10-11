@@ -5,11 +5,9 @@
     <kcfgfile name="quickaccessrc" />
     <group name="General">
         <entry name="ShowInTray" type="bool">
-            <label>Show in system tray.</label>
             <default>true</default>
         </entry>
         <entry name="ShowStartUpDialog" type="bool">
-            <label>Show when application starts.</label>
             <default>true</default>
         </entry>
         <entry name="UseSections" type="bool">
@@ -17,17 +15,12 @@
         </entry>
     </group>
     <group name="Paths">
-        <entry name="paths" type="PathList">
-            <label>Folders.</label>
-        </entry>
+        <entry name="paths" type="PathList"></entry>
         <entry name="submenuEntriesCount" type="int">
-            <label>Submenu Entries Count.</label>
             <default>25</default>
         </entry>
     </group>
     <group name="Commands">
-        <entry name="commands" type="StringList">
-            <label>Folders.</label>
-        </entry>
+        <entry name="commands" type="StringList"></entry>
     </group>
 </kcfg>
