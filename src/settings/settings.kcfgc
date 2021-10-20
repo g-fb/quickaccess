@@ -2,4 +2,3 @@ File=settings.kcfg
 ClassName=QuickAccessSettings
 Singleton=true
 Mutators=true
-SetUserTexts=true

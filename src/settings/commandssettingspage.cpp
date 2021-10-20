@@ -32,7 +32,7 @@ CommandsSettingsPage::CommandsSettingsPage(QWidget *parent)
     m_commandsTree->setDragDropMode(QAbstractItemView::InternalMove);
     m_commandsTree->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    int commandsCount = m_config->group("Commands").readEntry("Count").toInt();
+    int commandsCount = m_config->group("General").readEntry("CommandsCount").toInt();
     for (int i = 0; i < commandsCount; i++) {
         auto groupName = QString("Command_%0").arg(i);
         auto group = m_config->group(groupName);
@@ -99,6 +99,65 @@ CommandsSettingsPage::CommandsSettingsPage(QWidget *parent)
             editCommand();
         }
     });
+}
+
+void CommandsSettingsPage::save()
+{
+    deleteCommands();
+
+    int commandsCount = m_commandsTree->topLevelItemCount();
+    // save the commands
+    for (int i = 0; i < commandsCount; ++i) {
+        auto item = m_commandsTree->topLevelItem(i);
+        QString name = item->text(0);
+        QString iconName = item->icon(0).name();
+        QString process = item->text(1);
+        QString args = item->text(2);
+
+        auto group = m_config->group(QString("Command_%0").arg(i));
+        group.writeEntry("Name", name);
+        group.writeEntry("Icon", iconName);
+        if (item->data(0, Qt::UserRole) == "command") {
+            group.writeEntry("Process", process);
+            group.writeEntry("Args", args);
+        }
+        group.writeEntry("Count", item->childCount());
+        group.writeEntry("Type", item->data(0, Qt::UserRole));
+        m_config->sync();
+
+        if (item->data(0, Qt::UserRole) == "menu") {
+            for (int j = 0; j < item->childCount(); ++j) {
+                auto group = m_config->group(QString("Command_%0__Subcommand_%1").arg(i).arg(j));
+                group.writeEntry("Name", item->child(j)->text(0));
+                group.writeEntry("Icon", item->child(j)->icon(0).name());
+                group.writeEntry("Process", item->child(j)->text(1));
+                group.writeEntry("Args", item->child(j)->text(2));
+                group.writeEntry("Type", item->child(j)->data(0, Qt::UserRole));
+            }
+        }
+    }
+    auto group = m_config->group("General");
+    group.writeEntry("CommandsCount", QString::number(commandsCount));
+    m_config->sync();
+
+}
+
+void CommandsSettingsPage::deleteCommands()
+{
+    int commandsCount = m_config->group("General").readEntry("CommandsCount").toInt();
+    // delete all commands
+    for (int i = 0; i < commandsCount; ++i) {
+        auto group = m_config->group(QString("Command_%0").arg(i));
+        if (group.readEntry("Type") == "menu") {
+            for (int j = 0; j < group.readEntry("Count").toInt(); ++j) {
+                auto group = m_config->group(QString("Command_%0__Subcommand_%1").arg(i).arg(j));
+                m_config->deleteGroup(group.name());
+            }
+        }
+        m_config->deleteGroup(group.name());
+    }
+    m_config->deleteGroup("Commands");
+    m_config->sync();
 }
 
 void CommandsSettingsPage::createMenuDialog()
@@ -215,9 +274,9 @@ void CommandsSettingsPage::editCommand()
     m_dialogMode = QA::DialogEditMode;
     auto item = m_commandsTree->currentItem();
     if (item->data(0, Qt::UserRole) == "menu") {
-        m_commandDialog->setWindowTitle(i18n("Edit Menu"));
-        m_commandNameInput->setText(item->text(0));
-        m_commandDialog->show();
+        m_menuDialog->setWindowTitle(i18n("Edit Menu"));
+        m_menuNameInput->setText(item->text(0));
+        m_menuDialog->show();
     } else {
         m_commandDialog->setWindowTitle(i18n("Edit Command"));
         m_commandNameInput->setText(item->text(0));

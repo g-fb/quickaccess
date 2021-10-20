@@ -16,6 +16,7 @@ GeneralSettingsPage::GeneralSettingsPage(QWidget *parent)
     layout->setMargin(0);
     auto label = new QLabel(i18n("Use -1 to show all or 0 to show none"), this);
     auto submenuEntries = new QSpinBox(this);
+    submenuEntries->setObjectName("kcfg_SubmenuEntriesCount");
     submenuEntries->setValue(QuickAccessSettings::submenuEntriesCount());
     submenuEntries->setMinimum(-1);
     submenuEntries->setMaximum(999);
@@ -24,11 +25,13 @@ GeneralSettingsPage::GeneralSettingsPage(QWidget *parent)
     formLayout->addRow(i18n("Extraction folder"), widget);
 
     auto showTrayIcon = new QCheckBox(this);
+    showTrayIcon->setObjectName("kcfg_ShowInTray");
     showTrayIcon->setChecked(QuickAccessSettings::showInTray());
     showTrayIcon->setText(i18n("Show in system tray/notification area"));
     formLayout->addRow(QString(), showTrayIcon);
 
     auto useSections = new QCheckBox(this);
+    useSections->setObjectName("kcfg_UseSections");
     useSections->setChecked(QuickAccessSettings::useSections());
     useSections->setText(i18n("Use sections instead of separators"));
     formLayout->addRow(QString(), useSections);

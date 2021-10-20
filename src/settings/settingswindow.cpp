@@ -3,8 +3,11 @@
 #include "commandssettingspage.h"
 #include "folderssettingspage.h"
 #include "generalsettingspage.h"
+#include "settings.h"
 
 #include <KLocalizedString>
+
+#include <QPushButton>
 
 SettingsWindow::SettingsWindow(QWidget *parent, KConfigSkeleton *skeleton)
     : KConfigDialog(parent, QStringLiteral("settings"), skeleton)
@@ -24,15 +27,37 @@ SettingsWindow::SettingsWindow(QWidget *parent, KConfigSkeleton *skeleton)
     auto commandsSettingsPage = new CommandsSettingsPage(this);
     auto commandsPage = addPage(commandsSettingsPage, i18n("Commands"), QStringLiteral("dialog-scripts"), QString());
 
-    setCurrentPage(commandsPage);
+//    setCurrentPage(commandsPage);
 
-    connect(generalSettingsPage, &GeneralSettingsPage::changed, this, [=]() {
-        // update buttons state
-    });
     connect(foldersSettingsPage, &FoldersSettingsPage::changed, this, [=]() {
-        // update buttons state
+        m_changed = true;
+        updateButtons();
     });
+
     connect(commandsSettingsPage, &CommandsSettingsPage::changed, this, [=]() {
-        // update buttons state
+        m_changed = true;
+        updateButtons();
     });
+
+    connect(button(QDialogButtonBox::Apply), &QPushButton::clicked, this, [=]() {
+        foldersSettingsPage->save();
+        commandsSettingsPage->save();
+        updateButtons();
+    });
+
+    connect(button(QDialogButtonBox::Ok), &QPushButton::clicked, this, [=]() {
+        if (hasChanged()) {
+            foldersSettingsPage->save();
+            commandsSettingsPage->save();
+            updateButtons();
+        }
+    });
+}
+
+bool SettingsWindow::hasChanged()
+{
+    if (m_changed) {
+        return true;
+    }
+    return KConfigDialog::hasChanged();
 }

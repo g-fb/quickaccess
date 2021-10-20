@@ -10,28 +10,30 @@
 FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
     : QWidget(parent)
 {
-
     auto iconDialog = new KIconDialog(this);
-
     auto foldersLayout = new QVBoxLayout(this);
 
-    auto const folders = QuickAccessSettings::paths();
-    auto model = new QStandardItemModel(folders.count(), 2);
-    int i {0};
-    for (auto folder : folders) {
+    m_config = KSharedConfig::openConfig("quickaccessrc");
+
+    auto group = m_config->group(QStringLiteral("General"));
+    int foldersCount = group.readEntry("FoldersCount").toInt();
+
+    auto model = new QStandardItemModel(foldersCount, 2);
+
+    for (int i = 0; i < foldersCount; ++i) {
+        auto group = m_config->group(QStringLiteral("Folder_%1").arg(i));
+        auto path = group.readEntry(QStringLiteral("Path"));
+        auto iconName = group.readEntry(QStringLiteral("Icon"));
+
         QStandardItem *item = new QStandardItem();
-        item->setData(folder, Qt::DisplayRole);
-        item->setData(QIcon::fromTheme("folder"), Qt::DecorationRole);
-        if (i == 2) {
-            item->setData(QIcon::fromTheme("configure"), Qt::DecorationRole);
-        }
+        item->setData(path, Qt::DisplayRole);
+        item->setData(QIcon::fromTheme(iconName), Qt::DecorationRole);
         model->setItem(i, item);
-        ++i;
     }
 
-    auto foldersListView = new QListView(this);
-    foldersListView->setModel(model);
-    foldersListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_foldersListView = new QListView(this);
+    m_foldersListView->setModel(model);
+    m_foldersListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 
     auto editWidget = new QWidget(this);
@@ -78,14 +80,14 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
     deleteFolderButton->setIcon(QIcon::fromTheme("edit-delete"));
     buttonsLayout->addWidget(deleteFolderButton);
 
-    foldersLayout->addWidget(foldersListView);
+    foldersLayout->addWidget(m_foldersListView);
     foldersLayout->addWidget(editWidget);
     foldersLayout->addWidget(buttonsWidget);
     foldersLayout->addSpacing(25);
 
 
     auto selectedIndex = [=]() {
-        QItemSelectionModel *selection = foldersListView->selectionModel();
+        QItemSelectionModel *selection = m_foldersListView->selectionModel();
         const QModelIndexList selectedIndexes = selection->selectedIndexes();
         if (!selectedIndexes.isEmpty() && selectedIndexes[0].isValid()) {
             return selectedIndexes[0];
@@ -96,7 +98,7 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
 
     // Connections
 
-    connect(foldersListView->selectionModel(), &QItemSelectionModel::selectionChanged,
+    connect(m_foldersListView->selectionModel(), &QItemSelectionModel::selectionChanged,
             this, [=](const QItemSelection &, const QItemSelection &) {
         auto index = selectedIndex();
         auto iconName = index.data(Qt::DecorationRole).value<QIcon>().name();
@@ -134,8 +136,8 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
             model->setData(index, tmpFolder, Qt::DisplayRole);
             model->setData(index, tmpIcon, Qt::DecorationRole);
 
-            foldersListView->selectionModel()->select(index, QItemSelectionModel::Deselect);
-            foldersListView->selectionModel()->select(aboveIndex, QItemSelectionModel::Select);
+            m_foldersListView->selectionModel()->select(index, QItemSelectionModel::Deselect);
+            m_foldersListView->selectionModel()->select(aboveIndex, QItemSelectionModel::Select);
 
             Q_EMIT changed();
         }
@@ -155,8 +157,8 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
             model->setData(index, tmpFolder, Qt::DisplayRole);
             model->setData(index, tmpIcon, Qt::DecorationRole);
 
-            foldersListView->selectionModel()->select(index, QItemSelectionModel::Deselect);
-            foldersListView->selectionModel()->select(aboveIndex, QItemSelectionModel::Select);
+            m_foldersListView->selectionModel()->select(index, QItemSelectionModel::Deselect);
+            m_foldersListView->selectionModel()->select(aboveIndex, QItemSelectionModel::Select);
 
             Q_EMIT changed();
         }
@@ -180,8 +182,42 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
 
     connect(model, &QStandardItemModel::rowsInserted, this, [=](const QModelIndex &, int, int last) {
         QModelIndex newIndex = model->index(last, 0);
-        foldersListView->selectionModel()->select(newIndex, QItemSelectionModel::Select);
+        m_foldersListView->selectionModel()->select(newIndex, QItemSelectionModel::Select);
     });
 
     connect(model, &QStandardItemModel::itemChanged, this, &FoldersSettingsPage::changed);
+}
+
+void FoldersSettingsPage::save()
+{
+    deleteFolders();
+
+    auto model = m_foldersListView->model();
+    int foldersCount = model->rowCount();
+    // save the folders
+    for (int i = 0; i < foldersCount; ++i) {
+        auto modelIndex = model->index(i, 0);
+        QString path = modelIndex.data(Qt::DisplayRole).toString();
+        QString iconName = modelIndex.data(Qt::DecorationRole).value<QIcon>().name();
+
+        auto group = m_config->group(QString("Folder_%1").arg(i));
+        group.writeEntry(QStringLiteral("Path"), path);
+        group.writeEntry(QStringLiteral("Icon"), iconName);
+        m_config->sync();
+    }
+    auto group = m_config->group("General");
+    group.writeEntry("FoldersCount", QString::number(foldersCount));
+    m_config->sync();
+}
+
+void FoldersSettingsPage::deleteFolders()
+{
+    int foldersCount = m_config->group("General").readEntry("FoldersCount").toInt();
+    // delete all folders
+    for (int i = 0; i < foldersCount; ++i) {
+        auto group = m_config->group(QString("Folder_%0").arg(i));
+        m_config->deleteGroup(group.name());
+    }
+    m_config->deleteGroup("Folders");
+    m_config->sync();
 }

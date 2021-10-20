@@ -9,6 +9,8 @@
 #include "ui_settings.h"
 #include "ui_startupdialog.h"
 
+
+class SettingsWindow;
 namespace Ui {
     class MainWindow;
 }
@@ -74,18 +76,19 @@ signals:
 
 private:
     Ui::MainWindow *ui;
-    void addMenuItem(QMenu *menu, QString path);
+    void addMenuItem(QMenu *menu, QString path, QString iconName = "folder");
     void onMenuHover(QMenu *menu, QString path);
     void openFolder(QString path);
     void setupMenu();
     void setupDBus();
     bool isRunningSandbox();
+
     QIcon m_appIcon;
     QMenu *m_menu = nullptr;
     QDBusConnectionInterface *bus;
     QSystemTrayIcon *m_trayIcon;
     KSharedConfig::Ptr m_config;
-    KConfigDialog *m_settingsDialog;
+
     Settings *m_settings;
     QAction *createCustomCommand(KConfigGroup group);
     QClipboard *m_clipboard;

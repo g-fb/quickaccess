@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 #include "pathsmenu.h"
 #include "quickaccessadaptor.h"
+#include "migrations.h"
 #include "settings.h"
-//#include "settingsdialog.h"
 #include "settings/settingswindow.h"
 
 #include <QClipboard>
@@ -35,6 +35,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     // call adjustSize so the settings window opens in the center of the screen
     adjustSize();
+
+    Migrations migrations;
+    migrations.migrate();
 
     m_clipboard = QGuiApplication::clipboard();
 
@@ -86,13 +89,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     setupMenu();
     setupDBus();
-    auto settingsWindow = new SettingsWindow(this, QuickAccessSettings::self());
-    settingsWindow->showDialog(QStringLiteral("settings"));
 }
 
 // Ads a menu or an action to menu
 // if path is a folder with sub folders add a menu else add an action
-void MainWindow::addMenuItem(QMenu *menu, QString path)
+void MainWindow::addMenuItem(QMenu *menu, QString path, QString iconName)
 {
     QDirIterator it(path,
                     QDir::Dirs|QDir::NoDotAndDotDot,
@@ -113,7 +114,7 @@ void MainWindow::addMenuItem(QMenu *menu, QString path)
         pathFolders.removeAll(QString(""));
         QString elidedTitle = metrix.elidedText(pathFolders.takeLast(), Qt::ElideRight, 500);
         submenu->setTitle(elidedTitle);
-        submenu->setIcon(QIcon::fromTheme("folder"));
+        submenu->setIcon(QIcon::fromTheme(iconName));
         submenu->setMainWindow(this);
 
         connect(submenu, &PathsMenu::actionTriggered, this, [=]() {
@@ -249,12 +250,17 @@ void MainWindow::setupMenu()
     m_menu->setMaximumWidth(350);
 
     if (QuickAccessSettings::useSections()) {
-        m_menu->addSection(i18n("Paths"));
+        m_menu->addSection(i18n("Folders"));
     }
 
-    const auto paths = m_config->group("Paths").readPathEntry("paths", QStringList());
-    for (const auto &path : paths) {
-        addMenuItem(m_menu, path);
+    auto generalGroup = m_config->group(QStringLiteral("General"));
+    int foldersCount = generalGroup.readEntry("FoldersCount").toInt();
+    for (int i = 0; i < foldersCount; ++i) {
+        auto group = m_config->group(QStringLiteral("Folder_%1").arg(i));
+        auto path = group.readEntry(QStringLiteral("Path"));
+        auto iconName = group.readEntry(QStringLiteral("Icon"));
+
+        addMenuItem(m_menu, path, iconName);
     }
     if (QuickAccessSettings::useSections()) {
         m_menu->addSection(i18n("Commands"));
@@ -263,7 +269,7 @@ void MainWindow::setupMenu()
     }
     // ----------------------------- //
 
-    int commandsCount = m_config->group("Commands").readEntry("Count").toInt();
+    int commandsCount = generalGroup.readEntry("CommandsCount").toInt();
     for (int i = 0; i < commandsCount; i++) {
         auto group = m_config->group(QString("Command_%1").arg(i));
         if (group.readEntry("Type") == "menu") {
@@ -293,7 +299,11 @@ void MainWindow::setupMenu()
     action->setIcon(QIcon::fromTheme("configure"));
     connect(action, &QAction::triggered, this, [=]() {
         actionClicked = true;
-        KConfigDialog::showDialog("settings");
+        if (SettingsWindow::showDialog(QStringLiteral("settings"))) {
+            return;
+        }
+        auto settingsWindow = new SettingsWindow(this, QuickAccessSettings::self());
+        settingsWindow->show();
     });
     m_menu->addAction(action);
 

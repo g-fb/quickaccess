@@ -23,6 +23,7 @@ class CommandsSettingsPage : public QWidget
 public:
     explicit CommandsSettingsPage(QWidget *parent = nullptr);
 
+    void save();
     void createMenuDialog();
     void createCommandDialog();
     void cloneCommand();
@@ -34,6 +35,7 @@ Q_SIGNALS:
     void changed();
 
 private:
+    void deleteCommands();
     KSharedConfig::Ptr m_config;
     TreeWidget *m_commandsTree;
     QDialog *m_menuDialog;

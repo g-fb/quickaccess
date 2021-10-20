@@ -13,14 +13,8 @@
         <entry name="UseSections" type="bool">
             <default>false</default>
         </entry>
-    </group>
-    <group name="Paths">
-        <entry name="paths" type="PathList"></entry>
-        <entry name="submenuEntriesCount" type="int">
+        <entry name="SubmenuEntriesCount" type="int">
             <default>25</default>
         </entry>
-    </group>
-    <group name="Commands">
-        <entry name="commands" type="StringList"></entry>
     </group>
 </kcfg>
