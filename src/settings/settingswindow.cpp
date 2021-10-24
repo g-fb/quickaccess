@@ -30,6 +30,7 @@ SettingsWindow::SettingsWindow(QWidget *parent, KConfigSkeleton *skeleton)
 //    setCurrentPage(commandsPage);
 
     connect(foldersSettingsPage, &FoldersSettingsPage::changed, this, [=]() {
+        // enable apply buttton
         m_changed = true;
         updateButtons();
     });
@@ -42,6 +43,8 @@ SettingsWindow::SettingsWindow(QWidget *parent, KConfigSkeleton *skeleton)
     connect(button(QDialogButtonBox::Apply), &QPushButton::clicked, this, [=]() {
         foldersSettingsPage->save();
         commandsSettingsPage->save();
+        // disable apply buttton
+        m_changed = false;
         updateButtons();
     });
 
