@@ -18,22 +18,24 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
     auto group = m_config->group(QStringLiteral("General"));
     int foldersCount = group.readEntry("FoldersCount").toInt();
 
-    auto model = new QStandardItemModel(foldersCount, 2);
+    m_foldersListView = new QListWidget(this);
+    m_foldersListView->setDragDropMode(QAbstractItemView::InternalMove);
+    m_foldersListView->setDefaultDropAction(Qt::MoveAction);
+    m_foldersListView->setDragEnabled(true);
+    m_foldersListView->setAcceptDrops(true);
+    m_foldersListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_foldersListView->setSelectionMode(QAbstractItemView::SingleSelection);
 
     for (int i = 0; i < foldersCount; ++i) {
         auto group = m_config->group(QStringLiteral("Folder_%1").arg(i));
         auto path = group.readEntry(QStringLiteral("Path"));
         auto iconName = group.readEntry(QStringLiteral("Icon"));
 
-        QStandardItem *item = new QStandardItem();
-        item->setData(path, Qt::DisplayRole);
-        item->setData(QIcon::fromTheme(iconName), Qt::DecorationRole);
-        model->setItem(i, item);
+        QListWidgetItem *item = new QListWidgetItem();
+        item->setText(path);
+        item->setIcon(QIcon::fromTheme(iconName));
+        m_foldersListView->addItem(item);
     }
-
-    m_foldersListView = new QListView(this);
-    m_foldersListView->setModel(model);
-    m_foldersListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 
     auto editWidget = new QWidget(this);
@@ -108,36 +110,35 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
     });
 
     connect(iconPreview, &QPushButton::clicked, this, [=]() {
-        auto index = selectedIndex();
-        auto item = model->item(index.row(), index.column());
+        auto item = m_foldersListView->selectedItems().first();
         auto oldIconName = item->data(Qt::DecorationRole).value<QIcon>().name();
         auto newIconName = iconDialog->getIcon();
         auto iconName = newIconName.isEmpty() ? oldIconName : newIconName;
-        item->setData(QIcon::fromTheme(iconName), Qt::DecorationRole);
+        item->setIcon(QIcon::fromTheme(iconName));
         iconPreview->setIcon(QIcon::fromTheme(iconName));
     });
 
     connect(folderEdit, &QLineEdit::textChanged, this, [=](const QString &text) {
-        auto index = selectedIndex();
-        model->setData(index, text, Qt::DisplayRole);
+        auto item = m_foldersListView->selectedItems().first();
+        item->setText(text);
     });
 
     connect(moveUpButton, &QPushButton::clicked, this, [=]() {
         auto index = selectedIndex();
         if (index.isValid() && index.row() > 0) {
-            auto aboveIndex = model->index(index.row() - 1, 0);
+            auto item = m_foldersListView->selectedItems().first();
+            auto aboveItem = m_foldersListView->item(m_foldersListView->row(item) - 1);
 
-            auto tmpFolder = model->data(aboveIndex, Qt::DisplayRole).toString();
-            auto tmpIcon = model->data(aboveIndex, Qt::DecorationRole).value<QIcon>();
+            auto tmpFolder = aboveItem->text();
+            auto tmpIcon = aboveItem->icon();
 
-            model->setData(aboveIndex, model->data(index, Qt::DisplayRole), Qt::DisplayRole);
-            model->setData(aboveIndex, model->data(index, Qt::DecorationRole), Qt::DecorationRole);
+            aboveItem->setText(item->text());
+            aboveItem->setIcon(item->icon());
 
-            model->setData(index, tmpFolder, Qt::DisplayRole);
-            model->setData(index, tmpIcon, Qt::DecorationRole);
+            item->setText(tmpFolder);
+            item->setIcon(tmpIcon);
 
-            m_foldersListView->selectionModel()->select(index, QItemSelectionModel::Deselect);
-            m_foldersListView->selectionModel()->select(aboveIndex, QItemSelectionModel::Select);
+            m_foldersListView->setCurrentItem(aboveItem);
 
             Q_EMIT changed();
         }
@@ -145,20 +146,20 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
 
     connect(moveDownButton, &QPushButton::clicked, this, [=]() {
         auto index = selectedIndex();
-        if (index.isValid() && index.row() < model->rowCount()-1) {
-            auto aboveIndex = model->index(index.row() + 1, 0);
+        if (index.isValid() && index.row() < m_foldersListView->count() - 1) {
+            auto item = m_foldersListView->selectedItems().first();
+            auto bellowItem = m_foldersListView->item(m_foldersListView->row(item) + 1);
 
-            auto tmpFolder = model->data(aboveIndex, Qt::DisplayRole).toString();
-            auto tmpIcon = model->data(aboveIndex, Qt::DecorationRole).value<QIcon>();
+            auto tmpFolder = bellowItem->text();
+            auto tmpIcon = bellowItem->icon();
 
-            model->setData(aboveIndex, model->data(index, Qt::DisplayRole), Qt::DisplayRole);
-            model->setData(aboveIndex, model->data(index, Qt::DecorationRole), Qt::DecorationRole);
+            bellowItem->setText(item->text());
+            bellowItem->setIcon(item->icon());
 
-            model->setData(index, tmpFolder, Qt::DisplayRole);
-            model->setData(index, tmpIcon, Qt::DecorationRole);
+            item->setText(tmpFolder);
+            item->setIcon(tmpIcon);
 
-            m_foldersListView->selectionModel()->select(index, QItemSelectionModel::Deselect);
-            m_foldersListView->selectionModel()->select(aboveIndex, QItemSelectionModel::Select);
+            m_foldersListView->setCurrentItem(bellowItem);
 
             Q_EMIT changed();
         }
@@ -167,25 +168,30 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
     connect(addFolderButton, &QPushButton::clicked, this, [=]() {
         QString path = QFileDialog::getExistingDirectory(this, i18n("Select a folder"), QDir::homePath());
         if (!path.isEmpty()) {
-            model->insertRow(model->rowCount(), new QStandardItem(QIcon::fromTheme("folder"), path));
+            auto item = new QListWidgetItem(QIcon::fromTheme("folder"), path);
+            m_foldersListView->addItem(item);
+            m_foldersListView->setCurrentItem(item);
 
             Q_EMIT changed();
         }
     });
 
     connect(deleteFolderButton, &QPushButton::clicked, this, [=]() {
-        auto index = selectedIndex();
-        model->removeRows(index.row(), 1);
+        auto items = m_foldersListView->selectedItems();
+        for(const auto& item : items) {
+            delete m_foldersListView->takeItem(m_foldersListView->row(item));
+        }
 
         Q_EMIT changed();
     });
 
-    connect(model, &QStandardItemModel::rowsInserted, this, [=](const QModelIndex &, int, int last) {
-        QModelIndex newIndex = model->index(last, 0);
-        m_foldersListView->selectionModel()->select(newIndex, QItemSelectionModel::Select);
+    connect(m_foldersListView->model(), &QAbstractItemModel::rowsInserted, this, [=](const QModelIndex &, int, int last) {
+        auto item = m_foldersListView->item(last);
+        item->setSelected(true);
     });
 
-    connect(model, &QStandardItemModel::itemChanged, this, &FoldersSettingsPage::changed);
+    connect(m_foldersListView->model(), &QAbstractItemModel::rowsMoved, this, &FoldersSettingsPage::changed);
+    connect(m_foldersListView->model(), &QAbstractItemModel::dataChanged, this, &FoldersSettingsPage::changed);
 }
 
 void FoldersSettingsPage::save()

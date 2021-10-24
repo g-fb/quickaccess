@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <KSharedConfig>
 
-class QListView;
+class QListWidget;
 
 class FoldersSettingsPage : public QWidget
 {
@@ -19,7 +19,7 @@ Q_SIGNALS:
 
 private:
     KSharedConfig::Ptr m_config;
-    QListView *m_foldersListView;
+    QListWidget *m_foldersListView;
     void deleteFolders();
 };
 
