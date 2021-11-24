@@ -1,4 +1,3 @@
-
 1. [Introduction](#introduction)
 2. [Installation](#installation)
 3. [Usage](#usage)
@@ -125,10 +124,14 @@ sudo eopkg it -c system.devel extra-cmake-modules qt5-base-devel kconfig-devel k
 ```
 
 # Build
-```
-cd /path/to/quickaccess_src_folder
-mkdir build && cd build
-cmake ..
-make
-./quickaccess
+```bash
+git clone https://gitlab.com/g-fb/quickaccess
+cd quickaccess
+# append `-D CMAKE_INSTALL_PREFIX:PATH=/your/custom/path` to install to a custom location
+cmake -B build -G Ninja
+cmake --build build
+# run
+./build/src/quickaccess
+# install
+cmake --install build
 ```
