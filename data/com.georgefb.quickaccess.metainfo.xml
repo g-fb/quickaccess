@@ -20,6 +20,18 @@
         <p>Check the project page for more info https://gitlab.com/g-fb/quickaccess.</p>
     </description>
     <releases>
+    <release version="3.0.0" date="2022-03-05">
+        <description>
+        <p>The way settings are saved has changed, when launching the new version, the old settings will be converted to the new format. Before that a backup will be created, in the same folder as the existing config file. In case something goes wrong file a bug report.</p>
+        <p>Features:</p>
+        <ul>
+          <li>Reworked the settings window.</li>
+          <li>Added option to show sections instead of separators in menu.</li>
+          <li>Folders in settings can be rearranged with drag and drop.</li>
+          <li>Added option to set custom icons for folders.</li>
+        </ul>
+        </description>
+    </release>
     <release version="2.0.9" date="2021-02-07">
         <description>
             <p>Fixed desktop file categories.</p>
