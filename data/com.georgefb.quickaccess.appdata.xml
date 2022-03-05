@@ -7,7 +7,8 @@
     <metadata_license>CC0-1.0</metadata_license>
     <project_license>GPL-3.0-or-later</project_license>
     <url type="homepage">https://gitlab.com/g-fb/quickaccess</url>
-    <url type="donation">https://www.patreon.com/georgefb</url>
+    <url type="donation">https://github.com/sponsors/g-fb</url>
+    <developer_name>George Florea Bănuș</developer_name>
     <summary>A global menu giving you quick access to folders and custom commands.</summary>
     <description>
         <p>QuickAccess is a program running in the background providing a global menu to quickly access user defined folders and their subfolders as well as creating and running custom commands. The menu can be opened through two dbus methods: showMenu and showDelayedMenu. Both methods can open the menu in a predefined fixed position or on mouse position.</p>
