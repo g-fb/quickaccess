@@ -34,6 +34,7 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
         QListWidgetItem *item = new QListWidgetItem();
         item->setText(path);
         item->setIcon(QIcon::fromTheme(iconName));
+        item->setToolTip(i18n("Double click to set icon"));
         m_foldersListView->addItem(item);
     }
 
@@ -50,6 +51,14 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
     folderEdit->setPlaceholderText(i18n("Folder"));
     folderEdit->setToolTip(folderEdit->placeholderText());
     folderEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+    connect(m_foldersListView, &QListWidget::itemClicked, this, [=](){
+        folderEdit->setFocus(Qt::MouseFocusReason);
+    });
+    connect(m_foldersListView, &QListWidget::itemDoubleClicked, this, [=](){
+        iconPreview->click();
+    });
+
 
     editLayout->addWidget(iconPreview);
     editLayout->addWidget(folderEdit);

@@ -312,6 +312,7 @@ void MainWindow::setupMenu()
         }
         auto settingsWindow = new SettingsWindow(this, QuickAccessSettings::self());
         settingsWindow->show();
+        connect(settingsWindow, &SettingsWindow::settingsChanged, this, &MainWindow::setupMenu);
     });
     m_menu->addAction(action);
 

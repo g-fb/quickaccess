@@ -46,6 +46,7 @@ SettingsWindow::SettingsWindow(QWidget *parent, KConfigSkeleton *skeleton)
         // disable apply buttton
         m_changed = false;
         updateButtons();
+        Q_EMIT settingsChanged(QStringLiteral("settings"));
     });
 
     connect(button(QDialogButtonBox::Ok), &QPushButton::clicked, this, [=]() {
@@ -53,6 +54,7 @@ SettingsWindow::SettingsWindow(QWidget *parent, KConfigSkeleton *skeleton)
             foldersSettingsPage->save();
             commandsSettingsPage->save();
             updateButtons();
+            Q_EMIT settingsChanged(QStringLiteral("settings"));
         }
     });
 }
@@ -60,6 +62,7 @@ SettingsWindow::SettingsWindow(QWidget *parent, KConfigSkeleton *skeleton)
 bool SettingsWindow::hasChanged()
 {
     if (m_changed) {
+        Q_EMIT changed();
         return true;
     }
     return KConfigDialog::hasChanged();
