@@ -11,7 +11,6 @@
 
 ----
 
-# <a href="https://put.re/player/cmrs1ivP.mp4/" target="_blank">Showcase Video!</a>
 [![Showcase](data/images/quickaccess.png)](data/images/quickaccess.png)
 
 
