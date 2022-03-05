@@ -13,6 +13,7 @@ Migrations::Migrations()
 
 void Migrations::migrate()
 {
+    backupConfigFile();
     migrateV2toV3();
 }
 
@@ -53,4 +54,10 @@ bool Migrations::migrateV2toV3()
         return m_config->sync();
     }
     return false;
+}
+
+bool Migrations::backupConfigFile()
+{
+    auto newCfg = m_config->copyTo("quickaccessrc.backup");
+    return newCfg->sync();
 }

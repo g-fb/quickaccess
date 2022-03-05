@@ -12,6 +12,7 @@ public:
 
 private:
     bool migrateV2toV3();
+    bool backupConfigFile();
     KSharedConfig::Ptr m_config {nullptr};
     QString m_version;
 };
