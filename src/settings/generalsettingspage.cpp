@@ -22,7 +22,7 @@ GeneralSettingsPage::GeneralSettingsPage(QWidget *parent)
     submenuEntries->setMaximum(999);
     layout->addWidget(submenuEntries);
     layout->addWidget(label);
-    formLayout->addRow(i18n("Extraction folder"), widget);
+    formLayout->addRow(i18n("Submenu entries"), widget);
 
     auto showTrayIcon = new QCheckBox(this);
     showTrayIcon->setObjectName("kcfg_ShowInTray");
