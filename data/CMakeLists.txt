@@ -4,4 +4,4 @@ ecm_install_icons(ICONS icons/512-apps-quickaccess.svg
 )
 
 install(FILES com.georgefb.quickaccess.desktop DESTINATION ${KDE_INSTALL_APPDIR})
-install(FILES com.georgefb.quickaccess.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
+install(FILES com.georgefb.quickaccess.metainfo.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
