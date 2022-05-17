@@ -111,6 +111,9 @@ void CommandsSettingsPage::save()
         auto item = m_commandsTree->topLevelItem(i);
         QString name = item->text(0);
         QString iconName = item->icon(0).name();
+        if (iconName.isEmpty()) {
+            iconName = item->data(0, Qt::UserRole + 100).toString();
+        }
         QString process = item->text(1);
         QString args = item->text(2);
 
@@ -129,7 +132,11 @@ void CommandsSettingsPage::save()
             for (int j = 0; j < item->childCount(); ++j) {
                 auto group = m_config->group(QString("Command_%0__Subcommand_%1").arg(i).arg(j));
                 group.writeEntry("Name", item->child(j)->text(0));
-                group.writeEntry("Icon", item->child(j)->icon(0).name());
+                QString iconName = item->child(j)->icon(0).name();
+                if (iconName.isEmpty()) {
+                    iconName = item->child(j)->data(0, Qt::UserRole + 100).toString();
+                }
+                group.writeEntry("Icon", iconName);
                 group.writeEntry("Process", item->child(j)->text(1));
                 group.writeEntry("Args", item->child(j)->text(2));
                 group.writeEntry("Type", item->child(j)->data(0, Qt::UserRole));
@@ -248,6 +255,7 @@ void CommandsSettingsPage::createCommandDialog()
         }
 
         item->setIcon(0, QIcon::fromTheme(m_iconSelectButton->icon()));
+        item->setData(0, Qt::UserRole + 100, m_iconSelectButton->icon());
         item->setText(0, m_commandNameInput->text());
         item->setToolTip(0, m_commandNameInput->text());
         item->setText(1, m_processNameInput->text());
