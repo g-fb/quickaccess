@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(quickaccess VERSION 3.0.0 LANGUAGES CXX)
+project(quickaccess VERSION 3.0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)

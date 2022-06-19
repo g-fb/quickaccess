@@ -20,6 +20,15 @@
         <p>Check the project page for more info https://gitlab.com/g-fb/quickaccess.</p>
     </description>
     <releases>
+    <release version="3.0.1" date="2022-06-19">
+        <description>
+        <p>Bugfixes:</p>
+        <ul>
+          <li>Improved hidpi support.</li>
+          <li>Fixed loading of custom icons.</li>
+        </ul>
+        </description>
+    </release>
     <release version="3.0.0" date="2022-03-05">
         <description>
         <p>The way settings are saved has changed, when launching the new version, the old settings will be converted to the new format. Before that a backup will be created, in the same folder as the existing config file. In case something goes wrong file a bug report.</p>
