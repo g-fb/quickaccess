@@ -2,6 +2,7 @@
 
 #include <KIconDialog>
 #include <KLocalizedString>
+#include <QClipboard>
 
 #include <QtWidgets>
 
@@ -37,7 +38,6 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
         item->setToolTip(i18n("Double click to set icon"));
         m_foldersListView->addItem(item);
     }
-
 
     auto editWidget = new QWidget(this);
     editWidget->setEnabled(false);
@@ -78,9 +78,51 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
     moveDownButton->setIcon(QIcon::fromTheme("arrow-down"));
     buttonsLayout->addWidget(moveDownButton);
 
-    auto addFolderButton = new QPushButton(this);
+    QClipboard *clipboard = QGuiApplication::clipboard();
+    auto addFolderButton = new QToolButton(this);
     addFolderButton->setText(i18n("Add"));
     addFolderButton->setIcon(QIcon::fromTheme("list-add"));
+    addFolderButton->setPopupMode(QToolButton::MenuButtonPopup);
+    addFolderButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    auto addFolderButtonMenu = new QMenu(addFolderButton);
+    addFolderButtonMenu->setToolTip(clipboard->text());
+    connect(clipboard, &QClipboard::changed, this, [=](QClipboard::Mode mode) {
+        if (mode == QClipboard::Clipboard) {
+            addFolderButtonMenu->setToolTip(clipboard->text());
+        }
+    });
+
+    auto clipboardAction = new QAction(addFolderButtonMenu);
+    clipboardAction->setText(i18n("Add from clipboard"));
+    connect(clipboardAction, &QAction::triggered, this, [=]() {
+        QFileInfo fileInfo(clipboard->text());
+        if (fileInfo.exists()) {
+            auto *item = new QListWidgetItem(QIcon::fromTheme("folder"), clipboard->text());
+            item->setToolTip(i18n("Double click to set icon"));
+            m_foldersListView->addItem(item);
+            m_foldersListView->setCurrentItem(item);
+            Q_EMIT changed();
+        } else {
+            QDialog dialog;
+            dialog.setWindowTitle(i18n("Clipboard text is not a valid path"));
+            dialog.setMinimumWidth(600);
+
+            auto widget = new QWidget(&dialog);
+            auto vLayout = new QVBoxLayout(widget);
+            widget->setLayout(vLayout);
+            auto label = new QLabel(i18n("Clipboard text:"), widget);
+            auto infoLabel = new QTextEdit(clipboard->text(), widget);
+            auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+            connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+            vLayout->addWidget(label);
+            vLayout->addWidget(infoLabel);
+            vLayout->addWidget(buttonBox);
+            dialog.setLayout(vLayout);
+            dialog.exec();
+        }
+    });
+    addFolderButtonMenu->addAction(clipboardAction);
+    addFolderButton->setMenu(addFolderButtonMenu);
     buttonsLayout->addWidget(addFolderButton);
 
     auto spacer = new QSpacerItem(1, 1, QSizePolicy::Expanding);
@@ -95,7 +137,6 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
     foldersLayout->addWidget(editWidget);
     foldersLayout->addWidget(buttonsWidget);
     foldersLayout->addSpacing(25);
-
 
     auto selectedIndex = [=]() {
         QItemSelectionModel *selection = m_foldersListView->selectionModel();
@@ -188,17 +229,16 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
         }
     });
 
-    connect(addFolderButton, &QPushButton::clicked, this, [=]() {
+    connect(addFolderButton, &QToolButton::clicked, this, [=]() {
         QString path = QFileDialog::getExistingDirectory(this, i18n("Select a folder"), QDir::homePath());
         if (!path.isEmpty()) {
-            auto item = new QListWidgetItem(QIcon::fromTheme("folder"), path);
+            auto *item = new QListWidgetItem(QIcon::fromTheme("folder"), path);
+            item->setToolTip(i18n("Double click to set icon"));
             m_foldersListView->addItem(item);
             m_foldersListView->setCurrentItem(item);
-
             Q_EMIT changed();
         }
     });
-
     connect(deleteFolderButton, &QPushButton::clicked, this, [=]() {
         auto items = m_foldersListView->selectedItems();
         for(const auto& item : items) {
