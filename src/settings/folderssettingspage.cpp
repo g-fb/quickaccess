@@ -109,6 +109,20 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
 
     // Connections
 
+    connect(m_foldersListView, &QListWidget::itemSelectionChanged, this, [=]() {
+        if (m_foldersListView->currentRow() > 0) {
+            moveUpButton->setEnabled(true);
+        } else {
+            moveUpButton->setEnabled(false);
+        }
+
+        if (m_foldersListView->currentRow() < m_foldersListView->count() - 1) {
+            moveDownButton->setEnabled(true);
+        } else {
+            moveDownButton->setEnabled(false);
+        }
+    });
+
     connect(m_foldersListView->selectionModel(), &QItemSelectionModel::selectionChanged,
             this, [=](const QItemSelection &, const QItemSelection &) {
         auto index = selectedIndex();
