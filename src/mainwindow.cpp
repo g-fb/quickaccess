@@ -267,8 +267,13 @@ void MainWindow::setupMenu()
         auto group = m_config->group(QStringLiteral("Folder_%1").arg(i));
         auto path = group.readEntry(QStringLiteral("Path"));
         auto iconName = group.readEntry(QStringLiteral("Icon"));
+        auto type = group.readEntry(QStringLiteral("Type"));
 
-        addMenuItem(m_menu, path, iconName);
+        if (type == QStringLiteral("separator")) {
+            m_menu->addSeparator();
+        } else {
+            addMenuItem(m_menu, path, iconName);
+        }
     }
     if (QuickAccessSettings::useSections()) {
         m_menu->addSection(i18n("Commands"));

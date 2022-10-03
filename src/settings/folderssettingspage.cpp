@@ -31,11 +31,17 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
         auto group = m_config->group(QStringLiteral("Folder_%1").arg(i));
         auto path = group.readEntry(QStringLiteral("Path"));
         auto iconName = group.readEntry(QStringLiteral("Icon"));
+        auto type = group.readEntry(QStringLiteral("Type"));
 
         QListWidgetItem *item = new QListWidgetItem();
         item->setText(path);
         item->setIcon(QIcon::fromTheme(iconName));
         item->setToolTip(i18n("Double click to set icon"));
+        if (type == QStringLiteral("separator")) {
+            item->setData(Qt::UserRole, type);
+        } else {
+            item->setData(Qt::UserRole, QString());
+        }
         m_foldersListView->addItem(item);
     }
 
@@ -91,6 +97,17 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
             addFolderButtonMenu->setToolTip(clipboard->text());
         }
     });
+
+    auto *separatorActioon = new QAction(addFolderButtonMenu);
+    separatorActioon->setText(i18n("Add separator"));
+    connect(separatorActioon, &QAction::triggered, this, [=]() {
+        auto *item = new QListWidgetItem(i18n("--- separator ---"));
+        item->setData(Qt::UserRole, QStringLiteral("separator"));
+        m_foldersListView->addItem(item);
+        m_foldersListView->setCurrentItem(item);
+        Q_EMIT changed();
+    });
+    addFolderButtonMenu->addAction(separatorActioon);
 
     auto clipboardAction = new QAction(addFolderButtonMenu);
     clipboardAction->setText(i18n("Add from clipboard"));
@@ -167,10 +184,18 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
     connect(m_foldersListView->selectionModel(), &QItemSelectionModel::selectionChanged,
             this, [=](const QItemSelection &, const QItemSelection &) {
         auto index = selectedIndex();
-        auto iconName = index.data(Qt::DecorationRole).value<QIcon>().name();
-        editWidget->setEnabled(true);
-        folderEdit->setText(index.data().toString());
-        iconPreview->setIcon(QIcon::fromTheme(iconName));
+        auto type = index.data(Qt::UserRole).toString();
+        if (type == QStringLiteral("separator")) {
+            editWidget->setEnabled(false);
+            folderEdit->setText(QString());
+            folderEdit->setPlaceholderText(QString());
+            iconPreview->setIcon(QIcon());
+        } else {
+            auto iconName = index.data(Qt::DecorationRole).value<QIcon>().name();
+            editWidget->setEnabled(true);
+            folderEdit->setText(index.data().toString());
+            iconPreview->setIcon(QIcon::fromTheme(iconName));
+        }
     });
 
     connect(iconPreview, &QPushButton::clicked, this, [=]() {
@@ -184,7 +209,10 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
 
     connect(folderEdit, &QLineEdit::textChanged, this, [=](const QString &text) {
         auto item = m_foldersListView->selectedItems().first();
-        item->setText(text);
+        auto type = item->data(Qt::UserRole).toString();
+        if (type != QStringLiteral("separator")) {
+            item->setText(text);
+        }
     });
 
     connect(moveUpButton, &QPushButton::clicked, this, [=]() {
@@ -268,10 +296,12 @@ void FoldersSettingsPage::save()
         auto modelIndex = model->index(i, 0);
         QString path = modelIndex.data(Qt::DisplayRole).toString();
         QString iconName = modelIndex.data(Qt::DecorationRole).value<QIcon>().name();
+        QString type = modelIndex.data(Qt::UserRole).toString();
 
         auto group = m_config->group(QString("Folder_%1").arg(i));
         group.writeEntry(QStringLiteral("Path"), path);
         group.writeEntry(QStringLiteral("Icon"), iconName);
+        group.writeEntry(QStringLiteral("Type"), type);
         m_config->sync();
     }
     auto group = m_config->group("General");
