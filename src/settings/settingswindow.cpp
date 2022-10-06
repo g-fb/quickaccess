@@ -3,7 +3,6 @@
 #include "commandssettingspage.h"
 #include "folderssettingspage.h"
 #include "generalsettingspage.h"
-#include "settings.h"
 
 #include <KLocalizedString>
 
@@ -20,6 +19,8 @@ SettingsWindow::SettingsWindow(QWidget *parent, KConfigSkeleton *skeleton)
 
     auto generalSettingsPage = new GeneralSettingsPage(this);
     auto generalPage = addPage(generalSettingsPage, i18n("General"), QStringLiteral("configure"), QString());
+    connect(generalSettingsPage, &GeneralSettingsPage::openStartUpDialog,
+            this, &SettingsWindow::openStartUpDialog);
 
     auto foldersSettingsPage = new FoldersSettingsPage(this);
     auto foldersPage = addPage(foldersSettingsPage, i18n("Folders"), QStringLiteral("folder"), QString());

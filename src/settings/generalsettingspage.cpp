@@ -4,6 +4,7 @@
 
 #include <QFormLayout>
 #include <QtWidgets>
+#include <QSpacerItem>
 #include "settings.h"
 
 GeneralSettingsPage::GeneralSettingsPage(QWidget *parent)
@@ -36,10 +37,20 @@ GeneralSettingsPage::GeneralSettingsPage(QWidget *parent)
     useSections->setText(i18n("Use sections instead of separators"));
     formLayout->addRow(QString(), useSections);
 
+    auto *spacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Expanding);
+    formLayout->addItem(spacer);
+    auto *openStartUpDialogBtn = new QPushButton(this);
+    openStartUpDialogBtn->setText(i18n("Open startup dialog"));
+    openStartUpDialogBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    formLayout->addRow(openStartUpDialogBtn);
+
+
     connect(submenuEntries, QOverload<int>::of(&QSpinBox::valueChanged),
             this, &GeneralSettingsPage::changed);
     connect(showTrayIcon, &QCheckBox::clicked, this,
             &GeneralSettingsPage::changed);
     connect(useSections, &QCheckBox::clicked,
             this, &GeneralSettingsPage::changed);
+    connect(openStartUpDialogBtn, &QPushButton::clicked,
+            this, &GeneralSettingsPage::openStartUpDialog);
 }

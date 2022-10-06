@@ -13,6 +13,7 @@ public:
 
 Q_SIGNALS:
     void changed();
+    void openStartUpDialog();
 
 private:
     KSharedConfig::Ptr m_config {nullptr};

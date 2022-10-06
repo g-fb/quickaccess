@@ -77,6 +77,7 @@ private:
 
     QAction *createCustomCommand(KConfigGroup group);
     QClipboard *m_clipboard;
+    StartUpDialog *m_startUpDialog;
 };
 
 #endif // MAINWINDOW

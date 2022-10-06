@@ -11,6 +11,7 @@ public:
 
 Q_SIGNALS:
     void changed();
+    void openStartUpDialog();
 };
 
 #endif // GENERALSETTINGSPAGE_H

@@ -41,23 +41,23 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_clipboard = QGuiApplication::clipboard();
 
-    auto startUpDialog = new StartUpDialog(this);
-    startUpDialog->setWindowTitle(QStringLiteral("QuickAccess"));
+    m_startUpDialog = new StartUpDialog(this);
+    m_startUpDialog->setWindowTitle(QStringLiteral("QuickAccess"));
     QRect screenGeometry = QGuiApplication::primaryScreen()->geometry();
-    int x = (screenGeometry.width() - startUpDialog->width()) / 2;
-    int y = (screenGeometry.height() - startUpDialog->height()) / 2;
-    startUpDialog->move(screenGeometry.x() + x, screenGeometry.y() + y);
+    int x = (screenGeometry.width() - m_startUpDialog->width()) / 2;
+    int y = (screenGeometry.height() - m_startUpDialog->height()) / 2;
+    m_startUpDialog->move(screenGeometry.x() + x, screenGeometry.y() + y);
     if (m_config->group("General").readEntry("ShowStartUpDialog", true)) {
-        startUpDialog->kcfg_ShowOnStartUp->setChecked(m_config->group("General").readEntry("ShowStartUpDialog", true));
-        startUpDialog->show();
+        m_startUpDialog->kcfg_ShowOnStartUp->setChecked(m_config->group("General").readEntry("ShowStartUpDialog", true));
+        m_startUpDialog->show();
     }
-    connect(startUpDialog->openMenuButton, &QPushButton::clicked,
+    connect(m_startUpDialog->openMenuButton, &QPushButton::clicked,
             this, &MainWindow::showMenu);
-    connect(startUpDialog->copyCommandButton, &QPushButton::clicked, this, [=]() {
+    connect(m_startUpDialog->copyCommandButton, &QPushButton::clicked, this, [=]() {
         m_clipboard->setText(QStringLiteral("dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showMenu"));
     });
-    connect(startUpDialog->kcfg_ShowOnStartUp, &QCheckBox::stateChanged, this, [=]() {
-        m_config->group("General").writeEntry("ShowStartUpDialog", startUpDialog->kcfg_ShowOnStartUp->isChecked());
+    connect(m_startUpDialog->kcfg_ShowOnStartUp, &QCheckBox::stateChanged, this, [=]() {
+        m_config->group("General").writeEntry("ShowStartUpDialog", m_startUpDialog->kcfg_ShowOnStartUp->isChecked());
         m_config->sync();
     });
 
@@ -317,6 +317,10 @@ void MainWindow::setupMenu()
         }
         auto settingsWindow = new SettingsWindow(this, QuickAccessSettings::self());
         settingsWindow->show();
+        connect(settingsWindow, &SettingsWindow::openStartUpDialog, this, [=]() {
+            m_startUpDialog->kcfg_ShowOnStartUp->setChecked(m_config->group("General").readEntry("ShowStartUpDialog", true));
+            m_startUpDialog->show();
+        });
         connect(settingsWindow, &SettingsWindow::settingsChanged, this, &MainWindow::setupMenu);
     });
     m_menu->addAction(action);
