@@ -1,6 +1,10 @@
 add_executable(quickaccess)
 
-qt5_add_dbus_adaptor(quickaccess_dbus_src com.georgefb.quickaccess.xml mainwindow.h MainWindow)
+if (QT_MAJOR_VERSION STREQUAL "5")
+    qt5_add_dbus_adaptor(quickaccess_dbus_src com.georgefb.quickaccess.xml mainwindow.h MainWindow)
+else()
+    qt_add_dbus_adaptor(quickaccess_dbus_src com.georgefb.quickaccess.xml mainwindow.h MainWindow)
+endif()
 
 ki18n_wrap_ui(quickaccess_ui_src
     ../ui/aboutdialog.ui
@@ -35,13 +39,20 @@ target_include_directories(quickaccess
 
 target_link_libraries(quickaccess
     PRIVATE
-        Qt5::Widgets
-        Qt5::DBus
-        KF5::ConfigCore
-        KF5::ConfigWidgets
-        KF5::I18n
-        KF5::IconThemes
+        Qt${QT_MAJOR_VERSION}::Widgets
+        Qt${QT_MAJOR_VERSION}::DBus
+        KF${QT_MAJOR_VERSION}::ConfigCore
+        KF${QT_MAJOR_VERSION}::ConfigWidgets
+        KF${QT_MAJOR_VERSION}::CoreAddons
+        KF${QT_MAJOR_VERSION}::I18n
+        KF${QT_MAJOR_VERSION}::IconThemes
 )
+if (QT_MAJOR_VERSION STREQUAL "6")
+    target_link_libraries(quickaccess
+        PRIVATE
+            KF6::IconWidgets
+    )
+endif()
 
 install(TARGETS quickaccess DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
-install(FILES com.georgefb.quickaccess.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
+install(FILES com.georgefb.quickaccess.xml DESTINATION ${KDE_INSTALL_DBUSINTERFACEDIR})

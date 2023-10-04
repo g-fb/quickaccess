@@ -10,7 +10,6 @@
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QDesktopServices>
-#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QLabel>
 #include <QLineEdit>

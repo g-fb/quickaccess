@@ -20,23 +20,26 @@ ecm_setup_version(${PROJECT_VERSION}
     VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/src/quickaccess-version.h"
 )
 
-find_package(Qt5Widgets)
-set_package_properties(Qt5Widgets PROPERTIES TYPE REQUIRED)
+find_package(Qt${QT_MAJOR_VERSION}Widgets)
+set_package_properties(Qt${QT_MAJOR_VERSION}Widgets PROPERTIES TYPE REQUIRED)
 
-find_package(Qt5DBus)
-set_package_properties(Qt5DBus PROPERTIES TYPE REQUIRED)
+find_package(Qt${QT_MAJOR_VERSION}DBus)
+set_package_properties(Qt${QT_MAJOR_VERSION}DBus PROPERTIES TYPE REQUIRED)
 
-find_package(KF5Config)
-set_package_properties(KF5Config PROPERTIES TYPE REQUIRED)
+find_package(KF${QT_MAJOR_VERSION}Config)
+set_package_properties(KF${QT_MAJOR_VERSION}Config PROPERTIES TYPE REQUIRED)
 
-find_package(KF5ConfigWidgets)
-set_package_properties(KF5ConfigWidgets PROPERTIES TYPE REQUIRED)
+find_package(KF${QT_MAJOR_VERSION}ConfigWidgets)
+set_package_properties(KF${QT_MAJOR_VERSION}ConfigWidgets PROPERTIES TYPE REQUIRED)
 
-find_package(KF5I18n)
-set_package_properties(KF5I18n PROPERTIES TYPE REQUIRED)
+find_package(KF${QT_MAJOR_VERSION}CoreAddons)
+set_package_properties(KF${QT_MAJOR_VERSION}CoreAddons PROPERTIES TYPE REQUIRED)
 
-find_package(KF5IconThemes)
-set_package_properties(KF5IconThemes PROPERTIES TYPE REQUIRED)
+find_package(KF${QT_MAJOR_VERSION}I18n)
+set_package_properties(KF${QT_MAJOR_VERSION}I18n PROPERTIES TYPE REQUIRED)
+
+find_package(KF${QT_MAJOR_VERSION}IconThemes)
+set_package_properties(KF${QT_MAJOR_VERSION}IconThemes PROPERTIES TYPE REQUIRED)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 

@@ -14,7 +14,7 @@ GeneralSettingsPage::GeneralSettingsPage(QWidget *parent)
 
     auto widget = new QWidget(this);
     auto layout = new QHBoxLayout(widget);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     auto label = new QLabel(i18n("Use -1 to show all or 0 to show none"), this);
     auto submenuEntries = new QSpinBox(this);
     submenuEntries->setObjectName("kcfg_SubmenuEntriesCount");
