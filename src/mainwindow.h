@@ -62,6 +62,7 @@ signals:
     void addFolder(QString path);
 
 private:
+    void openSettings();
     void addMenuItem(QMenu *menu, QString path, QString iconName = "folder");
     void onMenuHover(QMenu *menu, QString path);
     void openFolder(QString path);
@@ -78,6 +79,7 @@ private:
     QAction *createCustomCommand(KConfigGroup group);
     QClipboard *m_clipboard;
     StartUpDialog *m_startUpDialog;
+    SettingsWindow *m_settingsWindow;
 };
 
 #endif // MAINWINDOW

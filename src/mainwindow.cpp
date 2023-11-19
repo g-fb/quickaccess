@@ -52,6 +52,9 @@ MainWindow::MainWindow(QWidget *parent)
     }
     connect(m_startUpDialog->openMenuButton, &QPushButton::clicked,
             this, &MainWindow::showMenu);
+    connect(m_startUpDialog->openSettingsButton, &QPushButton::clicked, this, [=]() {
+        openSettings();
+    });
     connect(m_startUpDialog->copyCommandButton, &QPushButton::clicked, this, [=]() {
         m_clipboard->setText(QStringLiteral("dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showMenu"));
     });
@@ -160,7 +163,7 @@ void MainWindow::createTrayIcon(bool show)
     auto *settingsAction = new QAction(i18n("Settings"), nullptr);
     settingsAction->setIcon(QIcon::fromTheme("configure"));
     connect(settingsAction, &QAction::triggered, this, [=]() {
-        KConfigDialog::showDialog("settings");
+        openSettings();
     });
 
     trayIconMenu->addAction(aboutAction);
@@ -173,6 +176,20 @@ void MainWindow::createTrayIcon(bool show)
     m_trayIcon->setIcon(m_appIcon);
     m_trayIcon->setContextMenu(trayIconMenu);
     m_trayIcon->setVisible(show);
+}
+
+void MainWindow::openSettings()
+{
+    if (SettingsWindow::showDialog(QStringLiteral("settings"))) {
+        return;
+    }
+    auto settingsWindow = new SettingsWindow(this, QuickAccessSettings::self());
+    settingsWindow->show();
+    connect(settingsWindow, &SettingsWindow::openStartUpDialog, this, [=]() {
+        m_startUpDialog->kcfg_ShowOnStartUp->setChecked(m_config->group("General").readEntry("ShowStartUpDialog", true));
+        m_startUpDialog->show();
+    });
+    connect(settingsWindow, &SettingsWindow::settingsChanged, this, &MainWindow::setupMenu);
 }
 
 void MainWindow::onMenuHover(QMenu *menu, QString path)
@@ -311,16 +328,7 @@ void MainWindow::setupMenu()
     action->setIcon(QIcon::fromTheme("configure"));
     connect(action, &QAction::triggered, this, [=]() {
         actionClicked = true;
-        if (SettingsWindow::showDialog(QStringLiteral("settings"))) {
-            return;
-        }
-        auto settingsWindow = new SettingsWindow(this, QuickAccessSettings::self());
-        settingsWindow->show();
-        connect(settingsWindow, &SettingsWindow::openStartUpDialog, this, [=]() {
-            m_startUpDialog->kcfg_ShowOnStartUp->setChecked(m_config->group("General").readEntry("ShowStartUpDialog", true));
-            m_startUpDialog->show();
-        });
-        connect(settingsWindow, &SettingsWindow::settingsChanged, this, &MainWindow::setupMenu);
+        openSettings();
     });
     m_menu->addAction(action);
 
