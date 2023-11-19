@@ -69,17 +69,17 @@ private:
     void setupMenu();
     void setupDBus();
     bool isRunningSandbox();
+    QAction *createCustomCommand(KConfigGroup group);
 
     QIcon m_appIcon;
-    QMenu *m_menu = nullptr;
-    QDBusConnectionInterface *bus;
-    QSystemTrayIcon *m_trayIcon;
+    QMenu *m_menu {nullptr};
+    QDBusConnectionInterface *bus {nullptr};
+    QSystemTrayIcon *m_trayIcon {nullptr};
     KSharedConfig::Ptr m_config;
 
-    QAction *createCustomCommand(KConfigGroup group);
-    QClipboard *m_clipboard;
-    StartUpDialog *m_startUpDialog;
-    SettingsWindow *m_settingsWindow;
+    QClipboard *m_clipboard {nullptr};
+    StartUpDialog *m_startUpDialog {nullptr};
+    SettingsWindow *m_settingsWindow {nullptr};
 };
 
 #endif // MAINWINDOW
