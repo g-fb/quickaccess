@@ -7,7 +7,10 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(ECM 5.66 REQUIRED NO_MODULE)
+set(QT_MIN_VERSION 6.6.0)
+set(KF6_MIN_VERSION 6.0.0)
+
+find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 include(KDEInstallDirs)
@@ -20,26 +23,26 @@ ecm_setup_version(${PROJECT_VERSION}
     VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/src/quickaccess-version.h"
 )
 
-find_package(Qt${QT_MAJOR_VERSION}Widgets)
-set_package_properties(Qt${QT_MAJOR_VERSION}Widgets PROPERTIES TYPE REQUIRED)
+find_package(Qt6Widgets ${QT_MIN_VERSION})
+set_package_properties(Qt6Widgets PROPERTIES TYPE REQUIRED)
 
-find_package(Qt${QT_MAJOR_VERSION}DBus)
-set_package_properties(Qt${QT_MAJOR_VERSION}DBus PROPERTIES TYPE REQUIRED)
+find_package(Qt6DBus ${QT_MIN_VERSION})
+set_package_properties(Qt6DBus PROPERTIES TYPE REQUIRED)
 
-find_package(KF${QT_MAJOR_VERSION}Config)
-set_package_properties(KF${QT_MAJOR_VERSION}Config PROPERTIES TYPE REQUIRED)
+find_package(KF6Config ${KF6_MIN_VERSION})
+set_package_properties(KF6Config PROPERTIES TYPE REQUIRED)
 
-find_package(KF${QT_MAJOR_VERSION}ConfigWidgets)
-set_package_properties(KF${QT_MAJOR_VERSION}ConfigWidgets PROPERTIES TYPE REQUIRED)
+find_package(KF6ConfigWidgets ${KF6_MIN_VERSION})
+set_package_properties(KF6ConfigWidgets PROPERTIES TYPE REQUIRED)
 
-find_package(KF${QT_MAJOR_VERSION}CoreAddons)
-set_package_properties(KF${QT_MAJOR_VERSION}CoreAddons PROPERTIES TYPE REQUIRED)
+find_package(KF6CoreAddons ${KF6_MIN_VERSION})
+set_package_properties(KF6CoreAddons PROPERTIES TYPE REQUIRED)
 
-find_package(KF${QT_MAJOR_VERSION}I18n)
-set_package_properties(KF${QT_MAJOR_VERSION}I18n PROPERTIES TYPE REQUIRED)
+find_package(KF6I18n ${KF6_MIN_VERSION})
+set_package_properties(KF6I18n PROPERTIES TYPE REQUIRED)
 
-find_package(KF${QT_MAJOR_VERSION}IconThemes)
-set_package_properties(KF${QT_MAJOR_VERSION}IconThemes PROPERTIES TYPE REQUIRED)
+find_package(KF6IconThemes ${KF6_MIN_VERSION})
+set_package_properties(KF6IconThemes PROPERTIES TYPE REQUIRED)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
