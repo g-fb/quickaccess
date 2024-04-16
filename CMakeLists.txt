@@ -1,22 +1,18 @@
 cmake_minimum_required(VERSION 3.15)
 project(quickaccess VERSION 3.0.1 LANGUAGES CXX)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 set(QT_MIN_VERSION 6.6.0)
 set(KF6_MIN_VERSION 6.0.0)
 
 find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+include(FeatureSummary)
 include(KDEInstallDirs)
 include(ECMInstallIcons)
 include(ECMSetupVersion)
-include(FeatureSummary)
+include(KDECMakeSettings)
+include(KDECompilerSettings NO_POLICY_SCOPE)
 
 ecm_setup_version(${PROJECT_VERSION}
     VARIABLE_PREFIX QUICKACCESS

@@ -26,12 +26,7 @@ target_sources(quickaccess
 
 kconfig_add_kcfg_files(quickaccess GENERATE_MOC settings/settings.kcfgc)
 
-target_include_directories(quickaccess
-    PRIVATE
-        ${CMAKE_CURRENT_BINARY_DIR}
-        src
-        settings
-)
+target_include_directories(quickaccess PRIVATE ${CMAKE_CURRENT_BINARY_DIR} settings)
 
 target_link_libraries(quickaccess
     PRIVATE
