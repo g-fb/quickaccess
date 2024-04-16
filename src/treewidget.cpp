@@ -11,10 +11,10 @@ TreeWidget::TreeWidget(QWidget *parent)
 
 void TreeWidget::dropEvent(QDropEvent *event)
 {
-    if (itemAt(event->pos())) {
+    if (itemAt(event->position().toPoint())) {
         DropIndicatorPosition dropIndicator = dropIndicatorPosition();
         QTreeWidgetItem *draggedItem = currentItem();
-        QTreeWidgetItem *dropIntoItem = itemAt(event->pos());
+        QTreeWidgetItem *dropIntoItem = itemAt(event->position().toPoint());
         QString dropItemType = dropIntoItem->data(0, Qt::UserRole).toString();
         QString draggedItemType = draggedItem->data(0, Qt::UserRole).toString();
 
