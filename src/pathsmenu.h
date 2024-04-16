@@ -14,7 +14,7 @@ public:
     ~PathsMenu();
     void setMainWindow(MainWindow *menu);
     
-signals:
+Q_SIGNALS:
     void actionTriggered();
 
 protected:

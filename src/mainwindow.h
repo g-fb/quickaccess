@@ -58,12 +58,12 @@ public:
     bool actionClicked = false;
     void createTrayIcon(bool show);
 
-signals:
+Q_SIGNALS:
     void addFolder(QString path);
 
 private:
     void openSettings();
-    void addMenuItem(QMenu *menu, QString path, QString iconName = "folder");
+    void addMenuItem(QMenu *menu, QString path, QString iconName = u"folder"_qs);
     void onMenuHover(QMenu *menu, QString path);
     void openFolder(QString path);
     void setupMenu();

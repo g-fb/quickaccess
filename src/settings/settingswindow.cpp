@@ -15,18 +15,18 @@ SettingsWindow::SettingsWindow(QWidget *parent, KConfigSkeleton *skeleton)
     setWindowTitle(i18n("Settings"));
     resize(650, 550);
 
-    m_config = KSharedConfig::openConfig("quickaccessrc");
+    m_config = KSharedConfig::openConfig(u"quickaccessrc"_qs);
 
     auto generalSettingsPage = new GeneralSettingsPage(this);
-    auto generalPage = addPage(generalSettingsPage, i18n("General"), QStringLiteral("configure"), QString());
+    addPage(generalSettingsPage, i18n("General"), QStringLiteral("configure"), QString());
     connect(generalSettingsPage, &GeneralSettingsPage::openStartUpDialog,
             this, &SettingsWindow::openStartUpDialog);
 
     auto foldersSettingsPage = new FoldersSettingsPage(this);
-    auto foldersPage = addPage(foldersSettingsPage, i18n("Folders"), QStringLiteral("folder"), QString());
+    addPage(foldersSettingsPage, i18n("Folders"), QStringLiteral("folder"), QString());
 
     auto commandsSettingsPage = new CommandsSettingsPage(this);
-    auto commandsPage = addPage(commandsSettingsPage, i18n("Commands"), QStringLiteral("dialog-scripts"), QString());
+    addPage(commandsSettingsPage, i18n("Commands"), QStringLiteral("dialog-scripts"), QString());
 
 //    setCurrentPage(commandsPage);
 

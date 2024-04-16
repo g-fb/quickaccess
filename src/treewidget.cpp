@@ -18,19 +18,19 @@ void TreeWidget::dropEvent(QDropEvent *event)
         QString dropItemType = dropIntoItem->data(0, Qt::UserRole).toString();
         QString draggedItemType = draggedItem->data(0, Qt::UserRole).toString();
 
-        if (draggedItemType == "command" && dropItemType == "menu") {
-            emit drop();
+        if (draggedItemType == u"command"_qs && dropItemType == u"menu"_qs) {
+            Q_EMIT drop();
         } else {
             // prevent adding children to a command
             event->setDropAction(Qt::IgnoreAction);
             if (dropIndicator != QAbstractItemView::OnItem) {
                 event->setDropAction(Qt::MoveAction);
-                emit drop();
+                Q_EMIT drop();
             }
         }
     } else {
         // item drag'n'dropped from menu to root
-        emit drop();
+        Q_EMIT drop();
     }
     QTreeWidget::dropEvent(event);
 }

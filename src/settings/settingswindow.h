@@ -18,7 +18,7 @@ Q_SIGNALS:
 private:
     KSharedConfig::Ptr m_config {nullptr};
     bool m_changed {false};
-    bool hasChanged();
+    bool hasChanged() override;
 };
 
 #endif // SETTINGSWINDOW_H

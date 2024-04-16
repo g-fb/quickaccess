@@ -11,7 +11,7 @@
 CommandsSettingsPage::CommandsSettingsPage(QWidget *parent)
     : QWidget(parent)
 {
-    m_config = KSharedConfig::openConfig("quickaccessrc");
+    m_config = KSharedConfig::openConfig(u"quickaccessrc"_qs);
 
     createMenuDialog();
     createCommandDialog();
@@ -32,16 +32,16 @@ CommandsSettingsPage::CommandsSettingsPage(QWidget *parent)
     m_commandsTree->setDragDropMode(QAbstractItemView::InternalMove);
     m_commandsTree->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    int commandsCount = m_config->group("General").readEntry("CommandsCount").toInt();
+    int commandsCount = m_config->group(u"General"_qs).readEntry("CommandsCount").toInt();
     for (int i = 0; i < commandsCount; i++) {
-        auto groupName = QString("Command_%0").arg(i);
+        auto groupName = QString(u"Command_%0"_qs).arg(i);
         auto group = m_config->group(groupName);
         auto item = createItem(group);
         m_commandsTree->insertTopLevelItem(m_commandsTree->topLevelItemCount(), item);
 
         int subCommands = group.readEntry("Count").toInt();
         for (int j = 0; j < subCommands; ++j) {
-            auto groupName = QString("Command_%0__Subcommand_%1").arg(i).arg(j);
+            auto groupName = QString(u"Command_%0__Subcommand_%1"_qs).arg(i).arg(j);
             auto group = m_config->group(groupName);
             QTreeWidgetItem *childItem = createItem(group);
             item->addChild(childItem);
@@ -86,7 +86,7 @@ CommandsSettingsPage::CommandsSettingsPage(QWidget *parent)
         m_commandNameInput->clear();
         m_processNameInput->clear();
         m_argumentsInput->clear();
-        m_iconSelectButton->setIcon(QIcon::fromTheme("unknown"));
+        m_iconSelectButton->setIcon(QIcon::fromTheme(u"unknown"_qs));
         m_commandDialog->show();
     });
 
@@ -95,7 +95,7 @@ CommandsSettingsPage::CommandsSettingsPage(QWidget *parent)
 
     connect(m_commandsTree, &QTreeWidget::doubleClicked, this, [=]() {
         auto item = m_commandsTree->currentItem();
-        if (item->data(0, Qt::UserRole) == "command") {
+        if (item->data(0, Qt::UserRole) == u"command"_qs) {
             editCommand();
         }
     });
@@ -117,10 +117,10 @@ void CommandsSettingsPage::save()
         QString process = item->text(1);
         QString args = item->text(2);
 
-        auto group = m_config->group(QString("Command_%0").arg(i));
+        auto group = m_config->group(QString(u"Command_%0"_qs).arg(i));
         group.writeEntry("Name", name);
         group.writeEntry("Icon", iconName);
-        if (item->data(0, Qt::UserRole) == "command") {
+        if (item->data(0, Qt::UserRole) == u"command"_qs) {
             group.writeEntry("Process", process);
             group.writeEntry("Args", args);
         }
@@ -128,9 +128,9 @@ void CommandsSettingsPage::save()
         group.writeEntry("Type", item->data(0, Qt::UserRole));
         m_config->sync();
 
-        if (item->data(0, Qt::UserRole) == "menu") {
+        if (item->data(0, Qt::UserRole) == u"menu"_qs) {
             for (int j = 0; j < item->childCount(); ++j) {
-                auto group = m_config->group(QString("Command_%0__Subcommand_%1").arg(i).arg(j));
+                auto group = m_config->group(QString(u"Command_%0__Subcommand_%1"_qs).arg(i).arg(j));
                 group.writeEntry("Name", item->child(j)->text(0));
                 QString iconName = item->child(j)->icon(0).name();
                 if (iconName.isEmpty()) {
@@ -143,7 +143,7 @@ void CommandsSettingsPage::save()
             }
         }
     }
-    auto group = m_config->group("General");
+    auto group = m_config->group(u"General"_qs);
     group.writeEntry("CommandsCount", QString::number(commandsCount));
     m_config->sync();
 
@@ -151,19 +151,19 @@ void CommandsSettingsPage::save()
 
 void CommandsSettingsPage::deleteCommands()
 {
-    int commandsCount = m_config->group("General").readEntry("CommandsCount").toInt();
+    int commandsCount = m_config->group(u"General"_qs).readEntry("CommandsCount").toInt();
     // delete all commands
     for (int i = 0; i < commandsCount; ++i) {
-        auto group = m_config->group(QString("Command_%0").arg(i));
-        if (group.readEntry("Type") == "menu") {
+        auto group = m_config->group(QString(u"Command_%0"_qs).arg(i));
+        if (group.readEntry("Type") == u"menu"_qs) {
             for (int j = 0; j < group.readEntry("Count").toInt(); ++j) {
-                auto group = m_config->group(QString("Command_%0__Subcommand_%1").arg(i).arg(j));
+                auto group = m_config->group(QString(u"Command_%0__Subcommand_%1"_qs).arg(i).arg(j));
                 m_config->deleteGroup(group.name());
             }
         }
         m_config->deleteGroup(group.name());
     }
-    m_config->deleteGroup("Commands");
+    m_config->deleteGroup(u"Commands"_qs);
     m_config->sync();
 }
 
@@ -197,10 +197,10 @@ void CommandsSettingsPage::createMenuDialog()
             // edit the current item
             item = m_commandsTree->currentItem();
         }
-        item->setIcon(0, QIcon::fromTheme("application-menu"));
+        item->setIcon(0, QIcon::fromTheme(u"application-menu"_qs));
         item->setText(0, m_menuNameInput->text());
         item->setToolTip(0, m_menuNameInput->text());
-        item->setData(0, Qt::UserRole, "menu");
+        item->setData(0, Qt::UserRole, u"menu"_qs);
     });
 }
 
@@ -222,7 +222,7 @@ void CommandsSettingsPage::createCommandDialog()
     m_argumentsInput = new QLineEdit(m_commandDialog);
     m_iconSelectButton = new KIconButton(m_commandDialog);
     m_iconSelectButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    m_iconSelectButton->setIcon(QIcon::fromTheme("unknown"));
+    m_iconSelectButton->setIcon(QIcon::fromTheme(u"unknown"_qs));
     m_iconSelectButton->setButtonIconSize(22);
     m_iconSelectButton->setText(i18n("Select icon"));
 
@@ -262,7 +262,7 @@ void CommandsSettingsPage::createCommandDialog()
         item->setToolTip(1, m_processNameInput->text());
         item->setText(2, m_argumentsInput->text());
         item->setToolTip(2, m_argumentsInput->text());
-        item->setData(0, Qt::UserRole, "command");
+        item->setData(0, Qt::UserRole, u"command"_qs);
     });
 }
 
@@ -270,7 +270,7 @@ void CommandsSettingsPage::cloneCommand()
 {
     auto item = m_commandsTree->currentItem();
     auto clone = item->clone();
-    if (item->parent() && item->parent()->data(0, Qt::UserRole) == "menu") {
+    if (item->parent() && item->parent()->data(0, Qt::UserRole) == u"menu"_qs) {
         item->parent()->addChild(clone);
     } else {
         m_commandsTree->insertTopLevelItem(m_commandsTree->topLevelItemCount(), clone);
@@ -281,7 +281,7 @@ void CommandsSettingsPage::editCommand()
 {
     m_dialogMode = QA::DialogEditMode;
     auto item = m_commandsTree->currentItem();
-    if (item->data(0, Qt::UserRole) == "menu") {
+    if (item->data(0, Qt::UserRole) == u"menu"_qs) {
         m_menuDialog->setWindowTitle(i18n("Edit Menu"));
         m_menuNameInput->setText(item->text(0));
         m_menuDialog->show();
@@ -301,13 +301,13 @@ void CommandsSettingsPage::contextMenu()
 
     auto command = new QAction(nullptr);
     command->setText(i18n("Edit"));
-    command->setIcon(QIcon::fromTheme("edit-entry"));
+    command->setIcon(QIcon::fromTheme(u"edit-entry"_qs));
     menu->addAction(command);
     connect(command, &QAction::triggered, this, &CommandsSettingsPage::editCommand);
 
     command = new QAction(nullptr);
     command->setText(i18n("Clone"));
-    command->setIcon(QIcon::fromTheme("edit-copy"));
+    command->setIcon(QIcon::fromTheme(u"edit-copy"_qs));
     menu->addAction(command);
     connect(command, &QAction::triggered, this, &CommandsSettingsPage::cloneCommand);
 
@@ -315,7 +315,7 @@ void CommandsSettingsPage::contextMenu()
 
     command = new QAction(nullptr);
     command->setText(i18n("Remove"));
-    command->setIcon(QIcon::fromTheme("edit-delete-remove"));
+    command->setIcon(QIcon::fromTheme(u"edit-delete-remove"_qs));
     menu->addAction(command);
     connect(command, &QAction::triggered, this, [=]() {
         delete m_commandsTree->currentItem();
@@ -331,7 +331,7 @@ QTreeWidgetItem *CommandsSettingsPage::createItem(KConfigGroup group)
     item->setIcon(0, QIcon::fromTheme(group.readEntry("Icon")));
     item->setText(0, group.readEntry("Name"));
     item->setToolTip(0, group.readEntry("Name"));
-    if (type == "command") {
+    if (type == u"command"_qs) {
         item->setText(1, group.readEntry("Process"));
         item->setToolTip(1, group.readEntry("Process"));
         item->setText(2, group.readEntry("Args"));

@@ -6,7 +6,7 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    QCoreApplication::setApplicationVersion("3.0.0");
+    QCoreApplication::setApplicationVersion(u"3.0.0"_qs);
     KLocalizedString::setApplicationDomain("quickaccess");
     QApplication::setQuitOnLastWindowClosed(false);
     MainWindow w;

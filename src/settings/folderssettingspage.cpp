@@ -14,7 +14,7 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
     auto iconDialog = new KIconDialog(this);
     auto foldersLayout = new QVBoxLayout(this);
 
-    m_config = KSharedConfig::openConfig("quickaccessrc");
+    m_config = KSharedConfig::openConfig(u"quickaccessrc"_qs);
 
     auto group = m_config->group(QStringLiteral("General"));
     int foldersCount = group.readEntry("FoldersCount").toInt();
@@ -51,7 +51,7 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
     editLayout->setContentsMargins(0, 0, 0, 0);
 
     auto iconPreview = new QPushButton(this);
-    iconPreview->setIcon(QIcon::fromTheme("unknown"));
+    iconPreview->setIcon(QIcon::fromTheme(u"unknown"_qs));
 
     auto folderEdit = new QLineEdit(this);
     folderEdit->setPlaceholderText(i18n("Folder"));
@@ -76,18 +76,18 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
 
     auto moveUpButton = new QPushButton(this);
     moveUpButton->setText(i18n("Move Up"));
-    moveUpButton->setIcon(QIcon::fromTheme("arrow-up"));
+    moveUpButton->setIcon(QIcon::fromTheme(u"arrow-up"_qs));
     buttonsLayout->addWidget(moveUpButton);
 
     auto moveDownButton = new QPushButton(this);
     moveDownButton->setText(i18n("Move Down"));
-    moveDownButton->setIcon(QIcon::fromTheme("arrow-down"));
+    moveDownButton->setIcon(QIcon::fromTheme(u"arrow-down"_qs));
     buttonsLayout->addWidget(moveDownButton);
 
     QClipboard *clipboard = QGuiApplication::clipboard();
     auto addFolderButton = new QToolButton(this);
     addFolderButton->setText(i18n("Add"));
-    addFolderButton->setIcon(QIcon::fromTheme("list-add"));
+    addFolderButton->setIcon(QIcon::fromTheme(u"list-add"_qs));
     addFolderButton->setPopupMode(QToolButton::MenuButtonPopup);
     addFolderButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     auto addFolderButtonMenu = new QMenu(addFolderButton);
@@ -114,7 +114,7 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
     connect(clipboardAction, &QAction::triggered, this, [=]() {
         QFileInfo fileInfo(clipboard->text());
         if (fileInfo.exists()) {
-            auto *item = new QListWidgetItem(QIcon::fromTheme("folder"), clipboard->text());
+            auto *item = new QListWidgetItem(QIcon::fromTheme(u"folder"_qs), clipboard->text());
             item->setToolTip(i18n("Double click to set icon"));
             m_foldersListView->addItem(item);
             m_foldersListView->setCurrentItem(item);
@@ -147,7 +147,7 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
 
     auto deleteFolderButton = new QPushButton(this);
     deleteFolderButton->setText(i18n("Delete"));
-    deleteFolderButton->setIcon(QIcon::fromTheme("edit-delete"));
+    deleteFolderButton->setIcon(QIcon::fromTheme(u"edit-delete"_qs));
     buttonsLayout->addWidget(deleteFolderButton);
 
     foldersLayout->addWidget(m_foldersListView);
@@ -260,7 +260,7 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
     connect(addFolderButton, &QToolButton::clicked, this, [=]() {
         QString path = QFileDialog::getExistingDirectory(this, i18n("Select a folder"), QDir::homePath());
         if (!path.isEmpty()) {
-            auto *item = new QListWidgetItem(QIcon::fromTheme("folder"), path);
+            auto *item = new QListWidgetItem(QIcon::fromTheme(u"folder"_qs), path);
             item->setToolTip(i18n("Double click to set icon"));
             m_foldersListView->addItem(item);
             m_foldersListView->setCurrentItem(item);
@@ -298,25 +298,25 @@ void FoldersSettingsPage::save()
         QString iconName = modelIndex.data(Qt::DecorationRole).value<QIcon>().name();
         QString type = modelIndex.data(Qt::UserRole).toString();
 
-        auto group = m_config->group(QString("Folder_%1").arg(i));
+        auto group = m_config->group(QString(u"Folder_%1"_qs).arg(i));
         group.writeEntry(QStringLiteral("Path"), path);
         group.writeEntry(QStringLiteral("Icon"), iconName);
         group.writeEntry(QStringLiteral("Type"), type);
         m_config->sync();
     }
-    auto group = m_config->group("General");
+    auto group = m_config->group(u"General"_qs);
     group.writeEntry("FoldersCount", QString::number(foldersCount));
     m_config->sync();
 }
 
 void FoldersSettingsPage::deleteFolders()
 {
-    int foldersCount = m_config->group("General").readEntry("FoldersCount").toInt();
+    int foldersCount = m_config->group(u"General"_qs).readEntry("FoldersCount").toInt();
     // delete all folders
     for (int i = 0; i < foldersCount; ++i) {
-        auto group = m_config->group(QString("Folder_%0").arg(i));
+        auto group = m_config->group(QString(u"Folder_%0"_qs).arg(i));
         m_config->deleteGroup(group.name());
     }
-    m_config->deleteGroup("Folders");
+    m_config->deleteGroup(u"Folders"_qs);
     m_config->sync();
 }

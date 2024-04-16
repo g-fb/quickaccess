@@ -7,7 +7,7 @@
 
 Migrations::Migrations()
 {
-    m_config = KSharedConfig::openConfig("quickaccessrc");
+    m_config = KSharedConfig::openConfig(u"quickaccessrc"_qs);
     m_version = m_config->group(QStringLiteral("General")).readEntry(QStringLiteral("Version"));
 }
 
@@ -31,7 +31,7 @@ bool Migrations::migrateV2toV3()
             QString path = entries.at(i);
             QString iconName = QStringLiteral("folder");
 
-            auto group = m_config->group(QString("Folder_%1").arg(i));
+            auto group = m_config->group(QString(u"Folder_%1"_qs).arg(i));
             group.writeEntry(QStringLiteral("Path"), path);
             group.writeEntry(QStringLiteral("Icon"), iconName);
         }
@@ -58,6 +58,6 @@ bool Migrations::migrateV2toV3()
 
 bool Migrations::backupConfigFile()
 {
-    auto newCfg = m_config->copyTo("quickaccessrc.backup");
+    auto newCfg = m_config->copyTo(u"quickaccessrc.backup"_qs);
     return newCfg->sync();
 }

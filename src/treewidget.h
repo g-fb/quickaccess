@@ -9,9 +9,9 @@ class TreeWidget : public QTreeWidget
 public:
     explicit TreeWidget(QWidget *parent = nullptr);
 
-signals:
+Q_SIGNALS:
     void drop();
-public slots:
+public Q_SLOTS:
 
 protected:
     void dropEvent(QDropEvent *event) override;

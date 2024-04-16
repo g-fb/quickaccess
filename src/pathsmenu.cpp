@@ -22,7 +22,7 @@ void PathsMenu::mouseReleaseEvent(QMouseEvent* event)
             // see actionClicked in mainwindow.h
             m_mainWindow->actionClicked = false;
         } else {
-            emit actionTriggered();
+            Q_EMIT actionTriggered();
         }
     }
 }
@@ -33,9 +33,8 @@ void PathsMenu::setMainWindow(MainWindow *mw)
 }
 
 void PathsMenu::keyReleaseEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Return
-        || event->key() == Qt::Key_Enter) {
-        emit actionTriggered();
+    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
+        Q_EMIT actionTriggered();
     }
 }
 
