@@ -92,11 +92,6 @@ replace x with a number from 0 to 9 to set the preffered position where the menu
 - Drag commands on top of the menu
 - Click "Apply" or "OK" to save the settings
 
-
-[KDE Plasma shortcut example:](https://docs.kde.org/trunk5/en/kde-workspace/kcontrol/khotkeys/shortcuts.html)
-
-![Set shortcut](data/images/quickaccess-plasma-shortcut.png)
-
 # Dependencies
 
 Dependencies will be printed by cmake when building.
