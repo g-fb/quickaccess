@@ -98,39 +98,14 @@ replace x with a number from 0 to 9 to set the preffered position where the menu
 ![Set shortcut](data/images/quickaccess-plasma-shortcut.png)
 
 # Dependencies
-- Extra CMake Modules
-- Qt5 Widgets
-- Qt5 DBus
-- KF5 I18n
-- KF5 Config
-- KF5 XmlGui
 
-## Install dependencies
-
-### Ubuntu
-```
-sudo apt install build-essential cmake extra-cmake-modules qtbase5-dev libkf5config-dev libkf5i18n-dev libkf5xmlgui-dev
-```
-
-### Fedora 
-```
-dnf install @development-tools extra-cmake-modules qt5-devel kf5-kconfig-devel kf5-ki18n-devel kf5-kxmlgui-devel
-```
-
-### Solus
-```
-sudo eopkg it -c system.devel extra-cmake-modules qt5-base-devel kconfig-devel ki18n-devel kxmlgui-devel
-```
+Dependencies will be printed by cmake when building.
 
 # Build
 ```bash
 git clone https://gitlab.com/g-fb/quickaccess
 cd quickaccess
-# append `-D CMAKE_INSTALL_PREFIX:PATH=/your/custom/path` to install to a custom location
 cmake -B build -G Ninja
 cmake --build build
-# run
-./build/src/quickaccess
-# install
 cmake --install build
 ```
