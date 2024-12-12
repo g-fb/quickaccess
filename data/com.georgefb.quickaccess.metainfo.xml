@@ -6,7 +6,7 @@
     <launchable type="desktop-id">com.georgefb.quickaccess.desktop</launchable>
     <metadata_license>CC0-1.0</metadata_license>
     <project_license>GPL-3.0-or-later</project_license>
-    <url type="homepage">https://gitlab.com/g-fb/quickaccess</url>
+    <url type="homepage">https://github.com/g-fb/quickaccess</url>
     <url type="donation">https://github.com/sponsors/g-fb</url>
     <developer_name>George Florea Bănuș</developer_name>
     <summary>A global menu giving you quick access to folders and custom commands.</summary>
@@ -17,7 +17,7 @@
         <p>dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showMenu int32:x</p>
         <p>dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showDelayedMenu int32:200 int32:x</p>
         <p>Replace x with an int from 0 to 9 to set the preffered position to open the menu.</p>
-        <p>Check the project page for more info https://gitlab.com/g-fb/quickaccess.</p>
+        <p>Check the project page for more info https://github.com/g-fb/quickaccess.</p>
     </description>
     <releases>
         <release version="3.1.0" date="2024-04-24">

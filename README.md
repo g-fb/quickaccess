@@ -98,7 +98,7 @@ Dependencies will be printed by cmake when building.
 
 # Build
 ```bash
-git clone https://gitlab.com/g-fb/quickaccess
+git clone https://github.com/g-fb/quickaccess
 cd quickaccess
 cmake -B build -G Ninja
 cmake --build build
