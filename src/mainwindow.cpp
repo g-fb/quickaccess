@@ -224,15 +224,19 @@ void MainWindow::onMenuHover(QMenu *menu, QString path)
 
 void MainWindow::openFolder(QString path)
 {
+
+    QProcess process;
     if (isRunningSandbox()) {
         auto args = QStringList() << QStringLiteral("--host") << QStringLiteral("xdg-open") << path;
-        auto *process = new QProcess();
-        process->setProgram(QStringLiteral("flatpak-spawn"));
-        process->setArguments(args);
-        process->start();
+        process.setProgram(QStringLiteral("flatpak-spawn"));
+        process.setArguments(args);
     } else {
-        QDesktopServices::openUrl(QUrl::fromLocalFile(QDir::toNativeSeparators(path)));
+        auto args = QStringList() << path;
+        process.setProgram(QStringLiteral("xdg-open"));
+        process.setArguments(args);
     }
+    process.start();
+    process.waitForFinished(5000);
 }
 
 void MainWindow::setupDBus()
