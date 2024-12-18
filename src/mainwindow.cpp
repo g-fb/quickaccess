@@ -146,35 +146,10 @@ void MainWindow::addMenuItem(QMenu *menu, QString path, QString iconName)
 
 void MainWindow::createTrayIcon(bool show)
 {
-    auto *aboutDialog = new AboutDialog(nullptr);
-    aboutDialog->setWindowIcon(m_appIcon);
-    auto trayIconMenu = new QMenu(this);
-
-    auto *quitAction = new QAction(i18n("Quit"), nullptr);
-    quitAction->setIcon(QIcon::fromTheme(u"application-exit"_qs));
-    connect(quitAction, &QAction::triggered,
-            QCoreApplication::instance(), &QCoreApplication::quit);
-
-    auto *aboutAction = new QAction(i18n("About QuickAccess"), nullptr);
-    aboutAction->setIcon(QIcon::fromTheme(u"help-about"_qs));
-    connect(aboutAction, &QAction::triggered,
-            aboutDialog, &AboutDialog::show);
-
-    auto *settingsAction = new QAction(i18n("Settings"), nullptr);
-    settingsAction->setIcon(QIcon::fromTheme(u"configure"_qs));
-    connect(settingsAction, &QAction::triggered, this, [=]() {
-        openSettings();
-    });
-
-    trayIconMenu->addAction(aboutAction);
-    trayIconMenu->addAction(settingsAction);
-    trayIconMenu->addSeparator();
-    trayIconMenu->addAction(quitAction);
-
     m_trayIcon = new QSystemTrayIcon(this);
     m_trayIcon->setToolTip(u"QuickAccess"_qs);
     m_trayIcon->setIcon(m_appIcon);
-    m_trayIcon->setContextMenu(trayIconMenu);
+    m_trayIcon->setContextMenu(m_menu);
     m_trayIcon->setVisible(show);
 }
 
@@ -326,6 +301,15 @@ void MainWindow::setupMenu()
         }
     }
     m_menu->addSeparator();
+
+    auto *aboutAction = new QAction(i18n("About QuickAccess"), nullptr);
+    aboutAction->setIcon(QIcon::fromTheme(u"help-about"_qs));
+    connect(aboutAction, &QAction::triggered, this, [this]() {
+        auto *aboutDialog = new AboutDialog(nullptr);
+        aboutDialog->setWindowIcon(m_appIcon);
+        aboutDialog->show();
+    });
+    m_menu->addAction(aboutAction);
 
     auto action = new QAction(nullptr);
     action->setText(i18n("Settings"));
