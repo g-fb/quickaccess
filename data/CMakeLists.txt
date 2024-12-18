@@ -1,4 +1,4 @@
-ecm_install_icons(ICONS icons/512-apps-quickaccess.svg
+ecm_install_icons(ICONS icons/sc-apps-quickaccess.svg
     DESTINATION ${KDE_INSTALL_ICONDIR}
     THEME hicolor
 )

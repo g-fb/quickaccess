@@ -1,17 +1,98 @@
-<svg width="512" height="512" version="1.1" viewBox="0 0 135.46666 135.46667" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <defs>
-        <linearGradient id="linearGradient840" x1="66.424911" x2="67.733177" y1="283.63712" y2="169.32491" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#007aa6" offset="0"/>
-            <stop stop-color="#006571" offset="1"/>
-        </linearGradient>
-    </defs>
-    <g transform="translate(0,-161.53332)">
-        <ellipse cx="65.88829" cy="225.42255" rx="49.210361" ry="48.019611" fill="url(#linearGradient840)"/>
-        <g transform="scale(1.0495153 .9528208)" fill="#9ce4ff" stroke="#1e3b4e" stroke-width="1.1143787" aria-label="Q">
-            <path d="m7.4146737 237.10485q0-27.62173 15.036683-44.12939 15.200126-16.50767 41.023996-16.50767 26.150755 0 41.023997 16.18078 14.87324 16.18078 14.87324 44.45628 0 29.09272-17.8152 46.09071 10.29686 7.02801 20.10339 10.78718l-4.57638 10.78719q-11.93128-4.08605-25.333543-14.21947-12.911935 7.19146-28.76583 7.19146-25.006659 0-40.370227-16.50767-15.200126-16.6711-15.200126-44.1294zm15.52701 0q0 21.57438 10.623744 34.32287 10.787186 12.58505 29.909925 12.58505 9.806533 0 15.527011-2.77852-7.681784-4.73982-15.200126-6.53769l3.922613-11.27751q12.911935 3.92261 21.901257 11.27751 14.219472-13.23882 14.219472-37.59171 0-21.24748-10.787186-33.99598-10.623744-12.91193-29.583041-12.91193t-29.746483 12.42161q-10.787186 12.4216-10.787186 34.4863z" fill="#9ce4ff" stroke="#1e3b4e" stroke-width="1.1143787"/>
-        </g>
-        <g fill="#9ce4ff" stroke="#1e3b4e" stroke-width="1.229983" aria-label="a">
-            <path d="m67.654615 206.45707q-5.03801 0-7.320859 1.81053-2.204129 1.73182-3.463632 5.98264l-6.612388-0.94463q2.597724-12.5163 18.341506-12.5163 8.65908 0 12.201431 3.22747 3.62107 3.14876 3.62107 12.20143v17.94792q0 4.32954 2.12541 8.3442h-7.16342q-1.023346-2.20413-1.338222-5.03801-7.163421 5.98264-15.114031 5.98264-6.140075 0-10.07602-3.07004-3.935946-3.14876-3.935946-8.58036 0-6.29751 5.903919-10.07602 2.519005-1.6531 10.863209-2.83388 8.344205-1.25951 11.729118-2.44029v-1.73182q0-8.26548-9.761145-8.26548zm-2.991319 31.33013q12.752464 0 12.752464-13.22478v-2.44029q-2.597724 1.10207-8.65908 2.04669-5.982638 0.86591-9.44627 2.44029-3.384913 1.49566-3.384913 4.95929 0 6.2188 8.737799 6.2188z" fill="#9ce4ff" stroke="#1e3b4e" stroke-width="1.229983"/>
-        </g>
-    </g>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="128.00002"
+   height="127.99999"
+   viewBox="0 0 33.866671 33.866665"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   sodipodi:docname="quickaccess.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <style
+     type="text/css"
+     id="current-color-scheme">
+    .ColorScheme-Text {
+      color:#31363b;
+    }
+    .ColorScheme-Background {
+      color:#eff0f1;
+    }
+  </style>
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="currentColor"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="4"
+     inkscape:cx="53.125"
+     inkscape:cy="67.875"
+     inkscape:window-width="1829"
+     inkscape:window-height="949"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <rect
+       x="23.25"
+       y="24"
+       width="82.75"
+       height="81.5"
+       id="rect3" />
+    <rect
+       x="31"
+       y="30.5"
+       width="33"
+       height="40.5"
+       id="rect2" />
+    <rect
+       x="30.5"
+       y="41.5"
+       width="65"
+       height="54.75"
+       id="rect1" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-32.279167,-138.64166)">
+    <rect
+       ry="2.096508"
+       rx="2.096508"
+       y="141.94769"
+       x="35.585205"
+       height="27.254602"
+       width="27.254602"
+       id="rect2896"
+       style="display:inline;opacity:0.2;fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.2619375;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;paint-order:normal;enable-background:new"
+       class="ColorScheme-Background" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458334,0,0,0.26458334,32.279167,138.64166)"
+       id="text1"
+       style="text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect1);display:inline;fill:#002c3b;stroke:#cdcdcd;stroke-width:3.842" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458334,0,0,0.26458334,32.279167,138.64166)"
+       id="text2"
+       style="text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2);display:inline;fill:#002c3b;stroke:#cdcdcd;stroke-width:3.842" />
+    <path
+       style="font-size:48px;line-height:1.2;font-family:'TeX Gyre Heros';-inkscape-font-specification:'TeX Gyre Heros';white-space:pre;fill-opacity:1;stroke:currentColor;stroke-width:0.26458334;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:0;stroke-dasharray:none;paint-order:markers stroke fill;fill:currentColor"
+       d="m 60.515515,155.12051 c 0,-7.25704 -4.559737,-12.39477 -11.303013,-12.39477 -6.743275,0 -11.303012,5.13773 -11.303012,12.459 0,7.32127 4.559737,12.10578 11.303012,12.10578 2.311981,0 4.23863,-0.51378 6.133169,-1.63765 l 3.371638,2.79364 1.509208,-1.86243 -3.018419,-2.47252 c 2.215649,-2.44043 3.307417,-5.2983 3.307417,-8.99105 z m -2.986308,0.0322 c 0,3.01841 -0.802771,5.20195 -2.536755,7.16069 l -2.857864,-2.34407 -1.477099,1.7982 2.376203,1.99088 c -1.380766,0.6422 -2.440424,0.89909 -3.853301,0.89909 -4.977179,0 -8.284594,-3.69273 -8.284594,-9.47268 0,-5.77996 3.339527,-9.82593 8.316705,-9.82593 4.977178,0 8.316705,4.04597 8.316705,9.79382 z"
+       id="text3"
+       aria-label="Q"
+       class="ColorScheme-Text" />
+  </g>
 </svg>
