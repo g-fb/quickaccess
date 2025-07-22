@@ -27,10 +27,12 @@
 #include <KLocalizedString>
 #include <KShell>
 
+using namespace Qt::StringLiterals;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , m_menu(new QMenu())
-    , m_config(KSharedConfig::openConfig(u"quickaccessrc"_qs))
+    , m_config(KSharedConfig::openConfig(u"quickaccessrc"_s))
 {
     // call adjustSize so the settings window opens in the center of the screen
     adjustSize();
@@ -41,13 +43,13 @@ MainWindow::MainWindow(QWidget *parent)
     m_clipboard = QGuiApplication::clipboard();
 
     m_startUpDialog = new StartUpDialog(this);
-    m_startUpDialog->setWindowTitle(QStringLiteral("QuickAccess"));
+    m_startUpDialog->setWindowTitle(u"QuickAccess"_s);
     QRect screenGeometry = QGuiApplication::primaryScreen()->geometry();
     int x = (screenGeometry.width() - m_startUpDialog->width()) / 2;
     int y = (screenGeometry.height() - m_startUpDialog->height()) / 2;
     m_startUpDialog->move(screenGeometry.x() + x, screenGeometry.y() + y);
-    if (m_config->group(u"General"_qs).readEntry("ShowStartUpDialog", true)) {
-        m_startUpDialog->kcfg_ShowOnStartUp->setChecked(m_config->group(u"General"_qs).readEntry("ShowStartUpDialog", true));
+    if (m_config->group(u"General"_s).readEntry("ShowStartUpDialog", true)) {
+        m_startUpDialog->kcfg_ShowOnStartUp->setChecked(m_config->group(u"General"_s).readEntry("ShowStartUpDialog", true));
         m_startUpDialog->show();
     }
     connect(m_startUpDialog->openMenuButton, &QPushButton::clicked,
@@ -56,36 +58,36 @@ MainWindow::MainWindow(QWidget *parent)
         openSettings();
     });
     connect(m_startUpDialog->copyCommandButton, &QPushButton::clicked, this, [=]() {
-        m_clipboard->setText(QStringLiteral("dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showMenu"));
+        m_clipboard->setText(u"dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showMenu"_s);
     });
     connect(m_startUpDialog->kcfg_ShowOnStartUp, &QCheckBox::stateChanged, this, [=]() {
-        m_config->group(u"General"_qs).writeEntry("ShowStartUpDialog", m_startUpDialog->kcfg_ShowOnStartUp->isChecked());
+        m_config->group(u"General"_s).writeEntry("ShowStartUpDialog", m_startUpDialog->kcfg_ShowOnStartUp->isChecked());
         m_config->sync();
     });
 
     QCommandLineParser parser;
-    parser.setApplicationDescription(u"QuickAccess"_qs);
+    parser.setApplicationDescription(u"QuickAccess"_s);
     parser.addHelpOption();
     parser.addVersionOption();
 
     QCommandLineOption showTrayIconOption(
-                QStringLiteral("tray-icon"),
+                u"tray-icon"_s,
                 QCoreApplication::translate("main", "Set tray icon visibility.\nValues: show, hide. Default is show."
                                                     "\n Example: quickaccess --tray-icon=hide"),
-                QCoreApplication::translate("main", "visibility"), QStringLiteral("show"));
+                QCoreApplication::translate("main", "visibility"), u"show"_s);
     parser.addOption(showTrayIconOption);
     parser.process(QCoreApplication::instance()->arguments());
 
     if (isRunningSandbox()) {
-        m_appIcon = QIcon::fromTheme(u"com.georgefb.quickaccess"_qs, QIcon(u":/icons/quickaccess"_qs));
+        m_appIcon = QIcon::fromTheme(u"com.georgefb.quickaccess"_s, QIcon(u":/icons/quickaccess"_s));
     } else {
-        m_appIcon = QIcon::fromTheme(u"quickaccess"_qs, QIcon(u":/icons/quickaccess"_qs));
+        m_appIcon = QIcon::fromTheme(u"quickaccess"_s, QIcon(u":/icons/quickaccess"_s));
     }
 
     QString showTrayIcon = parser.value(showTrayIconOption);
-    if (showTrayIcon == u"show"_qs && QuickAccessSettings::showInTray()) {
+    if (showTrayIcon == u"show"_s && QuickAccessSettings::showInTray()) {
         createTrayIcon(true);
-    } else if (showTrayIcon == u"hide"_qs || !QuickAccessSettings::showInTray()) {
+    } else if (showTrayIcon == u"hide"_s || !QuickAccessSettings::showInTray()) {
         createTrayIcon(false);
     }
 
@@ -112,7 +114,7 @@ void MainWindow::addMenuItem(QMenu *menu, QString path, QString iconName)
         submenu->setMinimumWidth(200);
         submenu->setMaximumWidth(600);
         QFontMetrics metrix(submenu->font());
-        QStringList pathFolders = path.split(u"/"_qs);
+        QStringList pathFolders = path.split(u"/"_s);
         pathFolders.removeAll(QString());
         QString elidedTitle = metrix.elidedText(pathFolders.takeLast(), Qt::ElideRight, 500);
         submenu->setTitle(elidedTitle);
@@ -131,11 +133,11 @@ void MainWindow::addMenuItem(QMenu *menu, QString path, QString iconName)
         // folder has no sub folders, create action
         auto *action = new QAction(nullptr);
         QFontMetrics metrix(action->font());
-        QStringList pathFolders = path.split(u"/"_qs);
+        QStringList pathFolders = path.split(u"/"_s);
         pathFolders.removeAll(QString());
         QString elidedTitle = metrix.elidedText(pathFolders.takeLast(), Qt::ElideRight, 500);
         action->setText(elidedTitle);
-        action->setIcon(QIcon::fromTheme(u"folder"_qs));
+        action->setIcon(QIcon::fromTheme(u"folder"_s));
         menu->addAction(action);
         connect(action, &QAction::triggered, this, [=]() {
             actionClicked = true;
@@ -147,7 +149,7 @@ void MainWindow::addMenuItem(QMenu *menu, QString path, QString iconName)
 void MainWindow::createTrayIcon(bool show)
 {
     m_trayIcon = new QSystemTrayIcon(this);
-    m_trayIcon->setToolTip(u"QuickAccess"_qs);
+    m_trayIcon->setToolTip(u"QuickAccess"_s);
     m_trayIcon->setIcon(m_appIcon);
     m_trayIcon->setContextMenu(m_menu);
     m_trayIcon->setVisible(show);
@@ -155,13 +157,13 @@ void MainWindow::createTrayIcon(bool show)
 
 void MainWindow::openSettings()
 {
-    if (SettingsWindow::showDialog(u"settings"_qs)) {
+    if (SettingsWindow::showDialog(u"settings"_s)) {
         return;
     }
     auto settingsWindow = new SettingsWindow(this, QuickAccessSettings::self());
     settingsWindow->show();
     connect(settingsWindow, &SettingsWindow::openStartUpDialog, this, [=]() {
-        m_startUpDialog->kcfg_ShowOnStartUp->setChecked(m_config->group(u"General"_qs).readEntry("ShowStartUpDialog", true));
+        m_startUpDialog->kcfg_ShowOnStartUp->setChecked(m_config->group(u"General"_s).readEntry("ShowStartUpDialog", true));
         m_startUpDialog->show();
     });
     connect(settingsWindow, &SettingsWindow::settingsChanged, this, &MainWindow::setupMenu);
@@ -188,7 +190,7 @@ void MainWindow::onMenuHover(QMenu *menu, QString path)
             action->setText(i18n("There are more folders than configured to show (%1).", maxSubItems));
             connect(action, &QAction::triggered, this, [=]() {
                 actionClicked = true;
-                KConfigDialog::showDialog(u"settings"_qs);
+                KConfigDialog::showDialog(u"settings"_s);
             });
             menu->addAction(action);
             break;
@@ -202,12 +204,12 @@ void MainWindow::openFolder(QString path)
 
     QProcess process;
     if (isRunningSandbox()) {
-        auto args = QStringList() << QStringLiteral("--host") << QStringLiteral("xdg-open") << path;
-        process.setProgram(QStringLiteral("flatpak-spawn"));
+        auto args = QStringList() << u"--host"_s << u"xdg-open"_s << path;
+        process.setProgram(u"flatpak-spawn"_s);
         process.setArguments(args);
     } else {
         auto args = QStringList() << path;
-        process.setProgram(QStringLiteral("xdg-open"));
+        process.setProgram(u"xdg-open"_s);
         process.setArguments(args);
     }
     process.start();
@@ -218,8 +220,8 @@ void MainWindow::setupDBus()
 {
     new QuickAccessAdaptor(this);
     auto dbus = QDBusConnection::sessionBus();
-    dbus.registerObject(u"/QuickAccess"_qs, this);
-    dbus.registerService(u"com.georgefb.quickaccess"_qs);
+    dbus.registerObject(u"/QuickAccess"_s, this);
+    dbus.registerService(u"com.georgefb.quickaccess"_s);
 }
 
 QAction *MainWindow::createCustomCommand(KConfigGroup group)
@@ -230,11 +232,11 @@ QAction *MainWindow::createCustomCommand(KConfigGroup group)
     connect(action, &QAction::triggered, this, [=]() {
         QString processName = group.readEntry("Process");
         QString argsString = group.readEntry("Args");
-        argsString.replace(u"{clipboard}"_qs, KShell::quoteArg(m_clipboard->text()));
+        argsString.replace(u"{clipboard}"_s, KShell::quoteArg(m_clipboard->text()));
         QStringList args = KShell::splitArgs(argsString);
         if (isRunningSandbox()) {
-            processName = QStringLiteral("flatpak-spawn");
-            args = QStringList() << QStringLiteral("--host") << group.readEntry("Process") << args;
+            processName = u"flatpak-spawn"_s;
+            args = QStringList() << u"--host"_s << group.readEntry("Process") << args;
         }
         auto *process = new QProcess();
         process->setProgram(processName);
@@ -256,15 +258,15 @@ void MainWindow::setupMenu()
         m_menu->addSection(i18n("Folders"));
     }
 
-    auto generalGroup = m_config->group(QStringLiteral("General"));
+    auto generalGroup = m_config->group(u"General"_s);
     int foldersCount = generalGroup.readEntry("FoldersCount").toInt();
     for (int i = 0; i < foldersCount; ++i) {
-        auto group = m_config->group(QStringLiteral("Folder_%1").arg(i));
-        auto path = group.readEntry(QStringLiteral("Path"));
-        auto iconName = group.readEntry(QStringLiteral("Icon"));
-        auto type = group.readEntry(QStringLiteral("Type"));
+        auto group = m_config->group(u"Folder_%1"_s.arg(i));
+        auto path = group.readEntry("Path");
+        auto iconName = group.readEntry("Icon");
+        auto type = group.readEntry("Type");
 
-        if (type == QStringLiteral("separator")) {
+        if (type == u"separator"_s) {
             m_menu->addSeparator();
         } else {
             addMenuItem(m_menu, path, iconName);
@@ -279,8 +281,8 @@ void MainWindow::setupMenu()
 
     int commandsCount = generalGroup.readEntry("CommandsCount").toInt();
     for (int i = 0; i < commandsCount; i++) {
-        auto group = m_config->group(QString(u"Command_%1"_qs).arg(i));
-        if (group.readEntry("Type") == u"menu"_qs) {
+        auto group = m_config->group(u"Command_%1"_s.arg(i));
+        if (group.readEntry("Type") == u"menu"_s) {
             int menuCount = group.readEntry("Count").toInt();
             if (menuCount < 1) {
                 continue;
@@ -290,7 +292,7 @@ void MainWindow::setupMenu()
             menu->setMinimumWidth(200);
             menu->setIcon(QIcon::fromTheme(group.readEntry("Icon")));
             for (int j = 0; j < menuCount; ++j) {
-                auto group = m_config->group(QString(u"Command_%1__Subcommand_%2"_qs).arg(i).arg(j));
+                auto group = m_config->group(u"Command_%1__Subcommand_%2"_s.arg(i).arg(j));
                 auto action = createCustomCommand(group);
                 menu->addAction(action);
             }
@@ -303,7 +305,7 @@ void MainWindow::setupMenu()
     m_menu->addSeparator();
 
     auto *aboutAction = new QAction(i18n("About QuickAccess"), nullptr);
-    aboutAction->setIcon(QIcon::fromTheme(u"help-about"_qs));
+    aboutAction->setIcon(QIcon::fromTheme(u"help-about"_s));
     connect(aboutAction, &QAction::triggered, this, [this]() {
         auto *aboutDialog = new AboutDialog(nullptr);
         aboutDialog->setWindowIcon(m_appIcon);
@@ -313,7 +315,7 @@ void MainWindow::setupMenu()
 
     auto action = new QAction(nullptr);
     action->setText(i18n("Settings"));
-    action->setIcon(QIcon::fromTheme(u"configure"_qs));
+    action->setIcon(QIcon::fromTheme(u"configure"_s));
     connect(action, &QAction::triggered, this, [=]() {
         actionClicked = true;
         openSettings();
@@ -331,7 +333,7 @@ void MainWindow::setupMenu()
     m_menu->addSeparator();
     action = new QAction(nullptr);
     action->setText(i18n("Quit"));
-    action->setIcon(QIcon::fromTheme(u"application-exit"_qs));
+    action->setIcon(QIcon::fromTheme(u"application-exit"_s));
     connect(action, &QAction::triggered, this, [=]() {
         actionClicked = true;
         QCoreApplication::quit();

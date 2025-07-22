@@ -8,25 +8,27 @@
 
 #include <QPushButton>
 
+using namespace Qt::StringLiterals;
+
 SettingsWindow::SettingsWindow(QWidget *parent, KConfigSkeleton *skeleton)
-    : KConfigDialog(parent, QStringLiteral("settings"), skeleton)
+    : KConfigDialog(parent, u"settings"_s, skeleton)
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowTitle(i18n("Settings"));
     resize(650, 550);
 
-    m_config = KSharedConfig::openConfig(u"quickaccessrc"_qs);
+    m_config = KSharedConfig::openConfig(u"quickaccessrc"_s);
 
     auto generalSettingsPage = new GeneralSettingsPage(this);
-    addPage(generalSettingsPage, i18n("General"), QStringLiteral("configure"), QString());
+    addPage(generalSettingsPage, i18n("General"), u"configure"_s, QString());
     connect(generalSettingsPage, &GeneralSettingsPage::openStartUpDialog,
             this, &SettingsWindow::openStartUpDialog);
 
     auto foldersSettingsPage = new FoldersSettingsPage(this);
-    addPage(foldersSettingsPage, i18n("Folders"), QStringLiteral("folder"), QString());
+    addPage(foldersSettingsPage, i18n("Folders"), u"folder"_s, QString());
 
     auto commandsSettingsPage = new CommandsSettingsPage(this);
-    addPage(commandsSettingsPage, i18n("Commands"), QStringLiteral("dialog-scripts"), QString());
+    addPage(commandsSettingsPage, i18n("Commands"), u"dialog-scripts"_s, QString());
 
 //    setCurrentPage(commandsPage);
 
@@ -47,7 +49,7 @@ SettingsWindow::SettingsWindow(QWidget *parent, KConfigSkeleton *skeleton)
         // disable apply buttton
         m_changed = false;
         updateButtons();
-        Q_EMIT settingsChanged(QStringLiteral("settings"));
+        Q_EMIT settingsChanged(u"settings"_s);
     });
 
     connect(button(QDialogButtonBox::Ok), &QPushButton::clicked, this, [=]() {
@@ -55,7 +57,7 @@ SettingsWindow::SettingsWindow(QWidget *parent, KConfigSkeleton *skeleton)
             foldersSettingsPage->save();
             commandsSettingsPage->save();
             updateButtons();
-            Q_EMIT settingsChanged(QStringLiteral("settings"));
+            Q_EMIT settingsChanged(u"settings"_s);
         }
     });
 }

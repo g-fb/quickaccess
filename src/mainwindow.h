@@ -8,6 +8,7 @@
 #include "ui_aboutdialog.h"
 #include "ui_startupdialog.h"
 
+using namespace Qt::StringLiterals;
 
 class SettingsWindow;
 
@@ -63,7 +64,7 @@ Q_SIGNALS:
 
 private:
     void openSettings();
-    void addMenuItem(QMenu *menu, QString path, QString iconName = u"folder"_qs);
+    void addMenuItem(QMenu *menu, QString path, QString iconName = u"folder"_s);
     void onMenuHover(QMenu *menu, QString path);
     void openFolder(QString path);
     void setupMenu();
