@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_startUpDialog->copyCommandButton, &QPushButton::clicked, this, [=]() {
         m_clipboard->setText(u"dbus-send --type=method_call --dest=com.georgefb.quickaccess /QuickAccess com.georgefb.QuickAccess.showMenu"_s);
     });
-    connect(m_startUpDialog->kcfg_ShowOnStartUp, &QCheckBox::stateChanged, this, [=]() {
+    connect(m_startUpDialog->kcfg_ShowOnStartUp, &QCheckBox::checkStateChanged, this, [=]() {
         m_config->group(u"General"_s).writeEntry("ShowStartUpDialog", m_startUpDialog->kcfg_ShowOnStartUp->isChecked());
         m_config->sync();
     });
