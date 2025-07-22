@@ -1,9 +1,4 @@
 #include "mainwindow.h"
-#include "pathsmenu.h"
-#include "quickaccessadaptor.h"
-#include "migrations.h"
-#include "settings.h"
-#include "settings/settingswindow.h"
 
 #include <QClipboard>
 #include <QCommandLineParser>
@@ -26,6 +21,12 @@
 #include <KConfigGroup>
 #include <KLocalizedString>
 #include <KShell>
+
+#include "pathsmenu.h"
+#include "quickaccessadaptor.h"
+#include "migrations.h"
+#include "settings.h"
+#include "settings/settingswindow.h"
 
 using namespace Qt::StringLiterals;
 

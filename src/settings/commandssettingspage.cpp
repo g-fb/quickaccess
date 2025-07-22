@@ -1,11 +1,17 @@
 #include "commandssettingspage.h"
 
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QHeaderView>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMenu>
+#include <QVBoxLayout>
+
+#include <KConfigGroup>
+#include <KIconButton>
 #include <KLocalizedString>
 
-#include <KIconButton>
-#include <QtWidgets>
-
-#include "settings.h"
 #include "treewidget.h"
 
 using namespace Qt::StringLiterals;

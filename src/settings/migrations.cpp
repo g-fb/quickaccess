@@ -1,9 +1,8 @@
 #include "migrations.h"
 
-#include "quickaccess-version.h"
-
 #include <KConfigGroup>
-#include <QDebug>
+
+#include "quickaccess-version.h"
 
 using namespace Qt::StringLiterals;
 

@@ -1,12 +1,21 @@
 #include "folderssettingspage.h"
 
+#include <QClipboard>
+#include <QDialogButtonBox>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QGuiApplication>
+#include <QLabel>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QMenu>
+#include <QTextEdit>
+#include <QToolButton>
+
+#include <KConfigGroup>
 #include <KIconDialog>
 #include <KLocalizedString>
-#include <QClipboard>
-
-#include <QtWidgets>
-
-#include "settings.h"
+#include <QVBoxLayout>
 
 using namespace Qt::StringLiterals;
 

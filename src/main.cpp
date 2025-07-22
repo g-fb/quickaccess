@@ -1,7 +1,8 @@
 #include "mainwindow.h"
 
-#include <KLocalizedString>
 #include <QApplication>
+
+#include <KLocalizedString>
 
 int main(int argc, char *argv[])
 {

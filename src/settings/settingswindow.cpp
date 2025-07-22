@@ -1,12 +1,12 @@
 #include "settingswindow.h"
 
-#include "commandssettingspage.h"
-#include "folderssettingspage.h"
-#include "generalsettingspage.h"
+#include <QPushButton>
 
 #include <KLocalizedString>
 
-#include <QPushButton>
+#include "commandssettingspage.h"
+#include "folderssettingspage.h"
+#include "generalsettingspage.h"
 
 using namespace Qt::StringLiterals;
 

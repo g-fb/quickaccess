@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <KSharedConfig>
-#include <QSystemTrayIcon>
 
 #include "ui_aboutdialog.h"
 #include "ui_startupdialog.h"
@@ -19,6 +18,7 @@ class QDBusConnectionInterface;
 class QListWidget;
 class KConfigDialog;
 class KConfigGroup;
+class QSystemTrayIcon;
 
 class AboutDialog: public QWidget, public Ui::AboutDialog
 {

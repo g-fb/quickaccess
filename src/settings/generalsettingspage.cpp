@@ -1,10 +1,14 @@
 #include "generalsettingspage.h"
 
+#include <QCheckBox>
+#include <QFormLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QSpacerItem>
+#include <QSpinBox>
+
 #include <KLocalizedString>
 
-#include <QFormLayout>
-#include <QtWidgets>
-#include <QSpacerItem>
 #include "settings.h"
 
 GeneralSettingsPage::GeneralSettingsPage(QWidget *parent)
