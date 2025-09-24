@@ -79,11 +79,8 @@ MainWindow::MainWindow(QWidget *parent)
     parser.addOption(showTrayIconOption);
     parser.process(QCoreApplication::instance()->arguments());
 
-    if (isRunningSandbox()) {
-        m_appIcon = QIcon::fromTheme(u"com.georgefb.quickaccess"_s, QIcon(u":/icons/quickaccess"_s));
-    } else {
-        m_appIcon = QIcon::fromTheme(u"quickaccess"_s, QIcon(u":/icons/quickaccess"_s));
-    }
+    auto iconName = isRunningSandbox() ? u"com.georgefb.quickaccess"_s : u"quickaccess"_s ;
+    m_appIcon = QIcon::fromTheme(iconName, QIcon(u":/icons/sc-apps-quickaccess"_s));
 
     QString showTrayIcon = parser.value(showTrayIconOption);
     if (showTrayIcon == u"show"_s && QuickAccessSettings::showInTray()) {
