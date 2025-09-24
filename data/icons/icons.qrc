@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/icons">
-        <file>quickaccess.svg</file>
+        <file>sc-apps-quickaccess.svg</file>
     </qresource>
 </RCC>

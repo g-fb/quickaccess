@@ -7,7 +7,7 @@
    viewBox="0 0 33.866671 33.866665"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
    sodipodi:docname="quickaccess.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -34,10 +34,10 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      inkscape:zoom="4"
-     inkscape:cx="53.125"
-     inkscape:cy="67.875"
-     inkscape:window-width="1829"
-     inkscape:window-height="949"
+     inkscape:cx="53"
+     inkscape:cy="67.75"
+     inkscape:window-width="1969"
+     inkscape:window-height="1027"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -68,26 +68,6 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-32.279167,-138.64166)">
-    <rect
-       ry="2.096508"
-       rx="2.096508"
-       y="141.94769"
-       x="35.585205"
-       height="27.254602"
-       width="27.254602"
-       id="rect2896"
-       style="display:inline;opacity:0.2;fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.2619375;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;paint-order:normal;enable-background:new"
-       class="ColorScheme-Background" />
-    <text
-       xml:space="preserve"
-       transform="matrix(0.26458334,0,0,0.26458334,32.279167,138.64166)"
-       id="text1"
-       style="text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect1);display:inline;fill:#002c3b;stroke:#cdcdcd;stroke-width:3.842" />
-    <text
-       xml:space="preserve"
-       transform="matrix(0.26458334,0,0,0.26458334,32.279167,138.64166)"
-       id="text2"
-       style="text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2);display:inline;fill:#002c3b;stroke:#cdcdcd;stroke-width:3.842" />
     <path
        style="font-size:48px;line-height:1.2;font-family:'TeX Gyre Heros';-inkscape-font-specification:'TeX Gyre Heros';white-space:pre;fill-opacity:1;stroke:currentColor;stroke-width:0.26458334;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:0;stroke-dasharray:none;paint-order:markers stroke fill;fill:currentColor"
        d="m 60.515515,155.12051 c 0,-7.25704 -4.559737,-12.39477 -11.303013,-12.39477 -6.743275,0 -11.303012,5.13773 -11.303012,12.459 0,7.32127 4.559737,12.10578 11.303012,12.10578 2.311981,0 4.23863,-0.51378 6.133169,-1.63765 l 3.371638,2.79364 1.509208,-1.86243 -3.018419,-2.47252 c 2.215649,-2.44043 3.307417,-5.2983 3.307417,-8.99105 z m -2.986308,0.0322 c 0,3.01841 -0.802771,5.20195 -2.536755,7.16069 l -2.857864,-2.34407 -1.477099,1.7982 2.376203,1.99088 c -1.380766,0.6422 -2.440424,0.89909 -3.853301,0.89909 -4.977179,0 -8.284594,-3.69273 -8.284594,-9.47268 0,-5.77996 3.339527,-9.82593 8.316705,-9.82593 4.977178,0 8.316705,4.04597 8.316705,9.79382 z"
