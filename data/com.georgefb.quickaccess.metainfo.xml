@@ -20,6 +20,14 @@
         <p>Check the project page for more info https://github.com/g-fb/quickaccess.</p>
     </description>
     <releases>
+        <release version="3.2.0" date="2025-09-24">
+            <description>
+                <p>Features:</p>
+                <ul>
+                    <li>Show folders and commands in the tray icon menu</li>
+                </ul>
+            </description>
+        </release>
         <release version="3.1.0" date="2024-04-24">
             <description>
                 <p>Ported to Qt6.</p>
