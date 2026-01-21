@@ -279,8 +279,8 @@ FoldersSettingsPage::FoldersSettingsPage(QWidget *parent)
         }
     });
     connect(deleteFolderButton, &QPushButton::clicked, this, [=]() {
-        auto items = m_foldersListView->selectedItems();
-        for(const auto& item : items) {
+        const auto items = m_foldersListView->selectedItems();
+        for (const auto& item : items) {
             delete m_foldersListView->takeItem(m_foldersListView->row(item));
         }
 
